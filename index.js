@@ -1,19 +1,23 @@
-// index.js - ملف الخادم النهائي لمشروع Trimer (Aite)
+// index.js - ملف الخادم النهائي لمشروع Trimer (Aite) مع حل مشكلة EROFS
 
 const express = require('express');
 const firebaseAdmin = require('firebase-admin');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
 const multer = require('multer');
-const fs = require('fs'); // لعملية حذف الملف المؤقت بعد الرفع
+// لم تعد هناك حاجة لـ fs بعد الآن، لكن سنبقيها احتياطاً إذا كان هناك استخدام آخر
 
-const upload = multer({ dest: 'uploads/' });
+// ====================================================
+// حل مشكلة EROFS: استخدام تخزين الذاكرة (Memory Storage) بدلاً من القرص
+// ====================================================
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const app = express();
 const port = process.env.PORT || 3000; 
 
 // ====================================================
-// 1. تهيئة المكتبات (Configuration) - الكود المُعدَّل لزيادة الثبات
+// 1. تهيئة المكتبات (Configuration) - ثبات عالٍ
 // ====================================================
 
 let isFirebaseInitialized = false;
@@ -22,13 +26,10 @@ try {
     // 1.1. تهيئة Firebase
     const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
     
-    // التحقق من وجود المفتاح وعدم كونه فارغاً
     if (serviceAccountString && serviceAccountString.trim() !== '') {
         try {
-            // محاولة تحليل JSON بحذر
             const serviceAccount = JSON.parse(serviceAccountString); 
             
-            // التأكد من عدم تهيئة Firebase مسبقاً في بيئة Vercel
             if (!firebaseAdmin.apps.length) {
                 firebaseAdmin.initializeApp({
                     credential: firebaseAdmin.credential.cert(serviceAccount),
@@ -37,8 +38,7 @@ try {
                 console.log("SUCCESS: Firebase initialized.");
             }
         } catch (jsonError) {
-            // هذا الخطأ سيظهر في سجلات Vercel إذا كانت صيغة JSON غير صالحة
-            console.error("CRITICAL ERROR: Failed to parse FIREBASE_SERVICE_ACCOUNT JSON. Check Vercel value format. Error:", jsonError.message);
+            console.error("CRITICAL ERROR: Failed to parse FIREBASE_SERVICE_ACCOUNT JSON. Error:", jsonError.message);
         }
     } else {
         console.warn("WARNING: Skipping Firebase initialization. FIREBASE_SERVICE_ACCOUNT is empty.");
@@ -58,37 +58,32 @@ try {
     }
 
 } catch (e) {
-    // التقاط أي خطأ غير متوقع في بداية تشغيل الخادم
     console.error("UNEXPECTED SERVER STARTUP CRASH:", e.message);
 }
 
 // 2. Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// لخدمة الملفات الثابتة (إذا كان لديك مجلد public)
-// app.use(express.static(path.join(__dirname, 'public'))); 
 
 
 // ====================================================
 // 3. مسارات خدمة ملفات HTML (Views)
 // ====================================================
 
-// المسار الأساسي: سيعرض شاشة البداية (Splash) أولاً
+// المسار الأساسي: سيعرض شاشة البداية (Splash)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'splash.html'));
 });
 
 // المسار الذي يتم توجيه المستخدم إليه بعد انتهاء عرض Splash
 app.get('/auth-check', (req, res) => {
-    // *** منطق وهمي: يجب استبداله بمنطق التحقق من الجلسات (Sessions/Cookies) ***
-    
-    // مثال: افترض أن المستخدم غير مسجل دخول
+    // منطق وهمي: يجب استبداله بمنطق التحقق من الجلسات
     const isAuthenticated = false; 
 
     if (isAuthenticated) {
-        res.redirect('/home'); // توجيه إلى الصفحة الرئيسية
+        res.redirect('/home');
     } else {
-        res.redirect('/login'); // توجيه إلى صفحة تسجيل الدخول
+        res.redirect('/login');
     }
 });
 
@@ -102,7 +97,7 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'register.html'));
 });
 
-// مسار الصفحة الرئيسية (بعد تسجيل الدخول الناجح)
+// مسار الصفحة الرئيسية
 app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'home.html'));
 });
@@ -114,8 +109,8 @@ app.get('/home', (req, res) => {
 
 // معالجة نموذج إنشاء الحساب (POST /register)
 app.post('/register', upload.single('profile_picture'), async (req, res) => {
-    if (!isFirebaseInitialized) {
-        return res.status(500).send('فشل الخادم: تهيئة Firebase غير مكتملة.');
+    if (!isFirebaseInitialized || !process.env.CLOUDINARY_CLOUD_NAME) {
+        return res.status(503).send('فشل الخدمة: تهيئة Firebase/Cloudinary غير مكتملة. يرجى مراجعة إعدادات Vercel.');
     }
     
     const { username, password } = req.body;
@@ -124,23 +119,21 @@ app.post('/register', upload.single('profile_picture'), async (req, res) => {
     try {
         let profileImageUrl = null;
         if (file) {
-            // أ. رفع الصورة إلى Cloudinary
-            const result = await cloudinary.uploader.upload(file.path, {
-                folder: "Aite/Trimer_Profiles"
-            });
+            // أ. رفع الصورة إلى Cloudinary باستخدام المخزن المؤقت (buffer)
+            const result = await cloudinary.uploader.upload(
+                `data:${file.mimetype};base64,${file.buffer.toString('base64')}`, 
+                {
+                    folder: "Aite/Trimer_Profiles"
+                }
+            );
             profileImageUrl = result.secure_url;
-            
-            // حذف الملف المؤقت بعد الرفع
-            if (fs.existsSync(file.path)) {
-                fs.unlinkSync(file.path);
-            }
         }
 
-        // ب. تسجيل المستخدم في Firebase Firestore (كمثال)
+        // ب. تسجيل المستخدم في Firebase Firestore 
         const db = firebaseAdmin.firestore();
         await db.collection('users').doc(username).set({
             username: username,
-            password_hash: password, // يجب تشفير كلمة المرور (Hashing)
+            password_hash: password, 
             profile_image_url: profileImageUrl,
             created_at: firebaseAdmin.firestore.FieldValue.serverTimestamp()
         });
@@ -155,10 +148,9 @@ app.post('/register', upload.single('profile_picture'), async (req, res) => {
 
 // مسار معالجة نموذج تسجيل الدخول (POST /login)
 app.post('/login', (req, res) => {
-    // منطق التحقق من البيانات وتعريف جلسة المستخدم هنا
     const { username, password } = req.body;
     
-    res.redirect('/home'); // توجيه لصفحة الرئيسية بعد الدخول
+    res.redirect('/home'); 
 });
 
 // تشغيل الخادم
