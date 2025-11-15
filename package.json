@@ -1,0 +1,25 @@
+{
+  "name": "Aite",
+  "version": "1.0.0",
+  "description": "Express server for Aite project with Firebase and Cloudinary dependencies.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase-admin": "^11.11.1",
+    "cloudinary": "^1.41.0"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "keywords": [
+    "express",
+    "firebase",
+    "cloudinary",
+    "vercel"
+  ],
+  "author": "",
+  "license": "ISC"
+}
