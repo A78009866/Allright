@@ -10,10 +10,10 @@
     "express": "^4.18.2",
     "firebase-admin": "^11.11.1",
     "cloudinary": "^1.41.0",
-    "multer": "^1.4.5-lts.1"  <-- جديد
+    "multer": "^1.4.5-lts.1" 
   },
   "engines": {
-    "node": "22.x"            <-- مُحدَّث
+    "node": "22.x"       
   },
   "keywords": [
     "express",
@@ -25,3 +25,4 @@
   "author": "",
   "license": "ISC"
 }
+
