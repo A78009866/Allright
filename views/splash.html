@@ -42,15 +42,36 @@
             font-weight: bold;
             color: #ffffff;
             text-shadow: 0 0 5px rgba(255,255,255,0.3);
+            font-size: 1.5em; 
         }
 
-        h3 {
-            font-size: 24px;
-            margin-top: 15px;
+        /* Prevent potential issues with mobile viewports */
+        @supports (-webkit-overflow-scrolling: touch) {
+            body {
+                overflow-x: hidden;
+            }
         }
+        
+        /* Specific CSS for rotation fix on some devices (optional, based on previous code) */
+        @media screen and (orientation: landscape) {
+            body::before {
+                content: "";
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.8);
+                z-index: 1000;
+                /* If you want a specific rotation message, add it here */
+            }
 
-        @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
-            html {
+            .typing-effect {
+                -webkit-transform: rotate(-90deg);
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -o-transform: rotate(-90deg);
                 transform: rotate(-90deg);
                 transform-origin: left top;
                 width: 100vh;
@@ -84,7 +105,7 @@
         typeeffect();
 
         setTimeout(function() {
-            window.location.href = "/check-status";
+            window.location.href = "/auth-check"; // <-- تم التعديل هنا ليتطابق مع index.js
         }, 3000);
     </script>
     <script>
@@ -98,6 +119,5 @@
         window.addEventListener('load', lockorientation);
         window.addEventListener('resize', lockorientation);
     </script>
-    <h3>trimer</h3>
 </body>
 </html>
