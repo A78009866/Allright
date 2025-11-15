@@ -13,33 +13,60 @@ const app = express();
 const port = process.env.PORT || 3000; 
 
 // ====================================================
-// 1. تهيئة المكتبات (Configuration)
-// ملاحظة: يجب وضع متغيرات البيئة في إعدادات Vercel كما ذكرنا سابقاً
+// 1. تهيئة المكتبات (Configuration) - الكود المُعدَّل لزيادة الثبات
 // ====================================================
 
+let isFirebaseInitialized = false;
+
 try {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
-    if (serviceAccount.project_id) {
-        firebaseAdmin.initializeApp({
-            credential: firebaseAdmin.credential.cert(serviceAccount),
-        });
+    // 1.1. تهيئة Firebase
+    const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+    
+    // التحقق من وجود المفتاح وعدم كونه فارغاً
+    if (serviceAccountString && serviceAccountString.trim() !== '') {
+        try {
+            // محاولة تحليل JSON بحذر
+            const serviceAccount = JSON.parse(serviceAccountString); 
+            
+            // التأكد من عدم تهيئة Firebase مسبقاً في بيئة Vercel
+            if (!firebaseAdmin.apps.length) {
+                firebaseAdmin.initializeApp({
+                    credential: firebaseAdmin.credential.cert(serviceAccount),
+                });
+                isFirebaseInitialized = true;
+                console.log("SUCCESS: Firebase initialized.");
+            }
+        } catch (jsonError) {
+            // هذا الخطأ سيظهر في سجلات Vercel إذا كانت صيغة JSON غير صالحة
+            console.error("CRITICAL ERROR: Failed to parse FIREBASE_SERVICE_ACCOUNT JSON. Check Vercel value format. Error:", jsonError.message);
+        }
+    } else {
+        console.warn("WARNING: Skipping Firebase initialization. FIREBASE_SERVICE_ACCOUNT is empty.");
+    }
+
+    // 1.2. تهيئة Cloudinary
+    if (process.env.CLOUDINARY_CLOUD_NAME) {
         cloudinary.config({ 
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
             api_key: process.env.CLOUDINARY_API_KEY, 
             api_secret: process.env.CLOUDINARY_API_SECRET,
             secure: true
         });
-        console.log("Firebase and Cloudinary initialized.");
+        console.log("SUCCESS: Cloudinary initialized.");
     } else {
-        console.warn("Service account not found. Firebase/Cloudinary not fully initialized.");
+        console.warn("WARNING: Skipping Cloudinary initialization. CLOUDINARY_CLOUD_NAME is missing.");
     }
+
 } catch (e) {
-    console.error("Error during initialization:", e.message);
+    // التقاط أي خطأ غير متوقع في بداية تشغيل الخادم
+    console.error("UNEXPECTED SERVER STARTUP CRASH:", e.message);
 }
 
 // 2. Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// لخدمة الملفات الثابتة (إذا كان لديك مجلد public)
+// app.use(express.static(path.join(__dirname, 'public'))); 
 
 
 // ====================================================
@@ -63,7 +90,6 @@ app.get('/auth-check', (req, res) => {
     } else {
         res.redirect('/login'); // توجيه إلى صفحة تسجيل الدخول
     }
-    // *************************************************************************
 });
 
 // مسار تسجيل الدخول
@@ -88,6 +114,10 @@ app.get('/home', (req, res) => {
 
 // معالجة نموذج إنشاء الحساب (POST /register)
 app.post('/register', upload.single('profile_picture'), async (req, res) => {
+    if (!isFirebaseInitialized) {
+        return res.status(500).send('فشل الخادم: تهيئة Firebase غير مكتملة.');
+    }
+    
     const { username, password } = req.body;
     const file = req.file;
 
@@ -110,8 +140,7 @@ app.post('/register', upload.single('profile_picture'), async (req, res) => {
         const db = firebaseAdmin.firestore();
         await db.collection('users').doc(username).set({
             username: username,
-            // يجب تشفير كلمة المرور (Hashing)
-            password_hash: password, 
+            password_hash: password, // يجب تشفير كلمة المرور (Hashing)
             profile_image_url: profileImageUrl,
             created_at: firebaseAdmin.firestore.FieldValue.serverTimestamp()
         });
@@ -126,8 +155,8 @@ app.post('/register', upload.single('profile_picture'), async (req, res) => {
 
 // مسار معالجة نموذج تسجيل الدخول (POST /login)
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
     // منطق التحقق من البيانات وتعريف جلسة المستخدم هنا
+    const { username, password } = req.body;
     
     res.redirect('/home'); // توجيه لصفحة الرئيسية بعد الدخول
 });
