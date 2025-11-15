@@ -1,7 +1,7 @@
 {
   "name": "Aite",
   "version": "1.0.0",
-  "description": "Express server for Aite project with Firebase and Cloudinary dependencies.",
+  "description": "Express server for Trimer project with authentication routing.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -9,18 +9,19 @@
   "dependencies": {
     "express": "^4.18.2",
     "firebase-admin": "^11.11.1",
-    "cloudinary": "^1.41.0"
+    "cloudinary": "^1.41.0",
+    "multer": "^1.4.5-lts.1"  <-- جديد
   },
   "engines": {
-    "node": "22.x"
+    "node": "22.x"            <-- مُحدَّث
   },
   "keywords": [
     "express",
     "firebase",
     "cloudinary",
-    "vercel"
+    "vercel",
+    "Trimer"
   ],
   "author": "",
   "license": "ISC"
-
 }
