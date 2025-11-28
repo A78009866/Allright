@@ -6,41 +6,49 @@
     <title><%= pageTitle %></title>
     <style>
         :root {
-            --main-bg: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-            --primary-color: #bb86fc; /* لون مميز لـ BacTube */
-            --secondary-color: #03dac6;
+            --bg-color: #000000; /* أسود تماماً */
+            --glass-bg: rgba(255, 255, 255, 0.08); /* خلفية زجاجية شفافة جداً */
+            --border-color: rgba(255, 255, 255, 0.15); /* حدود بيضاء شفافة */
+            --text-color: #ffffff; /* نص أبيض */
+            --logo-color: #ffffff; /* الشعار أبيض */
+            --primary-color: #8be9fd; /* لون إضاءة مميز (أزرق فاتح/سايان) */
         }
         body { 
             font-family: Tahoma, Arial, sans-serif; 
-            background-color: var(--main-bg); 
+            background-color: var(--bg-color); 
             color: var(--text-color); 
             margin: 0; 
             padding: 0; 
+            /* إضافة خلفية متدرجة أو صورة لتعزيز تأثير الزجاج */
+            background-image: linear-gradient(135deg, #0f0f0f 0%, #000000 100%);
+            min-height: 100vh;
         }
         header { 
-            background-color: var(--card-bg); 
+            background-color: var(--glass-bg); 
+            backdrop-filter: blur(10px); /* تأثير الزجاج */
             padding: 1.5em 5%; 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         header h1 { 
             margin: 0; 
             font-size: 2em; 
-            color: var(--primary-color);
+            color: var(--logo-color);
         }
         nav a { 
-            color: var(--secondary-color); 
+            color: var(--primary-color); 
             text-decoration: none; 
             margin-left: 20px; 
             font-weight: bold; 
             transition: color 0.3s;
         }
         nav a:hover {
-            color: var(--primary-color);
+            color: var(--text-color);
         }
         main { 
             padding: 30px 5%; 
@@ -51,35 +59,39 @@
             border-bottom: 2px solid var(--primary-color); 
             padding-bottom: 10px; 
             margin-bottom: 30px;
-            color: var(--primary-color); 
+            color: var(--text-color); 
         }
         .video-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
             gap: 40px; 
         }
+        /* بطاقة الفيديو بتصميم زجاجي */
         .video-card { 
-            background: var(--card-bg); 
-            border-radius: 12px; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(8px); /* تأثير الزجاج على البطاقة */
+            border-radius: 18px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); 
             overflow: hidden; 
             transition: transform 0.3s;
         }
         .video-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 40px rgba(139, 233, 253, 0.2); /* تأثير توهج خفيف عند التحويم */
         }
         .video-card h3 { 
-            background-color: #2a2a2a; 
+            background-color: rgba(255, 255, 255, 0.05); /* شريط عنوان أغمق قليلاً */
             color: var(--text-color); 
             margin: 0; 
             padding: 15px; 
             font-size: 1.3em; 
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-color);
         }
         .video-player { 
             position: relative; 
             width: 100%; 
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */ 
+            padding-top: 56.25%; 
         }
         .video-player iframe { 
             position: absolute; 
@@ -91,23 +103,25 @@
         }
         .video-card p { 
             padding: 15px; 
-            color: #ccc; 
+            color: #ddd; 
             font-size: 1em; 
         }
         footer { 
             text-align: center; 
-            padding: 15px; 
-            background-color: #000; 
-            color: #888; 
+            padding: 20px; 
+            background-color: var(--glass-bg); 
+            backdrop-filter: blur(10px);
+            color: #ccc; 
             margin-top: 50px; 
             font-size: 0.9em;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>📚 <span style="color: var(--secondary-color);">Bac</span>Tube</h1>
+        <h1><span style="color: var(--primary-color);">Bac</span><span style="color: var(--logo-color);">Tube</span></h1>
         <nav>
             <a href="/">الرئيسية</a>
             <a href="/admin">لوحة الأدمن</a>
@@ -115,7 +129,7 @@
     </header>
 
     <main>
-        <h2>الفيديوهات الدراسية المتاحة حصريًا</h2>
+        <h2>🎬 جميع الفيديوهات الدراسية</h2>
 
         <div class="video-grid">
             <% if (videos && videos.length > 0) { %>
@@ -141,8 +155,7 @@
     </main>
     
     <footer>
-        <p>&copy; <%= new Date().getFullYear() %> <span style="color: var(--primary-color);">BacTube</span>. منصة دراسية مركزة.</p>
+        <p>&copy; <%= new Date().getFullYear() %> BacTube. منصة دراسية مركزة.</p>
     </footer>
-
-    </body>
+</body>
 </html>
