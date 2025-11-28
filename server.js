@@ -5,7 +5,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseAdmin = require('firebase-admin');
 const cloudinary = require('cloudinary').v2;
-const youtubeParser = require('youtube-parser');
+// الحل: تم تعديل الاستيراد ليتناسب مع كيفية عمل مكتبة youtube-parser
+const getYouTubeID = require('youtube-parser'); 
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -13,11 +15,11 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public')); // لا نزال نحتاج هذا إذا أردت إضافة صور ثابتة لاحقًا
+app.use(express.static('public')); 
 
 // 2. تهيئة Firebase Admin SDK
-// قراءة المفتاح من متغير البيئة
 try {
+    // قراءة المفتاح من متغير البيئة وتحويله من نص JSON إلى كائن JS
     const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
     firebaseAdmin.initializeApp({
         credential: firebaseAdmin.credential.cert(serviceAccount),
@@ -25,7 +27,8 @@ try {
     console.log("Firebase Admin Initialized.");
 } catch (error) {
     console.error("ERROR: Failed to initialize Firebase Admin SDK. Check SERVICE_ACCOUNT_KEY in .env", error);
-    // يجب الخروج من التطبيق إذا فشل الاتصال بالخلفية
+    // الخروج إذا فشل الإعداد لضمان عدم تشغيل الخادم ببيانات غير صحيحة
+    process.exit(1);
 }
 
 const db = firebaseAdmin.firestore(); 
@@ -48,10 +51,10 @@ app.get('/', async (req, res) => {
         return { 
             id: doc.id, 
             ...data,
-            // التأكد من استخراج معرف الفيديو بشكل صحيح
-            videoId: youtubeParser.extractID(data.youtubeUrl || '') 
+            // الاستخدام الصحيح للمكتبة لحل المشكلة
+            videoId: getYouTubeID(data.youtubeUrl || '') 
         };
-    }).filter(video => video.videoId); // تصفية الفيديوهات التي لم نتمكن من استخراج معرفها
+    }).filter(video => video.videoId); 
     
     res.render('index', { pageTitle: '📚 BacTube - فيديوهات دراسية', videos });
   } catch (error) {
@@ -62,7 +65,7 @@ app.get('/', async (req, res) => {
 
 // مسار لوحة تحكم الأدمن (عرض النموذج)
 app.get('/admin', (req, res) => {
-    // TODO: يجب تطبيق نظام مصادقة هنا (مثل Firebase Auth)
+    // TODO: يجب تطبيق نظام مصادقة هنا (Authentication)!
     res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: null, messageType: null });
 });
 
@@ -76,9 +79,10 @@ app.post('/admin', async (req, res) => {
     }
     
     try {
-        const videoId = youtubeParser.extractID(youtubeUrl);
+        // الاستخدام الصحيح للمكتبة لحل المشكلة
+        const videoId = getYouTubeID(youtubeUrl);
         if (!videoId) {
-             return res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: 'رابط يوتيوب غير صالح.', messageType: 'error' });
+             return res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: 'رابط يوتيوب غير صالح. تأكد من أنه رابط كامل (مثل: https://www.youtube.com/watch?v=...).', messageType: 'error' });
         }
 
         await db.collection('videos').add({
@@ -86,7 +90,7 @@ app.post('/admin', async (req, res) => {
             youtubeUrl,
             description,
             videoId, 
-            createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp() // استخدام طابع زمني دقيق من الخادم
+            createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp()
         });
         
         res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: '✅ تم إضافة الفيديو بنجاح!', messageType: 'success' }); 
