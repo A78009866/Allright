@@ -5,8 +5,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseAdmin = require('firebase-admin');
 const cloudinary = require('cloudinary').v2;
-// الحل: تم تعديل الاستيراد ليتناسب مع كيفية عمل مكتبة youtube-parser
-const getYouTubeID = require('youtube-parser'); 
+// الحل النهائي: استخدام المكتبة الموثوقة get-youtube-id
+const getYouTubeID = require('get-youtube-id'); 
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,7 +27,6 @@ try {
     console.log("Firebase Admin Initialized.");
 } catch (error) {
     console.error("ERROR: Failed to initialize Firebase Admin SDK. Check SERVICE_ACCOUNT_KEY in .env", error);
-    // الخروج إذا فشل الإعداد لضمان عدم تشغيل الخادم ببيانات غير صحيحة
     process.exit(1);
 }
 
@@ -51,7 +50,7 @@ app.get('/', async (req, res) => {
         return { 
             id: doc.id, 
             ...data,
-            // الاستخدام الصحيح للمكتبة لحل المشكلة
+            // استخدام المكتبة الجديدة
             videoId: getYouTubeID(data.youtubeUrl || '') 
         };
     }).filter(video => video.videoId); 
@@ -79,7 +78,7 @@ app.post('/admin', async (req, res) => {
     }
     
     try {
-        // الاستخدام الصحيح للمكتبة لحل المشكلة
+        // استخدام المكتبة الجديدة
         const videoId = getYouTubeID(youtubeUrl);
         if (!videoId) {
              return res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: 'رابط يوتيوب غير صالح. تأكد من أنه رابط كامل (مثل: https://www.youtube.com/watch?v=...).', messageType: 'error' });
@@ -93,11 +92,12 @@ app.post('/admin', async (req, res) => {
             createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp()
         });
         
+        // بعد النجاح، نعرض رسالة النجاح
         res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: '✅ تم إضافة الفيديو بنجاح!', messageType: 'success' }); 
 
     } catch (error) {
         console.error("Error adding video:", error);
-        res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: `❌ حدث خطأ: ${error.message}`, messageType: 'error' });
+        res.render('admin', { pageTitle: 'إضافة فيديو جديد', message: `❌ حدث خطأ في قاعدة البيانات: ${error.message}`, messageType: 'error' });
     }
 });
 
