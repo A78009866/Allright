@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <style>
+        :root {
+            --main-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --primary-color: #bb86fc; /* لون مميز لـ BacTube */
+            --secondary-color: #03dac6;
+        }
+        body { 
+            font-family: Tahoma, Arial, sans-serif; 
+            background-color: var(--main-bg); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 0; 
+        }
+        header { 
+            background-color: var(--card-bg); 
+            padding: 1.5em 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        header h1 { 
+            margin: 0; 
+            font-size: 2em; 
+            color: var(--primary-color);
+        }
+        nav a { 
+            color: var(--secondary-color); 
+            text-decoration: none; 
+            margin-left: 20px; 
+            font-weight: bold; 
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: var(--primary-color);
+        }
+        main { 
+            padding: 30px 5%; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        h2 { 
+            border-bottom: 2px solid var(--primary-color); 
+            padding-bottom: 10px; 
+            margin-bottom: 30px;
+            color: var(--primary-color); 
+        }
+        .video-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 40px; 
+        }
+        .video-card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); 
+            overflow: hidden; 
+            transition: transform 0.3s;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+        .video-card h3 { 
+            background-color: #2a2a2a; 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 15px; 
+            font-size: 1.3em; 
+            border-bottom: 1px solid #333;
+        }
+        .video-player { 
+            position: relative; 
+            width: 100%; 
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */ 
+        }
+        .video-player iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+        .video-card p { 
+            padding: 15px; 
+            color: #ccc; 
+            font-size: 1em; 
+        }
+        footer { 
+            text-align: center; 
+            padding: 15px; 
+            background-color: #000; 
+            color: #888; 
+            margin-top: 50px; 
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📚 <span style="color: var(--secondary-color);">Bac</span>Tube</h1>
+        <nav>
+            <a href="/">الرئيسية</a>
+            <a href="/admin">لوحة الأدمن</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>الفيديوهات الدراسية المتاحة حصريًا</h2>
+
+        <div class="video-grid">
+            <% if (videos && videos.length > 0) { %>
+                <% videos.forEach(video => { %>
+                    <div class="video-card">
+                        <h3><%= video.title %></h3>
+                        
+                        <div class="video-player">
+                            <iframe 
+                                src="https://www.youtube.com/embed/<%= video.videoId %>" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+
+                        <p><strong>الوصف:</strong> <%= video.description || 'لا يوجد وصف.' %></p>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p style="text-align: center; font-size: 1.2em; color: #aaa;">عذراً، لا تتوفر فيديوهات دراسية حالياً.</p>
+            <% } %>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> <span style="color: var(--primary-color);">BacTube</span>. منصة دراسية مركزة.</p>
+    </footer>
+
+    </body>
+</html>
