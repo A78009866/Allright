@@ -3,149 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= pageTitle %></title>
+    <title>Dark Web Portal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #000000;
-            --glass-bg: rgba(255, 255, 255, 0.08); 
-            --border-color: rgba(255, 255, 255, 0.15); 
-            --text-color: #ffffff; 
-            --logo-color: #ffffff;
-            --primary-color: #8be9fd; /* لون إضاءة مميز (سايان) */
+        /* إعدادات الصفحة الأساسية */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000; /* خلفية سوداء */
+            color: #ff0000; /* لون النص أحمر */
+            font-family: 'Courier New', Courier, monospace; /* خط الآلة الكاتبة للمحتوى العادي */
+            height: 200vh; /* جعل الصفحة طويلة لتجربة تأثير الزجاج عند التمرير */
+            overflow-x: hidden;
         }
-        body { 
-            font-family: Tahoma, Arial, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            margin: 0; 
-            padding: 0; 
-            background-image: linear-gradient(135deg, #0f0f0f 0%, #000000 100%);
-            min-height: 100vh;
-        }
-        header { 
-            background-color: var(--glass-bg); 
-            backdrop-filter: blur(10px);
-            padding: 1.5em 5%; 
-            display: flex; 
-            justify-content: flex-start; /* تم تعديل هذا ليناسب عدم وجود روابط أخرى */
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
+
+        /* خلفية دخانية خفيفة لإبراز تأثير الزجاج (اختياري) */
+        body::before {
+            content: '';
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a0000 0%, #000000 70%);
+            z-index: -1;
         }
-        header h1 { 
-            margin: 0; 
-            font-size: 2.2em; /* تكبير الشعار قليلاً */
-            color: var(--logo-color);
+
+        /* تنسيق النافبار الزجاجي */
+        .glass-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+
+            /* تأثير الزجاج */
+            background: rgba(20, 0, 0, 0.3); /* لون داكن شبه شفاف */
+            backdrop-filter: blur(10px); /* التغبيش (Blur) خلف النافبار */
+            -webkit-backdrop-filter: blur(10px); /* لمتصفح سفاري */
+            border-bottom: 1px solid rgba(255, 0, 0, 0.3); /* حد سفلي أحمر خافت */
+            box-shadow: 0 4px 30px rgba(255, 0, 0, 0.1); /* ظل أحمر خفيف */
         }
-        /* إزالة أنماط Nav لأنها فارغة الآن */
-        main { 
-            padding: 30px 5%; 
-            max-width: 1400px; 
-            margin: 0 auto; 
+
+        /* تنسيق اللوجو أو النص في النافبار */
+        .nav-logo {
+            font-family: 'Creepster', cursive; /* الخط المرعب */
+            font-size: 3rem;
+            color: #ff0000;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 5px;
+            
+            /* تأثير التوهج للنص (Neon Glow) */
+            text-shadow: 
+                0 0 5px #ff0000,
+                0 0 10px #8b0000,
+                0 0 20px #000000;
+            
+            transition: all 0.3s ease;
         }
-        h2 { 
-            border-bottom: 2px solid var(--primary-color); 
-            padding-bottom: 10px; 
-            margin-bottom: 30px;
-            color: var(--text-color); 
-            font-size: 1.8em;
+
+        .nav-logo:hover {
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            transform: scale(1.05);
         }
-        /* تحسينات عرض الشبكة */
-        .video-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* زيادة الحد الأدنى للعرض */
-            gap: 40px; 
+
+        /* تنسيق المحتوى وسط الصفحة */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
         }
-        /* بطاقة الفيديو بتصميم زجاجي */
-        .video-card { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(8px);
-            border-radius: 18px; 
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); 
-            overflow: hidden; 
-            transition: transform 0.3s, box-shadow 0.3s;
+
+        h2 {
+            font-family: 'Nosifer', cursive; /* خط "التقطير" للعناوين الفرعية */
+            font-size: 2rem;
+            margin-top: 100px;
+            opacity: 0.8;
         }
-        .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 40px rgba(139, 233, 253, 0.2), 0 0 15px rgba(139, 233, 253, 0.4); /* توهج واضح */
-        }
-        .video-card h3 { 
-            background-color: rgba(255, 255, 255, 0.05); 
-            color: var(--primary-color); /* لون العنوان بلون الإضاءة */
-            margin: 0; 
-            padding: 15px; 
-            font-size: 1.4em; /* تكبير العنوان */
-            border-bottom: 1px solid var(--border-color);
-        }
-        .video-player { 
-            position: relative; 
-            width: 100%; 
-            padding-top: 56.25%; 
-        }
-        .video-player iframe { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-        }
-        .video-card p { 
-            padding: 15px; 
-            color: #ddd; 
-            font-size: 1em; 
+
+        p {
+            max-width: 600px;
             line-height: 1.6;
-        }
-        footer { 
-            text-align: center; 
-            padding: 20px; 
-            background-color: var(--glass-bg); 
-            backdrop-filter: blur(10px);
-            color: #ccc; 
-            margin-top: 50px; 
-            font-size: 0.9em;
-            border-top: 1px solid var(--border-color);
+            color: #b3b3b3;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1><span style="color: var(--primary-color);">Bac</span><span style="color: var(--logo-color);">Tube</span></h1>
+    <nav class="glass-navbar">
+        <a href="#" class="nav-logo">Dark Web</a>
+    </nav>
+
+    <div class="container">
+        <h2>Welcome to the Abyss</h2>
+        <p>
+            لقد وصلت إلى المكان الذي لا يجرؤ الآخرون على دخوله. 
+            <br>
+            المعلومات هنا مشفرة، والهوية مجهولة.
+        </p>
         
-        </header>
-
-    <main>
-        <h2></h2>
-
-        <div class="video-grid">
-            <% if (videos && videos.length > 0) { %>
-                <% videos.forEach(video => { %>
-                    <div class="video-card">
-                        <h3><%= video.title %></h3>
-                        
-                        <div class="video-player">
-                            <iframe 
-                                src="https://www.youtube.com/embed/<%= video.videoId %>" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-
-                        <p><strong>الوصف:</strong> <%= video.description || 'لا يوجد وصف متاح.' %></p>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <p style="text-align: center; font-size: 1.2em; color: #aaa;">عذراً، لا تتوفر فيديوهات دراسية حالياً.</p>
-            <% } %>
+        <div style="margin-top: 50px; font-size: 5rem; opacity: 0.1;">
+            ☠️
         </div>
-    </main>
-    
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> BacTube. منصة دراسية مركزة.</p>
-    </footer>
+    </div>
+
 </body>
 </html>
