@@ -6,12 +6,12 @@
     <title><%= pageTitle %></title>
     <style>
         :root {
-            --bg-color: #000000; /* أسود تماماً */
-            --glass-bg: rgba(255, 255, 255, 0.08); /* خلفية زجاجية شفافة جداً */
-            --border-color: rgba(255, 255, 255, 0.15); /* حدود بيضاء شفافة */
-            --text-color: #ffffff; /* نص أبيض */
-            --logo-color: #ffffff; /* الشعار أبيض */
-            --primary-color: #8be9fd; /* لون إضاءة مميز (أزرق فاتح/سايان) */
+            --bg-color: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.08); 
+            --border-color: rgba(255, 255, 255, 0.15); 
+            --text-color: #ffffff; 
+            --logo-color: #ffffff;
+            --primary-color: #8be9fd; /* لون إضاءة مميز (سايان) */
         }
         body { 
             font-family: Tahoma, Arial, sans-serif; 
@@ -19,16 +19,15 @@
             color: var(--text-color); 
             margin: 0; 
             padding: 0; 
-            /* إضافة خلفية متدرجة أو صورة لتعزيز تأثير الزجاج */
             background-image: linear-gradient(135deg, #0f0f0f 0%, #000000 100%);
             min-height: 100vh;
         }
         header { 
             background-color: var(--glass-bg); 
-            backdrop-filter: blur(10px); /* تأثير الزجاج */
+            backdrop-filter: blur(10px);
             padding: 1.5em 5%; 
             display: flex; 
-            justify-content: space-between; 
+            justify-content: flex-start; /* تم تعديل هذا ليناسب عدم وجود روابط أخرى */
             align-items: center;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -37,19 +36,10 @@
         }
         header h1 { 
             margin: 0; 
-            font-size: 2em; 
+            font-size: 2.2em; /* تكبير الشعار قليلاً */
             color: var(--logo-color);
         }
-        nav a { 
-            color: var(--primary-color); 
-            text-decoration: none; 
-            margin-left: 20px; 
-            font-weight: bold; 
-            transition: color 0.3s;
-        }
-        nav a:hover {
-            color: var(--text-color);
-        }
+        /* إزالة أنماط Nav لأنها فارغة الآن */
         main { 
             padding: 30px 5%; 
             max-width: 1400px; 
@@ -60,32 +50,34 @@
             padding-bottom: 10px; 
             margin-bottom: 30px;
             color: var(--text-color); 
+            font-size: 1.8em;
         }
+        /* تحسينات عرض الشبكة */
         .video-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* زيادة الحد الأدنى للعرض */
             gap: 40px; 
         }
         /* بطاقة الفيديو بتصميم زجاجي */
         .video-card { 
             background: var(--glass-bg); 
-            backdrop-filter: blur(8px); /* تأثير الزجاج على البطاقة */
+            backdrop-filter: blur(8px);
             border-radius: 18px; 
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); 
             overflow: hidden; 
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .video-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 10px 40px rgba(139, 233, 253, 0.2); /* تأثير توهج خفيف عند التحويم */
+            box-shadow: 0 10px 40px rgba(139, 233, 253, 0.2), 0 0 15px rgba(139, 233, 253, 0.4); /* توهج واضح */
         }
         .video-card h3 { 
-            background-color: rgba(255, 255, 255, 0.05); /* شريط عنوان أغمق قليلاً */
-            color: var(--text-color); 
+            background-color: rgba(255, 255, 255, 0.05); 
+            color: var(--primary-color); /* لون العنوان بلون الإضاءة */
             margin: 0; 
             padding: 15px; 
-            font-size: 1.3em; 
+            font-size: 1.4em; /* تكبير العنوان */
             border-bottom: 1px solid var(--border-color);
         }
         .video-player { 
@@ -105,6 +97,7 @@
             padding: 15px; 
             color: #ddd; 
             font-size: 1em; 
+            line-height: 1.6;
         }
         footer { 
             text-align: center; 
@@ -122,14 +115,11 @@
 
     <header>
         <h1><span style="color: var(--primary-color);">Bac</span><span style="color: var(--logo-color);">Tube</span></h1>
-        <nav>
-            <a href="/">الرئيسية</a>
-            <a href="/admin">لوحة الأدمن</a>
-        </nav>
-    </header>
+        
+        </header>
 
     <main>
-        <h2>🎬 جميع الفيديوهات الدراسية</h2>
+        <h2></h2>
 
         <div class="video-grid">
             <% if (videos && videos.length > 0) { %>
@@ -145,7 +135,7 @@
                             </iframe>
                         </div>
 
-                        <p><strong>الوصف:</strong> <%= video.description || 'لا يوجد وصف.' %></p>
+                        <p><strong>الوصف:</strong> <%= video.description || 'لا يوجد وصف متاح.' %></p>
                     </div>
                 <% }); %>
             <% } else { %>
