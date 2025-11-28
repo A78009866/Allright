@@ -22,7 +22,8 @@
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "firebase-admin": "^11.11.0",
-    "youtube-parser": "^1.0.1" 
+    "get-youtube-id": "^1.0.1" 
+    /* تأكد من أن هذا هو الإدخال الصحيح */
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
