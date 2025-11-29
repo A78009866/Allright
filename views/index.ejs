@@ -7,23 +7,26 @@
     <link rel="icon" href="images/logo.png" type="image/png">
     
     <style>
-        /* الأنماط الأساسية للصفحة - يمكنك نقلها لاحقاً لملف style.css */
+        /* الأنماط الأساسية */
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1a1a1a; /* خلفية داكنة */
-            color: #e0e0e0; /* لون النص الفاتح */
+            background-color: #1a1a1a;
+            color: #e0e0e0;
             margin: 0;
             padding: 0;
-            text-align: right; /* محاذاة النص لليمين للغة العربية */
+            text-align: right;
+            direction: rtl; /* ضمان الاتجاه الصحيح */
         }
         
+        /* HEADER */
         .header {
             background-color: #0d0d0d;
             padding: 20px 40px;
-            border-bottom: 3px solid #00ff66; /* لون شعار ريزر/العقرب */
+            border-bottom: 3px solid #00ff66;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* يسمح للعناصر بالانتقال لسطر جديد */
         }
 
         .logo-container {
@@ -34,7 +37,6 @@
         .logo-container img {
             height: 50px;
             margin-left: 15px;
-            /* إضافة ظل توهج أخضر خفيف لمحاكاة شكل الشعار */
             filter: drop-shadow(0 0 5px #00ff66);
         }
 
@@ -46,6 +48,7 @@
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
         }
 
+        /* NAVIGATION */
         .nav ul {
             list-style: none;
             padding: 0;
@@ -73,6 +76,7 @@
             text-align: center;
         }
 
+        /* HERO SECTION */
         .hero-section h1 {
             font-size: 3em;
             color: #00ff66;
@@ -103,16 +107,7 @@
             transform: scale(1.05);
         }
 
-        .footer {
-            background-color: #0d0d0d;
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9em;
-            border-top: 1px solid #333;
-            margin-top: 50px;
-        }
-
-        /* قسم الخدمات (مثال على استخدام EJS لتكرار المحتوى) */
+        /* SERVICES SECTION */
         .services {
             display: flex;
             justify-content: space-around;
@@ -124,7 +119,7 @@
             background-color: #2c2c2c;
             border: 1px solid #00ff6644;
             padding: 20px;
-            width: 30%;
+            width: 30%; /* 30% على الشاشات الكبيرة */
             margin-bottom: 20px;
             border-radius: 8px;
             transition: transform 0.3s;
@@ -138,13 +133,88 @@
         .service-card h3 {
             color: #00ff66;
         }
+
+        /* FOOTER */
+        .footer {
+            background-color: #0d0d0d;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            border-top: 1px solid #333;
+            margin-top: 50px;
+        }
+
+        /* ------------------------------------------- */
+        /* استعلامات الوسائط لجعله متجاوب (Mobile Responsive) */
+        /* ------------------------------------------- */
+
+        @media (max-width: 768px) {
+            
+            /* GENERAL */
+            .main-content {
+                padding: 30px 20px; /* تقليل المسافة البادئة */
+            }
+
+            /* HEADER */
+            .header {
+                flex-direction: column; /* ترتيب العناصر عمودياً */
+                align-items: flex-start; /* محاذاة لليمين */
+                padding: 15px 20px;
+            }
+            
+            .logo-container {
+                margin-bottom: 15px;
+            }
+
+            .nav {
+                width: 100%; /* جعل شريط التنقل بعرض كامل */
+            }
+            
+            .nav ul {
+                flex-direction: column; /* ترتيب الروابط عمودياً */
+                align-items: flex-start;
+            }
+
+            .nav ul li {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            /* HERO SECTION */
+            .hero-section h1 {
+                font-size: 2em; /* تصغير حجم الخط */
+            }
+            
+            .hero-section p {
+                font-size: 1em;
+            }
+            
+            /* SERVICES SECTION */
+            .services {
+                flex-direction: column; /* ترتيب البطاقات عمودياً */
+            }
+
+            .service-card {
+                width: 100%; /* جعل البطاقة تأخذ عرض الشاشة بالكامل */
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .company-name {
+                font-size: 1.5em; /* تصغير اسم الشركة أكثر */
+            }
+            .logo-container img {
+                height: 40px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header class="header">
         <div class="logo-container">
-            <img src="allright/images/logo.png" alt="شعار SCORPION TRIAD">
+            <img src="images/logo.png" alt="شعار SCORPION TRIAD">
             <span class="company-name">SCORPION TRIAD</span>
         </div>
         
@@ -168,9 +238,9 @@
         <section class="services" id="services">
             <% 
                 const services = [
-                    { title: "تطوير المنتجات", description: "تصميم وتصنيع أجهزة ومنتجات عالية الجودة." },
-                    { title: "حلول تكنولوجية", description: "تقديم استشارات وحلول برمجية وتقنية متكاملة." },
-                    { title: "دعم فني متفوق", description: "خدمات دعم فني على مدار الساعة لضمان الأداء." }
+                    { title: "تطوير المنتجات", description: "تصميم وتصنيع أجهزة ومنتجات عالية الجودة بتقنيات رائدة." },
+                    { title: "حلول تكنولوجية متكاملة", description: "تقديم استشارات وحلول برمجية وتقنية متكاملة ومخصصة لاحتياجاتك." },
+                    { title: "دعم فني متفوق", description: "خدمات دعم فني على مدار الساعة لضمان الأداء الأمثل والاعتمادية." }
                 ];
             %>
 
