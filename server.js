@@ -101,8 +101,13 @@ app.post('/admin', async (req, res) => {
     }
 });
 
+// افترض أن مجلد "images" موجود داخل مجلد المشروع الرئيسي
+app.use(express.static(__dirname)); 
+
+app.set('view engine', 'ejs');
 
 // 4. تشغيل الخادم
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
