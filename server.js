@@ -2,10 +2,10 @@
 
 require('dotenv').config();
 const express = require('express');
+const path = require('path'); // ⬅️ **الخطأ الأول تم إصلاحه: استدعاء وحدة path**
 const bodyParser = require('body-parser');
 const firebaseAdmin = require('firebase-admin');
 const cloudinary = require('cloudinary').v2;
-// الحل النهائي: استخدام المكتبة الموثوقة get-youtube-id
 const getYouTubeID = require('get-youtube-id'); 
 
 const app = express();
@@ -15,7 +15,12 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public')); 
+
+// ⬅️ **الإصلاح الثاني: استخدام 'public' كمسار ثابت**
+// هذا يضمن أن جميع الملفات الثابتة (بما في ذلك الصور) يتم خدمتها بشكل صحيح
+// لا حاجة لتكرارها في الأسفل.
+app.use(express.static(path.join(__dirname, 'public'))); 
+
 
 // 2. تهيئة Firebase Admin SDK
 try {
@@ -55,6 +60,7 @@ app.get('/', async (req, res) => {
         };
     }).filter(video => video.videoId); 
     
+    // ملاحظة: تأكد من أن ملف index.ejs الآن موجود في مجلد /views
     res.render('index', { pageTitle: '📚 BacTube - فيديوهات دراسية', videos });
   } catch (error) {
     console.error("Error fetching videos:", error);
@@ -101,14 +107,15 @@ app.post('/admin', async (req, res) => {
     }
 });
 
+// ⬅️ **تم حذف الكود المكرر هنا**
+/*
 // افترض أن مجلد "images" موجود داخل مجلد المشروع الرئيسي
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
+*/
+
 
 // 4. تشغيل الخادم
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
-
-
-
