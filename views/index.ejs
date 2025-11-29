@@ -3,121 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Web Portal</title>
+    <title>SCORPION TRIAD - الريادة والابتكار</title>
+    <link rel="icon" href="images/logo.png" type="image/png">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
-
     <style>
-        /* إعدادات الصفحة الأساسية */
+        /* الأنماط الأساسية للصفحة - يمكنك نقلها لاحقاً لملف style.css */
         body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a1a; /* خلفية داكنة */
+            color: #e0e0e0; /* لون النص الفاتح */
             margin: 0;
             padding: 0;
-            background-color: #000000; /* خلفية سوداء */
-            color: #ff0000; /* لون النص أحمر */
-            font-family: 'Courier New', Courier, monospace; /* خط الآلة الكاتبة للمحتوى العادي */
-            height: 200vh; /* جعل الصفحة طويلة لتجربة تأثير الزجاج عند التمرير */
-            overflow-x: hidden;
+            text-align: right; /* محاذاة النص لليمين للغة العربية */
         }
-
-        /* خلفية دخانية خفيفة لإبراز تأثير الزجاج (اختياري) */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1a0000 0%, #000000 70%);
-            z-index: -1;
-        }
-
-        /* تنسيق النافبار الزجاجي */
-        .glass-navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
+        
+        .header {
+            background-color: #0d0d0d;
+            padding: 20px 40px;
+            border-bottom: 3px solid #00ff66; /* لون شعار ريزر/العقرب */
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-
-            /* تأثير الزجاج */
-            background: rgba(20, 0, 0, 0.3); /* لون داكن شبه شفاف */
-            backdrop-filter: blur(10px); /* التغبيش (Blur) خلف النافبار */
-            -webkit-backdrop-filter: blur(10px); /* لمتصفح سفاري */
-            border-bottom: 1px solid rgba(255, 0, 0, 0.3); /* حد سفلي أحمر خافت */
-            box-shadow: 0 4px 30px rgba(255, 0, 0, 0.1); /* ظل أحمر خفيف */
         }
 
-        /* تنسيق اللوجو أو النص في النافبار */
-        .nav-logo {
-            font-family: 'Creepster', cursive; /* الخط المرعب */
-            font-size: 3rem;
-            color: #ff0000;
-            text-transform: uppercase;
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 50px;
+            margin-left: 15px;
+            /* إضافة ظل توهج أخضر خفيف لمحاكاة شكل الشعار */
+            filter: drop-shadow(0 0 5px #00ff66);
+        }
+
+        .company-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00ff66;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.5);
+        }
+
+        .nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        .nav ul li {
+            margin-right: 20px;
+        }
+
+        .nav ul li a {
+            color: #e0e0e0;
             text-decoration: none;
-            letter-spacing: 5px;
-            
-            /* تأثير التوهج للنص (Neon Glow) */
-            text-shadow: 
-                0 0 5px #ff0000,
-                0 0 10px #8b0000,
-                0 0 20px #000000;
-            
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .nav-logo:hover {
-            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
-            transform: scale(1.05);
+        .nav ul li a:hover {
+            color: #00ff66;
         }
-
-        /* تنسيق المحتوى وسط الصفحة */
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        
+        .main-content {
+            padding: 50px 40px;
             text-align: center;
         }
 
-        h2 {
-            font-family: 'Nosifer', cursive; /* خط "التقطير" للعناوين الفرعية */
-            font-size: 2rem;
-            margin-top: 100px;
-            opacity: 0.8;
+        .hero-section h1 {
+            font-size: 3em;
+            color: #00ff66;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(0, 255, 102, 0.7);
         }
 
-        p {
-            max-width: 600px;
+        .hero-section p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
             line-height: 1.6;
-            color: #b3b3b3;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #00ff66;
+            color: #1a1a1a;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #00cc55;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            background-color: #0d0d0d;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            border-top: 1px solid #333;
+            margin-top: 50px;
+        }
+
+        /* قسم الخدمات (مثال على استخدام EJS لتكرار المحتوى) */
+        .services {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .service-card {
+            background-color: #2c2c2c;
+            border: 1px solid #00ff6644;
+            padding: 20px;
+            width: 30%;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+        }
+
+        .service-card h3 {
+            color: #00ff66;
         }
     </style>
 </head>
 <body>
 
-    <nav class="glass-navbar">
-        <a href="#" class="nav-logo">Dark Web</a>
-    </nav>
-
-    <div class="container">
-        <h2>Welcome to the Abyss</h2>
-        <p>
-            لقد وصلت إلى المكان الذي لا يجرؤ الآخرون على دخوله. 
-            <br>
-            المعلومات هنا مشفرة، والهوية مجهولة.
-        </p>
-        
-        <div style="margin-top: 50px; font-size: 5rem; opacity: 0.1;">
-            ☠️
+    <header class="header">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="شعار SCORPION TRIAD">
+            <span class="company-name">SCORPION TRIAD</span>
         </div>
-    </div>
+        
+        <nav class="nav">
+            <ul>
+                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#services">خدماتنا</a></li>
+                <li><a href="#about">من نحن</a></li>
+                <li><a href="#contact">اتصل بنا</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section" id="home">
+            <h1>قوة الثلاثي: الابتكار، الدقة، الأداء</h1>
+            <p>نحن SCORPION TRIAD، نجمع بين التكنولوجيا المتطورة والتصميم المستقبلي لتقديم حلول لا مثيل لها في عالم الأجهزة والخدمات.</p>
+            <a href="#services" class="cta-button">اكتشف خدماتنا</a>
+        </section>
+
+        <section class="services" id="services">
+            <% 
+                const services = [
+                    { title: "تطوير المنتجات", description: "تصميم وتصنيع أجهزة ومنتجات عالية الجودة." },
+                    { title: "حلول تكنولوجية", description: "تقديم استشارات وحلول برمجية وتقنية متكاملة." },
+                    { title: "دعم فني متفوق", description: "خدمات دعم فني على مدار الساعة لضمان الأداء." }
+                ];
+            %>
+
+            <% services.forEach(function(service) { %>
+                <div class="service-card">
+                    <h3><%= service.title %></h3>
+                    <p><%= service.description %></p>
+                </div>
+            <% }); %>
+
+        </section>
+
+        <section id="about" style="margin-top: 50px;">
+            <h2>من نحن</h2>
+            <p style="max-width: 800px; margin: 20px auto;">تأسست SCORPION TRIAD على مبدأ توفير أقصى درجات القوة والدقة. شعارنا يعكس ثلاثة أركان أساسية في عملنا: **الجودة**، **السرعة**، و**الاعتمادية**. نعمل بجد لنتجاوز توقعات عملائنا في كل مشروع.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 SCORPION TRIAD. جميع الحقوق محفوظة.</p>
+    </footer>
 
 </body>
 </html>
