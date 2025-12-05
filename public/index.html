@@ -2,24 +2,28 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fake Termux Terminal</title>
     <style>
-        /* CSS لتقليد واجهة Termux */
+        /* 🎨 CSS لتقليد واجهة Termux */
         body {
             background-color: #000;
-            color: #fff; /* النص العام أبيض */
+            color: #fff; /* اللون الافتراضي (للمدخلات والـ prompt) هو الأبيض */
             font-family: 'Droid Sans Mono', 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 10px;
+            padding: 0;
             font-size: 14px;
+            
+            /* تثبيت الواجهة لملء الشاشة بالكامل */
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* ترتيب العناصر عمودياً */
+            overflow: hidden; /* منع التمرير على مستوى الصفحة */
         }
         #terminal {
-            width: 98%;
-            height: 90vh;
-            overflow-y: auto;
-            padding: 10px 0;
-            /* توجيه من اليسار لليمين */
+            flex-grow: 1; /* للسماح للطرفية بأخذ كل المساحة المتاحة */
+            overflow-y: auto; /* للسماح بالتمرير داخل منطقة العرض */
+            padding: 10px;
             direction: ltr; 
         }
         .line {
@@ -28,46 +32,41 @@
             line-height: 1.2;
         }
         
-        /* نتائج النظام باللون الأخضر */
-        .system-response {
+        /* 🟢 تنسيق النتائج باللون الأخضر */
+        .system-response, .success {
             color: #00ff00; 
         }
 
-        /* نتائج النجاح البارزة */
-        .success {
-            color: #00ff00; 
-            font-weight: bold;
-        }
-
-        /* رسائل الخطأ */
+        /* 🔴 تنسيق الأخطاء باللون الأحمر (يمكن تركه أبيض حسب الرغبة، لكن الأحمر أكثر وضوحاً) */
         .error {
             color: #ff0000; 
         }
         
-        /* حاوية الإدخال لتحقيق شكل السطر التالي في Termux */
+        /* ⚪ حاوية الإدخال في الأسفل */
         #input-container {
             display: flex;
-            align-items: center; /* لمحاذاة رمز $ مع مربع الإدخال */
+            align-items: center;
+            padding: 5px 10px;
+            border-top: 1px solid #111; /* خط خفيف للفصل بين الواجهة والإدخال */
+            background-color: #0a0a0a; /* خلفية داكنة قليلاً للبار */
+            min-height: 25px;
         }
 
         #prompt-prefix {
-            color: #fff;
-            margin-right: 5px; /* مسافة بين $ ومُدخل المستخدم */
-            /* جعلها من اليسار لليمين */
-            direction: ltr; 
+            color: #fff; /* رمز $ أبيض */
+            margin-right: 5px;
         }
 
         #commandInput {
             background: #000;
-            color: #fff; /* لون الكتابة للمستخدم أبيض */
+            color: #fff; /* مدخل المستخدم أبيض */
             border: none;
-            flex-grow: 1; /* لجعل مربع الإدخال يملأ المساحة المتبقية */
+            flex-grow: 1;
             font-family: inherit;
             font-size: 1em;
             outline: none;
-            caret-color: #fff; /* مؤشر الكتابة أبيض */
+            caret-color: #fff;
             padding: 0;
-            /* جعلها من اليسار لليمين */
             text-align: left; 
         }
     </style>
@@ -75,7 +74,7 @@
 <body>
 
     <div id="terminal">
-        <div class="line system-response">Termux Fake OS [V1.2] - Initializing subsystems... [Done]</div>
+        <div class="line system-response">Termux Fake OS [V1.3] - Initializing subsystems... [Done]</div>
         <div class="line system-response">Fake Hacker Tool Loaded. Type 'help' to begin your fun.</div>
     </div>
     
@@ -107,7 +106,7 @@
             for (let i = 0; i < 12; i++) {
                 password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            const phone = '+966' + Math.floor(500000000 + Math.random() * 99999999); // رقم وهمي دولي
+            const phone = '+966' + Math.floor(500000000 + Math.random() * 99999999);
             const randomID = Math.floor(Math.random() * 999999);
             const email = `user${randomID}@fakebook.com`;
             
@@ -119,30 +118,30 @@
             if (e.key === 'Enter') {
                 const command = e.target.value.trim();
                 
-                // عرض الأمر المدخل مع رمز الـ prompt
-                appendToTerminal(`$ ${command}`, 'line'); // لاحظ أننا نستخدم "line" لتكون باللون الأبيض (اللون الأساسي)
+                // عرض الأمر المدخل باللون الأبيض (باستخدام line)
+                appendToTerminal(`$ ${command}`, 'line'); 
                 
                 // منطق معالجة الأوامر
                 if (command.toLowerCase() === 'help') {
-                    appendToTerminal("--- Available Commands ---", 'system-response');
-                    appendToTerminal("hack <facebook_url> : Simulates a fake Facebook account hack.", 'system-response');
-                    appendToTerminal("info : Displays fake system information.", 'system-response');
-                    appendToTerminal("clear : Clears the screen.", 'system-response');
+                    appendToTerminal("--- Available Commands ---");
+                    appendToTerminal("hack <facebook_url> : Simulates a fake Facebook account hack.");
+                    appendToTerminal("info : Displays fake system information.");
+                    appendToTerminal("clear : Clears the screen.");
                 } 
                 else if (command.toLowerCase() === 'info') {
-                    appendToTerminal("Fake OS [V1.2] - Codename: Termux Clone", 'system-response');
-                    appendToTerminal("Status: Operational. Designed for fun and jokes.", 'system-response');
+                    appendToTerminal("Fake OS [V1.3] - Codename: Termux Clone");
+                    appendToTerminal("Status: Operational. Designed for fun and jokes.");
                 }
                 else if (command.toLowerCase() === 'clear') {
                     terminal.innerHTML = '';
-                    appendToTerminal("Termux Fake OS [V1.2] - Screen Cleared.", 'system-response');
+                    appendToTerminal("Termux Fake OS [V1.3] - Screen Cleared.");
                 }
                 // محاكاة الاختراق
                 else if (command.toLowerCase().startsWith('hack') && command.includes('facebook.com')) {
                     const targetUrl = command.split(' ')[1] || 'URL_NOT_PROVIDED';
                     
                     // محاكاة عملية معالجة بطيئة
-                    appendToTerminal(`[!] Running Exploit Module v2.0 on: ${targetUrl}...`, 'system-response');
+                    appendToTerminal(`[!] Running Exploit Module v2.0 on: ${targetUrl}...`);
                     
                     // تأخير زمني 3 ثواني لمحاكاة العمل
                     setTimeout(() => {
@@ -164,7 +163,8 @@
                     }, 3000); 
                 }
                 else {
-                    appendToTerminal(`zsh: command not found: ${command}. Type 'help'.`, 'error');
+                    // رسالة الخطأ باللون الأحمر
+                    appendToTerminal(`zsh: command not found: ${command}. Type 'help'.`, 'error'); 
                 }
 
                 e.target.value = ''; // مسح حقل الإدخال
@@ -182,7 +182,6 @@
 
             function typeChar() {
                 if (i < lines.length) {
-                    // استخدام regex لتنظيف الأسطر الجديدة وإزالة المسافات في البداية
                     const line = lines[i].replace(/^\s*[\r\n]/gm, ''); 
                     
                     if (j < line.length) {
