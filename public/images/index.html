@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Termux Terminal</title>
+    <style>
+        /* CSS لتقليد واجهة Termux */
+        body {
+            background-color: #000;
+            color: #fff; /* النص العام أبيض */
+            font-family: 'Droid Sans Mono', 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 10px;
+            font-size: 14px;
+        }
+        #terminal {
+            width: 98%;
+            height: 90vh;
+            overflow-y: auto;
+            padding: 10px 0;
+            /* توجيه من اليسار لليمين */
+            direction: ltr; 
+        }
+        .line {
+            white-space: pre-wrap;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+        
+        /* نتائج النظام باللون الأخضر */
+        .system-response {
+            color: #00ff00; 
+        }
+
+        /* نتائج النجاح البارزة */
+        .success {
+            color: #00ff00; 
+            font-weight: bold;
+        }
+
+        /* رسائل الخطأ */
+        .error {
+            color: #ff0000; 
+        }
+        
+        /* حاوية الإدخال لتحقيق شكل السطر التالي في Termux */
+        #input-container {
+            display: flex;
+            align-items: center; /* لمحاذاة رمز $ مع مربع الإدخال */
+        }
+
+        #prompt-prefix {
+            color: #fff;
+            margin-right: 5px; /* مسافة بين $ ومُدخل المستخدم */
+            /* جعلها من اليسار لليمين */
+            direction: ltr; 
+        }
+
+        #commandInput {
+            background: #000;
+            color: #fff; /* لون الكتابة للمستخدم أبيض */
+            border: none;
+            flex-grow: 1; /* لجعل مربع الإدخال يملأ المساحة المتبقية */
+            font-family: inherit;
+            font-size: 1em;
+            outline: none;
+            caret-color: #fff; /* مؤشر الكتابة أبيض */
+            padding: 0;
+            /* جعلها من اليسار لليمين */
+            text-align: left; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div class="line system-response">Termux Fake OS [V1.2] - Initializing subsystems... [Done]</div>
+        <div class="line system-response">Fake Hacker Tool Loaded. Type 'help' to begin your fun.</div>
+    </div>
+    
+    <div id="input-container">
+        <span id="prompt-prefix">$</span>
+        <input type="text" id="commandInput" autofocus placeholder="">
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const input = document.getElementById('commandInput');
+        
+        // عند تحميل الصفحة، نركز على حقل الإدخال
+        window.onload = () => input.focus();
+
+        // دالة لعرض الأوامر والاستجابات في الشاشة
+        function appendToTerminal(text, className = 'system-response') {
+            const newLine = document.createElement('div');
+            newLine.className = 'line ' + className;
+            newLine.textContent = text;
+            terminal.appendChild(newLine);
+            terminal.scrollTop = terminal.scrollHeight; // التمرير لأسفل تلقائيًا
+        }
+
+        // دالة توليد بيانات وهمية
+        function generateRandomData() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const phone = '+966' + Math.floor(500000000 + Math.random() * 99999999); // رقم وهمي دولي
+            const randomID = Math.floor(Math.random() * 999999);
+            const email = `user${randomID}@fakebook.com`;
+            
+            return { password, phone, email };
+        }
+
+        // معالجة الضغط على زر Enter
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const command = e.target.value.trim();
+                
+                // عرض الأمر المدخل مع رمز الـ prompt
+                appendToTerminal(`$ ${command}`, 'line'); // لاحظ أننا نستخدم "line" لتكون باللون الأبيض (اللون الأساسي)
+                
+                // منطق معالجة الأوامر
+                if (command.toLowerCase() === 'help') {
+                    appendToTerminal("--- Available Commands ---", 'system-response');
+                    appendToTerminal("hack <facebook_url> : Simulates a fake Facebook account hack.", 'system-response');
+                    appendToTerminal("info : Displays fake system information.", 'system-response');
+                    appendToTerminal("clear : Clears the screen.", 'system-response');
+                } 
+                else if (command.toLowerCase() === 'info') {
+                    appendToTerminal("Fake OS [V1.2] - Codename: Termux Clone", 'system-response');
+                    appendToTerminal("Status: Operational. Designed for fun and jokes.", 'system-response');
+                }
+                else if (command.toLowerCase() === 'clear') {
+                    terminal.innerHTML = '';
+                    appendToTerminal("Termux Fake OS [V1.2] - Screen Cleared.", 'system-response');
+                }
+                // محاكاة الاختراق
+                else if (command.toLowerCase().startsWith('hack') && command.includes('facebook.com')) {
+                    const targetUrl = command.split(' ')[1] || 'URL_NOT_PROVIDED';
+                    
+                    // محاكاة عملية معالجة بطيئة
+                    appendToTerminal(`[!] Running Exploit Module v2.0 on: ${targetUrl}...`, 'system-response');
+                    
+                    // تأخير زمني 3 ثواني لمحاكاة العمل
+                    setTimeout(() => {
+                        const data = generateRandomData();
+                        const result = `
+[+] Exploit Succeeded! 
+--------------------------------------------------
+[TARGET] URL: ${targetUrl}
+[PHASE]  Scanning for Credentials...
+[INFO]   Account Identified: Fake User Profile
+[EMAIL]  Account Email: ${data.email}
+[PHONE]  Associated Phone: ${data.phone}
+[PASS]   **Password:** ${data.password}
+--------------------------------------------------
+[CLEANUP] Traces deleted. Session closed.
+                        `;
+                        // استخدام تأثير الكتابة حرفًا حرفًا
+                        typeWriterEffect(result, 'success');
+                    }, 3000); 
+                }
+                else {
+                    appendToTerminal(`zsh: command not found: ${command}. Type 'help'.`, 'error');
+                }
+
+                e.target.value = ''; // مسح حقل الإدخال
+            }
+        });
+
+        // دالة تأثير الكتابة (حرفًا حرفًا)
+        function typeWriterEffect(text, className) {
+            const lines = text.trim().split('\n');
+            let i = 0;
+            let j = 0;
+            let currentLineDiv = document.createElement('div');
+            currentLineDiv.className = 'line ' + className;
+            terminal.appendChild(currentLineDiv);
+
+            function typeChar() {
+                if (i < lines.length) {
+                    // استخدام regex لتنظيف الأسطر الجديدة وإزالة المسافات في البداية
+                    const line = lines[i].replace(/^\s*[\r\n]/gm, ''); 
+                    
+                    if (j < line.length) {
+                        currentLineDiv.textContent += line.charAt(j);
+                        j++;
+                        terminal.scrollTop = terminal.scrollHeight;
+                        setTimeout(typeChar, 10); 
+                    } else {
+                        i++;
+                        j = 0;
+                        if (i < lines.length) {
+                            currentLineDiv = document.createElement('div');
+                            currentLineDiv.className = 'line ' + className;
+                            terminal.appendChild(currentLineDiv);
+                        }
+                        setTimeout(typeChar, 100); 
+                    }
+                }
+            }
+            typeChar();
+        }
+    </script>
+</body>
+</html>
