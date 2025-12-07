@@ -11,12 +11,11 @@
         /* المتغيرات الأساسية */
         :root {
             --primary-color: #00bcd4; 
-            --glass-button-color: rgba(255, 255, 255, 0.2); /* لون رمادي شفاف للزر */
+            --glass-button-color: rgba(255, 255, 255, 0.2); 
             --pure-black: #000000; 
-            --glass-bg-color: rgba(0, 0, 0, 0.7); /* خلفية النافبار الزجاجية */
-            --glass-border-color: rgba(255, 255, 255, 0.15); /* حدود زجاجية */
+            --glass-bg-color: rgba(0, 0, 0, 0.7); 
+            --glass-border-color: rgba(255, 255, 255, 0.15); 
             --text-light: #f0f0f0;
-            --text-dark: #121212;
         }
 
         * {
@@ -38,7 +37,7 @@
         /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
-            background: var(--glass-bg-color); /* خلفية سوداء بشفافية */
+            background: var(--glass-bg-color); 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--glass-border-color);
@@ -73,35 +72,35 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         
-        /* زر التسجيل - تنسيق رمادي زجاجي دائري */
+        /* زر التسجيل - تنسيق رمادي زجاجي دائري ومصغَّر */
         .register-button {
-            padding: 0.6rem 1.75rem; /* حجم مناسب */
-            /* تطبيق تأثير الزجاج الرمادي */
+            /* ❗ التعديل هنا لجعله أصغر: تقليل الـ padding */
+            padding: 0.4rem 1.25rem; 
+            
             background-color: var(--glass-button-color); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3); /* حدود زجاجية واضحة */
+            border: 1px solid rgba(255, 255, 255, 0.3); 
             
             color: var(--text-light); 
             font-weight: 500;
             text-decoration: none;
             
-            /* جعل الزر دائرياً (Pill-shaped) */
             border-radius: 50px; 
             
-            /* تأثيرات الحركة */
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* ظل عميق */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); 
             cursor: pointer;
             font-family: 'Changa', sans-serif;
-            font-size: 1rem;
+            /* يمكن أيضاً تقليل حجم الخط قليلاً */
+            font-size: 0.95rem; 
         }
 
         /* تأثير التفاعل عند التمرير */
         .register-button:hover {
-            background-color: rgba(255, 255, 255, 0.35); /* يصبح أفتح قليلاً */
-            border-color: var(--primary-color); /* حدود بلون مميز */
-            transform: scale(1.05); /* تكبير خفيف */
+            background-color: rgba(255, 255, 255, 0.35); 
+            border-color: var(--primary-color); 
+            transform: scale(1.05); 
         }
 
 
