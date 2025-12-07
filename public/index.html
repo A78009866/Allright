@@ -10,10 +10,10 @@
 
         /* المتغيرات الأساسية */
         :root {
-            --primary-color: #000000; /* أزرق سماوي */
-            --background-dark: #000000; /* خلفية داكنة جداً */
-            --glass-bg-color: rgba(255, 255, 255, 0.08); /* لون زجاجي خفيف */
-            --glass-border-color: rgba(255, 255, 255, 0.15); /* حدود زجاجية */
+            --primary-color: #00bcd4; /* أزرق سماوي */
+            --pure-black: #000000; /* الأسود الخالص */
+            --glass-bg-color: rgba(255, 255, 255, 0.05); /* لون زجاجي أكثر شفافية */
+            --glass-border-color: rgba(255, 255, 255, 0.1); /* حدود زجاجية خفيفة */
             --text-light: #f0f0f0;
         }
 
@@ -25,21 +25,22 @@
 
         body {
             font-family: 'Changa', sans-serif;
-            /* تطبيق الخلفية الداكنة + التدرج الزجاجي */
-            background: var(--background-dark);
+            /* تطبيق الخلفية السوداء الخالصة */
+            background-color: var(--pure-black);
             color: var(--text-light);
             min-height: 100vh;
-            background-image: linear-gradient(135deg, #243949 0%, #517fa4 100%);
+            /* إزالة أي تدرجات أو صور خلفية */
+            background-image: none; 
             background-attachment: fixed;
-            background-size: cover;
         }
 
-        /* شريط التنقل (Navbar) - تأثير الزجاج */
+        /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
-            background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            /* خلفية النافبار زجاجية داكنة */
+            background: rgba(0, 0, 0, 0.7); /* خلفية سوداء بشفافية */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--glass-border-color);
             padding: 1rem 5%;
             display: flex;
@@ -62,8 +63,8 @@
             width: 40px;
             border-radius: 50%;
             object-fit: cover;
-            /* ظل مميز للشعار */
-            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5); 
+            /* ظل خفيف لجعل الشعار بارزاً على الخلفية السوداء */
+            box-shadow: 0 0 5px rgba(0, 188, 212, 0.7); 
         }
 
         .brand-name {
@@ -73,38 +74,11 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
-        /* المحتوى الرئيسي */
+        /* المحتوى الرئيسي - أسود وخالٍ من أي عناصر مرئية */
         .main-content {
-            padding: 40px 5%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 64px);
-            text-align: center;
-        }
-
-        /* بطاقة المحتوى الزجاجية (Glassmorphism Card) */
-        .glass-card {
-            background: var(--glass-bg-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 15px;
-            border: 1px solid var(--glass-border-color);
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 600px;
-            margin: 20px;
-        }
-
-        .hero-section h1 {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .hero-section p {
-            font-size: 1.1rem;
-            font-weight: 300;
+            /* تأكد من أن المساحة أسفل النافبار سوداء تماماً */
+            background-color: var(--pure-black); 
+            min-height: calc(100vh - 64px); /* يغطي باقي الشاشة */
         }
     </style>
 </head>
@@ -121,13 +95,7 @@
     </nav>
 
     <main class="main-content">
-        <section class="hero-section">
-            <div class="glass-card">
-                <h1>مرحباً بك في أكاديمية الأعالي</h1>
-                <p>هذه هي الصفحة الرئيسية الزجاجية الداكنة. المكان جاهز لبدء إضافة محتوى الأكاديمية.</p>
-            </div>
-        </section>
-    </main>
+        </main>
 
 </body>
 </html>
