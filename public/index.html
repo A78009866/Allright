@@ -11,9 +11,10 @@
         /* المتغيرات الأساسية */
         :root {
             --primary-color: #00bcd4; /* أزرق سماوي */
-            --pure-black: #000000; /* الأسود الخالص */
-            --glass-bg-color: rgba(255, 255, 255, 0.05); /* لون زجاجي أكثر شفافية */
-            --glass-border-color: rgba(255, 255, 255, 0.1); /* حدود زجاجية خفيفة */
+            --secondary-color: #ff5722; /* لون برتقالي للزر */
+            --pure-black: #000000; 
+            --glass-bg-color: rgba(255, 255, 255, 0.05);
+            --glass-border-color: rgba(255, 255, 255, 0.1);
             --text-light: #f0f0f0;
         }
 
@@ -29,7 +30,6 @@
             background-color: var(--pure-black);
             color: var(--text-light);
             min-height: 100vh;
-            /* إزالة أي تدرجات أو صور خلفية */
             background-image: none; 
             background-attachment: fixed;
         }
@@ -37,14 +37,14 @@
         /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
-            /* خلفية النافبار زجاجية داكنة */
-            background: rgba(0, 0, 0, 0.7); /* خلفية سوداء بشفافية */
+            /* تغيير خصائص العرض: استخدام 'space-between' لفصل الشعار/الاسم عن زر التسجيل */
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--glass-border-color);
             padding: 1rem 5%;
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between; /* فصل العناصر إلى اليمين واليسار */
             align-items: center;
             position: sticky;
             top: 0;
@@ -63,7 +63,6 @@
             width: 40px;
             border-radius: 50%;
             object-fit: cover;
-            /* ظل خفيف لجعل الشعار بارزاً على الخلفية السوداء */
             box-shadow: 0 0 5px rgba(0, 188, 212, 0.7); 
         }
 
@@ -73,12 +72,33 @@
             color: var(--text-light);
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
+        
+        /* زر التسجيل */
+        .register-button {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--pure-black); /* نص أسود على زر أزرق */
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.5); /* ظل للزر */
+            border: none;
+            cursor: pointer;
+            font-family: 'Changa', sans-serif;
+            font-size: 1rem;
+        }
+
+        .register-button:hover {
+            background-color: #008c9e; /* لون أغمق عند التمرير */
+            transform: translateY(-2px); /* حركة خفيفة */
+        }
+
 
         /* المحتوى الرئيسي - أسود وخالٍ من أي عناصر مرئية */
         .main-content {
-            /* تأكد من أن المساحة أسفل النافبار سوداء تماماً */
             background-color: var(--pure-black); 
-            min-height: calc(100vh - 64px); /* يغطي باقي الشاشة */
+            min-height: calc(100vh - 64px); 
         }
     </style>
 </head>
@@ -91,6 +111,10 @@
                  class="logo">
             
             <span class="brand-name">أكاديمية الأعالي</span>
+        </div>
+        
+        <div>
+            <a href="#" class="register-button">تسجيل</a>
         </div>
     </nav>
 
