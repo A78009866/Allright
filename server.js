@@ -1,5 +1,4 @@
 // server.js
-
 // استدعاء الوحدات المطلوبة
 import express from 'express';
 import dotenv from 'dotenv';
@@ -43,3 +42,4 @@ console.log(`⚙️  الخادم يعمل على المنفذ: ${PORT}`);
 app.listen(PORT, () => {
     console.log(`🚀 خادم أكاديمية الأعالي يعمل على http://localhost:${PORT}`);
 });
+
