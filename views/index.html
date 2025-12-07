@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية الأعالي - الصفحة الرئيسية</title>
+    <style>
+        /* الخطوط */
+        @import url('https://fonts.googleapis.com/css2?family=Changa:wght@300;400;700&display=swap');
+
+        /* المتغيرات الأساسية */
+        :root {
+            --primary-color: #00bcd4; /* أزرق سماوي */
+            --background-dark: #121212; /* خلفية داكنة جداً */
+            --glass-bg-color: rgba(255, 255, 255, 0.08); /* لون زجاجي خفيف */
+            --glass-border-color: rgba(255, 255, 255, 0.15); /* حدود زجاجية */
+            --text-light: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Changa', sans-serif;
+            /* تطبيق الخلفية الداكنة + التدرج الزجاجي */
+            background: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, #243949 0%, #517fa4 100%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /* شريط التنقل (Navbar) - تأثير الزجاج */
+        .navbar {
+            width: 100%;
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border-color);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* تنسيق الشعار (الصورة) */
+        .logo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            /* ظل مميز للشعار */
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5); 
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            padding: 40px 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 64px);
+            text-align: center;
+        }
+
+        /* بطاقة المحتوى الزجاجية (Glassmorphism Card) */
+        .glass-card {
+            background: var(--glass-bg-color);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border-color);
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            max-width: 600px;
+            margin: 20px;
+        }
+
+        .hero-section h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" 
+                 alt="شعار أكاديمية الأعالي" 
+                 class="logo">
+            
+            <span class="brand-name">أكاديمية الأعالي</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="glass-card">
+                <h1>مرحباً بك في أكاديمية الأعالي</h1>
+                <p>هذه هي الصفحة الرئيسية الزجاجية الداكنة. المكان جاهز لبدء إضافة محتوى الأكاديمية.</p>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
