@@ -10,12 +10,13 @@
 
         /* المتغيرات الأساسية */
         :root {
-            --primary-color: #00bcd4; /* أزرق سماوي */
-            --secondary-color: #ff5722; /* لون برتقالي للزر */
+            --primary-color: #00bcd4; 
+            --glass-button-color: rgba(255, 255, 255, 0.2); /* لون رمادي شفاف للزر */
             --pure-black: #000000; 
-            --glass-bg-color: rgba(255, 255, 255, 0.05);
-            --glass-border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg-color: rgba(0, 0, 0, 0.7); /* خلفية النافبار الزجاجية */
+            --glass-border-color: rgba(255, 255, 255, 0.15); /* حدود زجاجية */
             --text-light: #f0f0f0;
+            --text-dark: #121212;
         }
 
         * {
@@ -37,14 +38,13 @@
         /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
-            /* تغيير خصائص العرض: استخدام 'space-between' لفصل الشعار/الاسم عن زر التسجيل */
-            background: rgba(0, 0, 0, 0.7);
+            background: var(--glass-bg-color); /* خلفية سوداء بشفافية */
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--glass-border-color);
             padding: 1rem 5%;
             display: flex;
-            justify-content: space-between; /* فصل العناصر إلى اليمين واليسار */
+            justify-content: space-between; 
             align-items: center;
             position: sticky;
             top: 0;
@@ -63,7 +63,7 @@
             width: 40px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 0 5px rgba(0, 188, 212, 0.7); 
+            box-shadow: 0 0 5px var(--primary-color); 
         }
 
         .brand-name {
@@ -73,25 +73,35 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         
-        /* زر التسجيل */
+        /* زر التسجيل - تنسيق رمادي زجاجي دائري */
         .register-button {
-            padding: 0.5rem 1.5rem;
-            background-color: var(--primary-color);
-            color: var(--pure-black); /* نص أسود على زر أزرق */
-            font-weight: 700;
+            padding: 0.6rem 1.75rem; /* حجم مناسب */
+            /* تطبيق تأثير الزجاج الرمادي */
+            background-color: var(--glass-button-color); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* حدود زجاجية واضحة */
+            
+            color: var(--text-light); 
+            font-weight: 500;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.5); /* ظل للزر */
-            border: none;
+            
+            /* جعل الزر دائرياً (Pill-shaped) */
+            border-radius: 50px; 
+            
+            /* تأثيرات الحركة */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* ظل عميق */
             cursor: pointer;
             font-family: 'Changa', sans-serif;
             font-size: 1rem;
         }
 
+        /* تأثير التفاعل عند التمرير */
         .register-button:hover {
-            background-color: #008c9e; /* لون أغمق عند التمرير */
-            transform: translateY(-2px); /* حركة خفيفة */
+            background-color: rgba(255, 255, 255, 0.35); /* يصبح أفتح قليلاً */
+            border-color: var(--primary-color); /* حدود بلون مميز */
+            transform: scale(1.05); /* تكبير خفيف */
         }
 
 
