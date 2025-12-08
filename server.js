@@ -26,7 +26,7 @@ app.engine('html', (filePath, options, callback) => {
 });
 
 // خدمة الملفات الثابتة (CSS، صور، JavaScript) من مجلد 'public'
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views)));
 
 // التوجيه للصفحة الرئيسية
 app.get('/', (req, res) => {
@@ -42,4 +42,5 @@ console.log(`⚙️  الخادم يعمل على المنفذ: ${PORT}`);
 app.listen(PORT, () => {
     console.log(`🚀 خادم أكاديمية الأعالي يعمل على http://localhost:${PORT}`);
 });
+
 
