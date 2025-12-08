@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أكاديمية الأعالي - الصفحة الرئيسية</title>
+    <title>أكاديمية المعالي - الصفحة الرئيسية</title>
     <style>
         /* الخطوط */
         @import url('https://fonts.googleapis.com/css2?family=Changa:wght@300;400;700&display=swap');
 
         /* المتغيرات الأساسية */
         :root {
-            --primary-color: #00bcd4; /* أزرق سماوي */
-            --background-dark: #121212; /* خلفية داكنة جداً */
-            --glass-bg-color: rgba(255, 255, 255, 0.08); /* لون زجاجي خفيف */
-            --glass-border-color: rgba(255, 255, 255, 0.15); /* حدود زجاجية */
+            --primary-color: #00bcd4; 
+            --glass-button-color: rgba(255, 255, 255, 0.2); 
+            --pure-black: #000000; 
+            --glass-bg-color: rgba(0, 0, 0, 0.7); 
+            --glass-border-color: rgba(255, 255, 255, 0.15); 
             --text-light: #f0f0f0;
         }
 
@@ -25,25 +26,24 @@
 
         body {
             font-family: 'Changa', sans-serif;
-            /* تطبيق الخلفية الداكنة + التدرج الزجاجي */
-            background: var(--background-dark);
+            /* تطبيق الخلفية السوداء الخالصة */
+            background-color: var(--pure-black);
             color: var(--text-light);
             min-height: 100vh;
-            background-image: linear-gradient(135deg, #243949 0%, #517fa4 100%);
+            background-image: none; 
             background-attachment: fixed;
-            background-size: cover;
         }
 
-        /* شريط التنقل (Navbar) - تأثير الزجاج */
+        /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
-            background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--glass-bg-color); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--glass-border-color);
             padding: 1rem 5%;
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between; 
             align-items: center;
             position: sticky;
             top: 0;
@@ -62,8 +62,7 @@
             width: 40px;
             border-radius: 50%;
             object-fit: cover;
-            /* ظل مميز للشعار */
-            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5); 
+            box-shadow: 0 0 5px var(--primary-color); 
         }
 
         .brand-name {
@@ -72,39 +71,36 @@
             color: var(--text-light);
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
+        
+        /* زر التسجيل - تنسيق رمادي زجاجي دائري ومصغَّر */
+        .register-button {
+            padding: 0.4rem 1.25rem; 
+            background-color: var(--glass-button-color); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            color: var(--text-light); 
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 50px; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); 
+            cursor: pointer;
+            font-family: 'Changa', sans-serif;
+            font-size: 0.95rem; 
+        }
 
-        /* المحتوى الرئيسي */
+        /* تأثير التفاعل عند التمرير */
+        .register-button:hover {
+            background-color: rgba(255, 255, 255, 0.35); 
+            border-color: var(--primary-color); 
+            transform: scale(1.05); 
+        }
+
+        /* المحتوى الرئيسي - أسود وخالٍ من أي عناصر مرئية */
         .main-content {
-            padding: 40px 5%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 64px);
-            text-align: center;
-        }
-
-        /* بطاقة المحتوى الزجاجية (Glassmorphism Card) */
-        .glass-card {
-            background: var(--glass-bg-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 15px;
-            border: 1px solid var(--glass-border-color);
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 600px;
-            margin: 20px;
-        }
-
-        .hero-section h1 {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .hero-section p {
-            font-size: 1.1rem;
-            font-weight: 300;
+            background-color: var(--pure-black); 
+            min-height: calc(100vh - 64px); 
         }
     </style>
 </head>
@@ -113,21 +109,19 @@
     <nav class="navbar">
         <div class="logo-container">
             <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" 
-                 alt="شعار أكاديمية الأعالي" 
+                 alt="شعار أكاديمية المعالي" 
                  class="logo">
             
-            <span class="brand-name">أكاديمية الأعالي</span>
+            <span class="brand-name">أكاديمية **المعالي**</span>
+        </div>
+        
+        <div>
+            <a href="#" class="register-button">تسجيل</a>
         </div>
     </nav>
 
     <main class="main-content">
-        <section class="hero-section">
-            <div class="glass-card">
-                <h1>مرحباً بك في أكاديمية الأعالي</h1>
-                <p>هذه هي الصفحة الرئيسية الزجاجية الداكنة. المكان جاهز لبدء إضافة محتوى الأكاديمية.</p>
-            </div>
-        </section>
-    </main>
+        </main>
 
 </body>
 </html>
