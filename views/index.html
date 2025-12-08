@@ -9,14 +9,15 @@
     <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 
     <style>
-        /* الخطوط والمتغيرات */
+        /* المتغيرات الأساسية */
         :root {
             --primary-color: #00bcd4; /* أزرق سماوي لامع */
             --accent-color: #f39c12; /* برتقالي للتأكيد */
-            --glass-bg-color: rgba(0, 0, 0, 0.7); 
+            --glass-bg-color: rgba(0, 0, 0, 0.75); 
             --glass-border-color: rgba(255, 255, 255, 0.15); 
             --text-light: #f0f0f0;
             --pure-black: #000000; 
+            --glass-button-color: rgba(255, 255, 255, 0.2); 
             --success-color: #2ecc71;
             --error-color: #e74c3c;
             --pending-color: #f1c40f;
@@ -33,14 +34,73 @@
             background-color: var(--pure-black);
             color: var(--text-light);
             min-height: 100vh;
+            padding: 0;
+        }
+        
+        /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
+        .navbar {
+            width: 100%;
+            background: var(--glass-bg-color); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--glass-border-color);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 5px var(--primary-color); 
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        
+        /* زر التسجيل/العودة - تنسيق زجاجي */
+        .nav-button {
+            padding: 0.4rem 1.25rem; 
+            background-color: var(--glass-button-color); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            color: var(--text-light); 
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 50px; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: 'Changa', sans-serif;
+            font-size: 0.95rem; 
+        }
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.35); 
+            border-color: var(--primary-color); 
+            transform: scale(1.05); 
+        }
+        
+        /* المحتوى الرئيسي و بطاقة الزجاج */
+        .main-content {
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: calc(100vh - 64px); 
             padding: 20px;
-            /* خلفية سوداء صماء */
         }
-        
-        /* تأثير الزجاج */
+
         .glass-card {
             width: 100%;
             max-width: 650px;
@@ -53,33 +113,11 @@
             border: 1px solid var(--glass-border-color);
         }
 
-        /* رأس الصفحة (الشعار والاسم) */
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--primary-color);
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary-color); /* محاكاة الشعار بلون مميز */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 15px;
-            font-size: 1.5rem;
-            color: var(--pure-black);
-            font-weight: 700;
-        }
-        h1 {
+        h2 {
             color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
             font-weight: 700;
-            font-size: 2rem;
-            margin: 0;
         }
 
         /* حقول الإدخال */
@@ -124,12 +162,9 @@
             font-weight: 700;
             transition: background-color 0.3s;
         }
-
-        button:hover {
-            background-color: #e67e22;
-        }
+        button:hover { background-color: #e67e22; }
         
-        /* قسم الحالة والمتابعة */
+        /* قسم حالة الطلب */
         #status-section {
             margin-top: 30px;
             padding: 20px;
@@ -138,13 +173,7 @@
             text-align: center;
             background-color: rgba(0, 0, 0, 0.5);
         }
-
-        .status-message {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
+        .status-message { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; }
         .status-pending { color: var(--pending-color); }
         .status-approved { color: var(--success-color); }
         .status-rejected { color: var(--error-color); }
@@ -152,7 +181,7 @@
         #qrcode {
             margin: 20px auto;
             padding: 10px;
-            background-color: white; /* يجب أن تكون خلفية QR بيضاء للقراءة */
+            background-color: white; 
             border-radius: 5px;
             display: inline-block;
         }
@@ -171,65 +200,78 @@
 </head>
 <body>
 
-    <div class="glass-card">
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" 
+                 alt="شعار أكاديمية المعالي" 
+                 class="logo">
+            
+            <span class="brand-name">أكاديمية المعالي</span>
+        </div>
         
-        <div class="header-section">
-            <div class="logo">A</div>
-            <h1>أكاديمية المعالي</h1>
+        <div>
+            <button class="nav-button" onclick="resetForm()"><i class="fas fa-redo"></i> تسجيل جديد</button>
         </div>
+    </nav>
 
-        <div id="registration-form">
-            <label for="fullName"><i class="fas fa-user"></i> الاسم الثلاثي:</label>
-            <input type="text" id="fullName" required>
-
-            <label for="stage"><i class="fas fa-school"></i> المرحلة الدراسية:</label>
-            <select id="stage" required>
-                <option value="" disabled selected>اختر المرحلة</option>
-                <option value="الابتدائية">الابتدائية</option>
-                <option value="المتوسطة">المتوسطة</option>
-                <option value="الثانوية">الثانوية</option>
-            </select>
+    <main class="main-content">
+        <div class="glass-card">
             
-            <label for="subject"><i class="fas fa-book"></i> المادة المطلوبة:</label>
-            <select id="subject" required>
-                <option value="" disabled selected>اختر المادة</option>
-                <option value="الرياضيات">الرياضيات</option>
-                <option value="الفيزياء">الفيزياء</option>
-                <option value="الكيمياء">الكيمياء</option>
-                <option value="اللغة العربية">اللغة العربية</option>
-            </select>
-            
-             <label for="branch"><i class="fas fa-map-marker-alt"></i> الفرع (الشعبة):</label>
-            <select id="branch" required>
-                <option value="" disabled selected>اختر الفرع</option>
-                <option value="الفرع_أ">الفرع أ (الصباحي)</option>
-                <option value="الفرع_ب">الفرع ب (المسائي)</option>
-            </select>
+            <h2 id="card-title"><i class="fas fa-user-plus"></i> نموذج التسجيل الأولي</h2>
 
-            <button onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
-        </div>
+            <div id="registration-form">
+                <label for="fullName"><i class="fas fa-user"></i> الاسم الثلاثي:</label>
+                <input type="text" id="fullName" required>
 
-        <div id="tracking-section" style="display: none; margin-top: 20px;">
-            <h2 style="color: var(--accent-color); text-align: center; margin-bottom: 20px;"><i class="fas fa-search"></i> متابعة حالة طلبك</h2>
-            <p style="margin: 15px 0; text-align: center;">تم تسجيل طلبك برقم: <strong id="requestIdDisplay" style="color: var(--primary-color);"></strong></p>
-            <button onclick="checkStatus()" style="background-color: var(--primary-color); color: var(--pure-black);"><i class="fas fa-sync-alt"></i> تحديث الحالة</button>
-
-            <div id="status-section">
-                <p id="statusMessage" class="status-message status-pending">الرجاء الضغط على تحديث الحالة...</p>
+                <label for="stage"><i class="fas fa-school"></i> المرحلة الدراسية:</label>
+                <select id="stage" required>
+                    <option value="" disabled selected>اختر المرحلة</option>
+                    <option value="الابتدائية">الابتدائية</option>
+                    <option value="المتوسطة">المتوسطة</option>
+                    <option value="الثانوية">الثانوية</option>
+                </select>
                 
-                <div id="approved-details" style="display: none; text-align: right;">
-                    <p style="color: var(--success-color); font-size: 1.2rem;"><i class="fas fa-check-circle"></i> تم تسجيلك بنجاح! الدفع مؤكد.</p>
-                    <p><strong>الطالب:</strong> <span id="studentName"></span></p>
-                    <p><strong>المرحلة/المادة:</strong> <span id="studentCourse"></span></p>
-                    <p><strong>الفرع:</strong> <span id="studentBranch"></span></p>
+                <label for="subject"><i class="fas fa-book"></i> المادة المطلوبة:</label>
+                <select id="subject" required>
+                    <option value="" disabled selected>اختر المادة</option>
+                    <option value="الرياضيات">الرياضيات</option>
+                    <option value="الفيزياء">الفيزياء</option>
+                    <option value="الكيمياء">الكيمياء</option>
+                    <option value="اللغة العربية">اللغة العربية</option>
+                </select>
+                
+                 <label for="branch"><i class="fas fa-map-marker-alt"></i> الفرع/الشعبة:</label>
+                <select id="branch" required>
+                    <option value="" disabled selected>اختر الفرع/الشعبة</option>
+                    <option value="الفرع_أ">الفرع أ (الصباحي)</option>
+                    <option value="الفرع_ب">الفرع ب (المسائي)</option>
+                </select>
 
-                    <h3 style="margin-top: 20px; color: var(--accent-color);">كود الدخول (QR Code)</h3>
-                    <div id="qrcode"></div>
-                    <small style="color: gray;">يرجى حفظ هذا الكود لإظهاره عند الدخول في الفرع: <span id="branchReminder"></span>.</small>
+                <button onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+            </div>
+
+            <div id="tracking-section" style="display: none;">
+                <h2 style="color: var(--accent-color); text-align: center; margin-bottom: 20px;"><i class="fas fa-search"></i> متابعة حالة طلبك</h2>
+                <p style="margin: 15px 0; text-align: center;">تم تسجيل طلبك برقم: <strong id="requestIdDisplay" style="color: var(--primary-color);"></strong></p>
+                <button onclick="checkStatus()" style="background-color: var(--primary-color); color: var(--pure-black);"><i class="fas fa-sync-alt"></i> تحديث الحالة</button>
+
+                <div id="status-section">
+                    <p id="statusMessage" class="status-message status-pending">الرجاء الضغط على تحديث الحالة...</p>
+                    
+                    <div id="approved-details" style="display: none; text-align: right;">
+                        <p style="color: var(--success-color); font-size: 1.2rem;"><i class="fas fa-check-circle"></i> تم تسجيلك بنجاح! الدفع مؤكد.</p>
+                        <p><strong>الطالب:</strong> <span id="studentName"></span></p>
+                        <p><strong>المرحلة/المادة:</strong> <span id="studentCourse"></span></p>
+                        <p><strong>الفرع/الشعبة:</strong> <span id="studentBranch"></span></p>
+
+                        <h3 style="margin-top: 20px; color: var(--accent-color);">كود الدخول (QR Code)</h3>
+                        <div id="qrcode"></div>
+                        <small style="color: gray;">يرجى حفظ هذا الكود لإظهاره عند الدخول.</small>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
         const API_BASE = '/api';
@@ -237,12 +279,23 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             if (currentRequestId) {
+                document.getElementById('card-title').textContent = 'متابعة حالة الطلب الحالي';
                 document.getElementById('registration-form').style.display = 'none';
                 document.getElementById('tracking-section').style.display = 'block';
                 document.getElementById('requestIdDisplay').textContent = currentRequestId;
                 checkStatus();
             }
         });
+
+        function resetForm() {
+            if (confirm('هل أنت متأكد من بدء عملية تسجيل جديدة لمادة أخرى؟ سيتم حفظ رقم طلبك القديم.')) {
+                // لا نمسح الـ localStorage لكي يتمكن الطالب من متابعة طلبه القديم
+                // لكننا نعيد الواجهة إلى وضع التسجيل
+                document.getElementById('card-title').textContent = 'نموذج التسجيل الأولي';
+                document.getElementById('registration-form').style.display = 'block';
+                document.getElementById('tracking-section').style.display = 'none';
+            }
+        }
 
         async function submitRegistration() {
             const fullName = document.getElementById('fullName').value.trim();
@@ -259,7 +312,7 @@
                 const response = await fetch(`${API_BASE}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, stage, subject, branch }) // تضمين الفرع
+                    body: JSON.stringify({ fullName, stage, subject, branch })
                 });
 
                 const result = await response.json();
@@ -268,10 +321,11 @@
                     currentRequestId = result.requestId;
                     localStorage.setItem('academyRequestId', currentRequestId);
                     
+                    document.getElementById('card-title').textContent = 'متابعة حالة الطلب الحالي';
                     document.getElementById('registration-form').style.display = 'none';
                     document.getElementById('tracking-section').style.display = 'block';
                     document.getElementById('requestIdDisplay').textContent = currentRequestId;
-                    alert(`تم إرسال طلبك! رقم طلبك هو: ${currentRequestId}`);
+                    alert(`تم إرسال طلبك! رقم طلبك هو: ${currentRequestId}. يرجى حفظه.`);
                     checkStatus();
                 } else {
                     alert(`فشل التسجيل: ${result.message}`);
@@ -288,7 +342,6 @@
             const approvedDetailsEl = document.getElementById('approved-details');
             const qrcodeContainer = document.getElementById('qrcode');
             
-            // تهيئة حالة التحميل
             statusMessageEl.textContent = 'جاري التحقق من الحالة...';
             statusMessageEl.className = 'status-message status-pending';
             approvedDetailsEl.style.display = 'none';
@@ -310,7 +363,6 @@
                         document.getElementById('studentName').textContent = result.fullName;
                         document.getElementById('studentCourse').textContent = `${result.stage} - ${result.subject}`;
                         document.getElementById('studentBranch').textContent = result.branch;
-                        document.getElementById('branchReminder').textContent = result.branch;
                         
                         // توليد QR Code
                         qrcodeContainer.innerHTML = ''; 
