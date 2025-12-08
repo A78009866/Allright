@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'; 
-import { v4 as uuidv4 } from 'uuid'; // وحدة UUID ضرورية لإنشاء IDs فريدة
+import { v4 as uuidv4 } from 'uuid'; 
 
 // 1. تهيئة dotenv
 dotenv.config();
@@ -19,8 +19,6 @@ const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html');
 const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
 
 // قاعدة بيانات وهمية في الذاكرة لتخزين الطلبات
-// الحالة (status): pending (معلق), approved (موافق عليه), rejected (مرفوض)
-// paymentStatus: unpaid (لم يتم الدفع), paid (تم الدفع)
 let enrollmentRequests = [];
 
 const app = express();
@@ -37,8 +35,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
     fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
-             console.error(`❌ خطأ في قراءة ملف index.html: ${err.message}`);
-             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html. يرجى التأكد من وجوده في مجلد views/</h1>');
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html في مجلد views/</h1>');
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.send(data);
@@ -49,8 +46,7 @@ app.get('/', (req, res) => {
 app.get('/admin', (req, res) => {
     fs.readFile(ADMIN_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
-             console.error(`❌ خطأ في قراءة ملف admin.html: ${err.message}`);
-             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على admin.html. يرجى التأكد من وجوده في مجلد views/</h1>');
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على admin.html في مجلد views/</h1>');
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.send(data);
@@ -87,7 +83,7 @@ app.get('/api/requests', (req, res) => {
     res.json(enrollmentRequests.map(req => ({ ...req })));
 });
 
-// 4.3. الموافقة على طلب (للأدمن) - الموافقة تعني الدفع وتوليد الباركود
+// 4.3. الموافقة على طلب (للأدمن) - الموافقة تعني الدفع وتوليد الباركود/QR
 app.post('/api/approve', (req, res) => {
     const { id } = req.body;
     const request = enrollmentRequests.find(r => r.id === id);
@@ -96,16 +92,16 @@ app.post('/api/approve', (req, res) => {
         return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
     }
     
-    if (request.status === 'approved' && request.paymentStatus === 'paid') {
-         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا.' });
+    if (request.status === 'approved') {
+         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا.', barcode: request.barcode });
     }
     
-    // 1. توليد كود بار فريد (محاكاة QR Code)
+    // توليد كود بار فريد (محاكاة QR Code)
     const barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
     
-    // 2. تحديث الحالة
+    // تحديث الحالة: موافق + مدفوع + كود باركود
     request.status = 'approved';
-    request.paymentStatus = 'paid'; // ******* تم تعيين الدفع تلقائياً *******
+    request.paymentStatus = 'paid'; 
     request.barcode = barcode; 
     
     res.json({ success: true, message: 'تمت الموافقة وتسجيل الدفع وتوليد كود البار.', barcode });
@@ -126,7 +122,7 @@ app.post('/api/reject', (req, res) => {
     res.json({ success: true, message: 'تم رفض طلب التسجيل.' });
 });
 
-// 4.5. التحقق من حالة الدفع (ماسح الكود - للأدمن)
+// 4.5. التحقق من حالة الطلب باستخدام كود البار (ماسح الكود - للأدمن)
 app.post('/api/check-status', (req, res) => {
     const { barcode } = req.body;
     const request = enrollmentRequests.find(r => r.barcode === barcode);
@@ -135,14 +131,30 @@ app.post('/api/check-status', (req, res) => {
         return res.json({ success: false, status: 'Invalid', message: 'كود غير صالح أو لم تتم الموافقة عليه بعد.', barcode });
     }
     
-    // عرض حالة الطالب
-    if (request.paymentStatus === 'paid') {
-        return res.json({ success: true, status: 'paid', message: 'تم تسجيل الطالب بنجاح (مدفوع).', request: request });
-    } else {
-        // هذا لن يحدث في سيناريو الموافقة التلقائية، ولكنه يترك للحماية
-        return res.json({ success: true, status: 'unpaid', message: 'الطالب موافق عليه ولكن لم يسجل الدفع بعد.', request: request });
+    if (request.status !== 'approved') {
+        return res.json({ 
+            success: true, 
+            status: request.status, 
+            message: `الطلب ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}` ,
+            request: request
+        });
     }
-
+    
+    if (request.paymentStatus === 'paid') {
+        return res.json({ 
+            success: true, 
+            status: 'paid', 
+            message: `✅ تم تسجيل دخول الطالب: ${request.fullName}. (مدفوع)`, 
+            request: request 
+        });
+    } else {
+        return res.json({ 
+            success: true, 
+            status: 'unpaid', 
+            message: `⚠️ الطالب ${request.fullName} موافق عليه ولكن الدفع غير مسجل!`, 
+            request: request 
+        });
+    }
 });
 
 // 4.6. جلب حالة طلب محدد (للطالب)
