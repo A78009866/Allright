@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'; 
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid'; // وحدة UUID لإنشاء IDs فريدة
 
 // 1. تهيئة dotenv
 dotenv.config();
@@ -19,6 +19,7 @@ const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html');
 const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
 
 // قاعدة بيانات وهمية في الذاكرة لتخزين الطلبات
+// الموافقة تعني تلقائياً (approved, paid)
 let enrollmentRequests = [];
 
 const app = express();
@@ -61,16 +62,17 @@ app.get('/admin', (req, res) => {
 // 4.1. استقبال طلب تسجيل جديد (الطالب)
 app.post('/api/register', (req, res) => {
     const data = req.body;
-    if (!data.fullName || !data.subject || !data.stage) {
+    if (!data.fullName || !data.subject || !data.stage || !data.branch) {
         return res.status(400).json({ success: false, message: 'بيانات التسجيل غير كاملة.' });
     }
     
+    // دعم إعادة التسجيل: إذا كان الطالب موجوداً بمعرف (ID) سابق، يتم تسجيل طلب جديد له
     const newRequest = {
         id: uuidv4(), 
         ...data,
         status: 'pending', 
         barcode: null, 
-        paymentStatus: 'unpaid', // يبدأ دائماً بـ "لم يتم الدفع"
+        paymentStatus: 'unpaid', 
         timestamp: new Date().toISOString()
     };
     
@@ -135,11 +137,12 @@ app.post('/api/check-status', (req, res) => {
         return res.json({ 
             success: true, 
             status: request.status, 
-            message: `الطلب ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}` ,
+            message: `الطلب ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}`,
             request: request
         });
     }
     
+    // في نظامنا، الموافقة تعني الدفع، لذا يكون دائماً مدفوع
     if (request.paymentStatus === 'paid') {
         return res.json({ 
             success: true, 
@@ -148,10 +151,10 @@ app.post('/api/check-status', (req, res) => {
             request: request 
         });
     } else {
-        return res.json({ 
+         return res.json({ 
             success: true, 
             status: 'unpaid', 
-            message: `⚠️ الطالب ${request.fullName} موافق عليه ولكن الدفع غير مسجل!`, 
+            message: `⚠️ الطالب ${request.fullName} موافق عليه ولكن الدفع غير مسجل! (حالة نادرة)`, 
             request: request 
         });
     }
@@ -174,6 +177,7 @@ app.get('/api/status/:id', (req, res) => {
         fullName: request.fullName,
         barcode: request.barcode,
         paymentStatus: request.paymentStatus,
+        branch: request.branch // إضافة الفرع
     });
 });
 
