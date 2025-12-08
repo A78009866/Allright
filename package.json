@@ -1,25 +1,15 @@
 {
-  "name": "ali-academy-website",
+  "name": "academy-enrollment-system",
   "version": "1.0.0",
-  "description": "Academy website using Express.js with a dark glass design.",
+  "description": "Professional enrollment system for an academy.",
   "main": "server.js",
-  "type": "module",  
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node server.js"
   },
-  "keywords": [
-    "express",
-    "nodejs",
-    "glassmorphism"
-  ],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2"
-     "uuid": "^9.0.1"
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.1" 
   }
 }
-
-
