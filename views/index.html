@@ -37,7 +37,6 @@
             padding: 0;
         }
         
-        /* شريط التنقل (Navbar) - تأثير الزجاج الداكن */
         .navbar {
             width: 100%;
             background: var(--glass-bg-color); 
@@ -72,7 +71,6 @@
             color: var(--text-light);
         }
         
-        /* زر التسجيل/العودة - تنسيق زجاجي */
         .nav-button {
             padding: 0.4rem 1.25rem; 
             background-color: var(--glass-button-color); 
@@ -92,7 +90,6 @@
             transform: scale(1.05); 
         }
         
-        /* المحتوى الرئيسي و بطاقة الزجاج */
         .main-content {
             display: flex;
             justify-content: center;
@@ -210,7 +207,7 @@
         </div>
         
         <div>
-            <button class="nav-button" onclick="resetForm()"><i class="fas fa-redo"></i> تسجيل جديد</button>
+            <button class="nav-button" onclick="resetForm()"><i class="fas fa-redo"></i> تسجيل مادة أخرى</button>
         </div>
     </nav>
 
@@ -220,11 +217,11 @@
             <h2 id="card-title"><i class="fas fa-user-plus"></i> نموذج التسجيل الأولي</h2>
 
             <div id="registration-form">
-                <label for="fullName"><i class="fas fa-user"></i> الاسم الثلاثي:</label>
+                <label for="fullName"><i class="fas fa-user"></i> الاسم واللقب:</label>
                 <input type="text" id="fullName" required>
 
                 <label for="stage"><i class="fas fa-school"></i> المرحلة الدراسية:</label>
-                <select id="stage" required>
+                <select id="stage" required onchange="updateBranches()">
                     <option value="" disabled selected>اختر المرحلة</option>
                     <option value="الابتدائية">الابتدائية</option>
                     <option value="المتوسطة">المتوسطة</option>
@@ -240,33 +237,30 @@
                     <option value="اللغة العربية">اللغة العربية</option>
                 </select>
                 
-                 <label for="branch"><i class="fas fa-map-marker-alt"></i> الفرع/الشعبة:</label>
+                 <label for="branch"><i class="fas fa-map-marker-alt"></i> الشعبة/التخصص:</label>
                 <select id="branch" required>
-                    <option value="" disabled selected>اختر الفرع/الشعبة</option>
-                    <option value="الفرع_أ">الفرع أ (الصباحي)</option>
-                    <option value="الفرع_ب">الفرع ب (المسائي)</option>
-                </select>
+                    <option value="موحد">موحد (للمراحل الدنيا)</option>
+                    </select>
 
-                <button onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
+                <button onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال طلب الانضمام</button>
             </div>
 
             <div id="tracking-section" style="display: none;">
                 <h2 style="color: var(--accent-color); text-align: center; margin-bottom: 20px;"><i class="fas fa-search"></i> متابعة حالة طلبك</h2>
-                <p style="margin: 15px 0; text-align: center;">تم تسجيل طلبك برقم: <strong id="requestIdDisplay" style="color: var(--primary-color);"></strong></p>
+                <p style="margin: 15px 0; text-align: center;">رقم طلبك الحالي هو: <strong id="requestIdDisplay" style="color: var(--primary-color);"></strong></p>
                 <button onclick="checkStatus()" style="background-color: var(--primary-color); color: var(--pure-black);"><i class="fas fa-sync-alt"></i> تحديث الحالة</button>
 
                 <div id="status-section">
                     <p id="statusMessage" class="status-message status-pending">الرجاء الضغط على تحديث الحالة...</p>
                     
                     <div id="approved-details" style="display: none; text-align: right;">
-                        <p style="color: var(--success-color); font-size: 1.2rem;"><i class="fas fa-check-circle"></i> تم تسجيلك بنجاح! الدفع مؤكد.</p>
+                        <p style="color: var(--success-color); font-size: 1.2rem;"><i class="fas fa-check-circle"></i> تم القبول! أهلاً بك في أكاديمية المعالي.</p>
                         <p><strong>الطالب:</strong> <span id="studentName"></span></p>
-                        <p><strong>المرحلة/المادة:</strong> <span id="studentCourse"></span></p>
-                        <p><strong>الفرع/الشعبة:</strong> <span id="studentBranch"></span></p>
+                        <p><strong>المرحلة/الشعبة:</strong> <span id="studentCourse"></span> - <span id="studentBranch"></span></p>
 
                         <h3 style="margin-top: 20px; color: var(--accent-color);">كود الدخول (QR Code)</h3>
                         <div id="qrcode"></div>
-                        <small style="color: gray;">يرجى حفظ هذا الكود لإظهاره عند الدخول.</small>
+                        <small style="color: gray;">**مهم:** يرجى إظهار هذا الكود لموظف الإدارة عند الدخول.</small>
                     </div>
                 </div>
             </div>
@@ -277,7 +271,39 @@
         const API_BASE = '/api';
         let currentRequestId = localStorage.getItem('academyRequestId');
 
+        // وظيفة تحديث خيارات الشعبة بناءً على المرحلة
+        function updateBranches() {
+            const stage = document.getElementById('stage').value;
+            const branchSelect = document.getElementById('branch');
+            branchSelect.innerHTML = '';
+            
+            let options = [];
+
+            if (stage === 'الثانوية') {
+                options = [
+                    { value: 'علمي', text: 'علمي' },
+                    { value: 'أدبي', text: 'أدبي' },
+                    { value: 'مهني', text: 'مهني' }
+                ];
+            } else {
+                // الابتدائية والمتوسطة
+                options = [
+                    { value: 'موحد', text: 'موحد' }
+                ];
+            }
+
+            options.forEach(opt => {
+                const optionElement = document.createElement('option');
+                optionElement.value = opt.value;
+                optionElement.textContent = opt.text;
+                branchSelect.appendChild(optionElement);
+            });
+            // اختيار الأول افتراضياً
+            branchSelect.selectedIndex = 0;
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
+            updateBranches(); // تهيئة الخيارات عند التحميل
             if (currentRequestId) {
                 document.getElementById('card-title').textContent = 'متابعة حالة الطلب الحالي';
                 document.getElementById('registration-form').style.display = 'none';
@@ -288,12 +314,15 @@
         });
 
         function resetForm() {
-            if (confirm('هل أنت متأكد من بدء عملية تسجيل جديدة لمادة أخرى؟ سيتم حفظ رقم طلبك القديم.')) {
-                // لا نمسح الـ localStorage لكي يتمكن الطالب من متابعة طلبه القديم
-                // لكننا نعيد الواجهة إلى وضع التسجيل
+            if (confirm('هل تريد فعلاً بدء عملية تسجيل جديدة لمادة أخرى؟ سيتم حفظ رقم طلبك القديم للمتابعة.')) {
                 document.getElementById('card-title').textContent = 'نموذج التسجيل الأولي';
                 document.getElementById('registration-form').style.display = 'block';
                 document.getElementById('tracking-section').style.display = 'none';
+                // إعادة تعيين النموذج (اختياري)
+                document.getElementById('fullName').value = '';
+                document.getElementById('stage').selectedIndex = 0;
+                document.getElementById('subject').selectedIndex = 0;
+                updateBranches();
             }
         }
 
@@ -304,7 +333,7 @@
             const branch = document.getElementById('branch').value;
 
             if (!fullName || !stage || !subject || !branch) {
-                alert('الرجاء تعبئة جميع الحقول.');
+                alert('الرجاء تعبئة جميع حقول التسجيل بشكل كامل.');
                 return;
             }
 
@@ -325,13 +354,13 @@
                     document.getElementById('registration-form').style.display = 'none';
                     document.getElementById('tracking-section').style.display = 'block';
                     document.getElementById('requestIdDisplay').textContent = currentRequestId;
-                    alert(`تم إرسال طلبك! رقم طلبك هو: ${currentRequestId}. يرجى حفظه.`);
+                    alert(result.message + ` رقم طلبك: ${currentRequestId}`);
                     checkStatus();
                 } else {
                     alert(`فشل التسجيل: ${result.message}`);
                 }
             } catch (error) {
-                alert('حدث خطأ في الاتصال بالخادم.');
+                alert('حدث خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.');
             }
         }
 
@@ -342,7 +371,7 @@
             const approvedDetailsEl = document.getElementById('approved-details');
             const qrcodeContainer = document.getElementById('qrcode');
             
-            statusMessageEl.textContent = 'جاري التحقق من الحالة...';
+            statusMessageEl.textContent = 'جاري التحقق من الحالة... نرجو الانتظار.';
             statusMessageEl.className = 'status-message status-pending';
             approvedDetailsEl.style.display = 'none';
             qrcodeContainer.innerHTML = '';
@@ -355,16 +384,14 @@
                     const status = result.status;
                     
                     if (status === 'approved') {
-                        statusMessageEl.textContent = 'تهانينا! تمت الموافقة على طلبك والدفع مؤكد.';
+                        statusMessageEl.textContent = '🎉 حالة طلبك: تمت الموافقة! يمكنك الآن الحصول على كود الدخول.';
                         statusMessageEl.className = 'status-message status-approved';
                         approvedDetailsEl.style.display = 'block';
 
-                        // ملء بيانات الطالب
                         document.getElementById('studentName').textContent = result.fullName;
-                        document.getElementById('studentCourse').textContent = `${result.stage} - ${result.subject}`;
+                        document.getElementById('studentCourse').textContent = result.stage;
                         document.getElementById('studentBranch').textContent = result.branch;
                         
-                        // توليد QR Code
                         qrcodeContainer.innerHTML = ''; 
                         new QRCode(qrcodeContainer, {
                             text: result.barcode,
@@ -376,18 +403,18 @@
                         });
 
                     } else if (status === 'pending') {
-                        statusMessageEl.textContent = 'طلبك قيد المراجعة حالياً من قبل الإدارة. يرجى المتابعة لاحقاً.';
+                        statusMessageEl.textContent = '⏳ حالة طلبك: معلق. طلبك قيد المراجعة حالياً من قبل الإدارة. شكراً لصبرك.';
                         statusMessageEl.className = 'status-message status-pending';
                     } else if (status === 'rejected') {
-                        statusMessageEl.textContent = 'عذراً، تم رفض طلب التسجيل الخاص بك.';
+                        statusMessageEl.textContent = '❌ عذراً، تم رفض طلب التسجيل الخاص بك. يمكنك التواصل مع الإدارة للاستفسار.';
                         statusMessageEl.className = 'status-message status-rejected';
                     }
                 } else {
-                    statusMessageEl.textContent = 'فشل في العثور على حالة الطلب.';
+                    statusMessageEl.textContent = '⚠️ فشل في العثور على رقم الطلب هذا. قد يكون غير صحيح.';
                     statusMessageEl.className = 'status-message status-rejected';
                 }
             } catch (error) {
-                statusMessageEl.textContent = 'خطأ في الاتصال بالخادم للتحقق من الحالة.';
+                statusMessageEl.textContent = '🛑 خطأ في الاتصال بالخادم للتحقق من الحالة.';
                 statusMessageEl.className = 'status-message status-rejected';
             }
         }
