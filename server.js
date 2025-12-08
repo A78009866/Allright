@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'; 
-import { v4 as uuidv4 } from 'uuid'; // لإنشاء معرّفات فريدة (سنحتاج npm install uuid)
+import { v4 as uuidv4 } from 'uuid'; // وحدة UUID ضرورية لإنشاء IDs فريدة
 
 // 1. تهيئة dotenv
 dotenv.config();
@@ -13,17 +13,16 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// *تحديث: نفترض أن index.html و admin.html في نفس المجلد حاليًا للتبسيط*
-const INDEX_FILE_PATH = path.join(__dirname, 'index.html'); 
-const ADMIN_FILE_PATH = path.join(__dirname, 'admin.html'); 
+// ******* التصحيح: تحديد مسار مجلد views *******
+const VIEWS_DIR = path.join(__dirname, 'views');
+const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html'); 
+const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
+// **********************************************
+
+let enrollmentRequests = []; // قاعدة بيانات وهمية لتخزين الطلبات
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// قاعدة بيانات وهمية في الذاكرة لتخزين الطلبات
-// الحالة (status): pending (معلق), approved (موافق عليه), rejected (مرفوض)
-// paymentStatus: unpaid (لم يتم الدفع), paid (تم الدفع)
-let enrollmentRequests = [];
 
 // 2. تفعيل Body-parser لقراءة بيانات JSON
 app.use(express.json());
@@ -35,19 +34,22 @@ app.use(express.json());
 // واجهة الطالب
 app.get('/', (req, res) => {
     fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
-        if (err) return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html</h1>');
+        if (err) {
+             console.error(`❌ خطأ في قراءة ملف index.html: ${err.message}`);
+             // رسالة خطأ موجهة للتأكد من المسار
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html. يرجى التأكد من وجوده في مجلد views/</h1>');
+        }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.send(data);
     });
 });
 
-// واجهة الأدمن (تتطلب حماية في بيئة حقيقية)
+// واجهة الأدمن 
 app.get('/admin', (req, res) => {
     fs.readFile(ADMIN_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
              console.error(`❌ خطأ في قراءة ملف admin.html: ${err.message}`);
-             // إذا لم يكن ملف admin.html موجودًا بعد، قم بإخبار المستخدم
-             return res.status(500).send('<h1>خطأ 500: يجب إنشاء ملف admin.html أولاً.</h1>');
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على admin.html. يرجى التأكد من وجوده في مجلد views/</h1>');
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.send(data);
@@ -77,16 +79,11 @@ app.post('/api/register', (req, res) => {
     };
     
     enrollmentRequests.push(newRequest);
-
-    console.log(`\n🎉 طلب تسجيل جديد معلق (${newRequest.id}): ${newRequest.fullName}`);
-    
-    // إرجاع ID الطلب للطالب لمتابعة حالته
     res.json({ success: true, message: 'تم إرسال طلبك. حالته معلق.', requestId: newRequest.id });
 });
 
 // 4.2. جلب طلبات التسجيل (للأدمن)
 app.get('/api/requests', (req, res) => {
-    // إرسال نسخة من القائمة لتجنب التعديل المباشر غير المقصود
     res.json(enrollmentRequests.map(req => ({ ...req })));
 });
 
@@ -103,13 +100,12 @@ app.post('/api/approve', (req, res) => {
          return res.json({ success: true, message: 'تمت الموافقة عليه مسبقًا.' });
     }
     
-    // توليد كود بار فريد بعد الموافقة
+    // توليد كود بار فريد بعد الموافقة (محاكاة)
     const barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
     
     request.status = 'approved';
     request.barcode = barcode; 
     
-    console.log(`\n✅ تمت الموافقة على الطلب ${id}. كود البار: ${barcode}`);
     res.json({ success: true, message: 'تمت الموافقة وتوليد كود البار.', barcode });
 });
 
@@ -125,7 +121,6 @@ app.post('/api/reject', (req, res) => {
     request.status = 'rejected';
     request.barcode = null; 
     
-    console.log(`\n❌ تم رفض الطلب ${id}.`);
     res.json({ success: true, message: 'تم رفض طلب التسجيل.' });
 });
 
@@ -138,15 +133,12 @@ app.post('/api/check-status', (req, res) => {
         return res.json({ success: false, status: 'Invalid', message: 'كود غير صالح أو لم تتم الموافقة عليه بعد.', barcode });
     }
     
-    // يمكن هنا التبديل بين حالتي الدفع
-    // محاكاة التبديل لغرض الاختبار (في الإنتاج يكون زر منفصل)
+    // تبديل حالة الدفع بين مدفوع وغير مدفوع لغرض التجربة
     if (request.paymentStatus === 'unpaid') {
         request.paymentStatus = 'paid';
-        console.log(`\n💰 تم تسجيل الدفع بنجاح لكود: ${barcode}`);
         return res.json({ success: true, status: 'paid', message: 'تم تسجيل الدفع بنجاح.', request: request });
     } else {
         request.paymentStatus = 'unpaid';
-        console.log(`\n💸 تم إعادة تعيين حالة الدفع إلى "لم يتم الدفع" لكود: ${barcode}`);
         return res.json({ success: true, status: 'unpaid', message: 'تم إلغاء حالة الدفع (للتجربة).', request: request });
     }
 
@@ -176,6 +168,4 @@ app.get('/api/status/:id', (req, res) => {
 // 5. تشغيل الخادم
 app.listen(PORT, () => {
     console.log(`🚀 خادم أكاديمية المعالي يعمل على http://localhost:${PORT}`);
-    console.log(`💻 لوحة تحكم الأدمن: http://localhost:${PORT}/admin`);
-    console.log(`💡 [هام]: تذكر تشغيل 'npm install uuid' لاستخدام هذا الكود.`);
 });
