@@ -19,6 +19,7 @@
             --danger-color: #c0392b;
             --pending-color: #f1c40f;
             --bg-color: #1e1e1e;
+            --glass-bg-color: rgba(0, 0, 0, 0.7); 
         }
 
         * {
@@ -38,14 +39,17 @@
         .container {
             max-width: 1200px;
             margin: auto;
-            background: var(--primary-light);
+            background: var(--glass-bg-color);
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         h1 {
-            color: var(--accent-color);
+            color: var(--primary-color);
             text-align: center;
             margin-bottom: 30px;
         }
@@ -88,6 +92,9 @@
         }
         
         .request-info { flex-grow: 1; }
+        .request-info p { margin: 5px 0; font-size: 0.95rem; }
+        .request-info strong { color: var(--accent-color); }
+        
         .request-actions button {
             padding: 10px 20px;
             margin-right: 10px;
@@ -99,6 +106,7 @@
 
         .btn-approve { background-color: var(--success-color); color: white; }
         .btn-reject { background-color: var(--danger-color); color: white; }
+        
         .status-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -108,6 +116,7 @@
             font-size: 0.8rem;
         }
         .status-paid { background-color: var(--success-color); }
+        .status-unpaid { background-color: var(--danger-color); }
         
         /* Scanner Tab */
         #scanner-tab {
@@ -131,14 +140,16 @@
             max-width: 300px;
         }
         
-        #scan-area {
+        /* المنطقة التي ستظهر فيها الكاميرا */
+        #interactive.viewport {
             position: relative;
             margin: 20px auto;
             width: 100%;
             max-width: 500px;
-            height: 300px; /* حجم افتراضي لشاشة الكاميرا */
+            height: 300px; 
             border: 2px solid var(--primary-color);
             background: #000;
+            overflow: hidden; /* مهم للتحكم في الكاميرا */
         }
         
         #scan-result-card {
@@ -181,12 +192,11 @@
         </div>
 
         <div id="scanner-tab" class="tab-content" style="display: none;">
-            <h2><i class="fas fa-barcode"></i> فحص كود الدخول</h2>
+            <h2><i class="fas fa-barcode"></i> فحص كود الدخول عبر الكاميرا</h2>
             
             <p id="scan-messages">لم يتم تشغيل الكاميرا بعد.</p>
             
-            <div id="scan-area">
-                </div>
+            <div id="interactive" class="viewport"></div>
             
             <button id="scan-btn" onclick="toggleScanner()"><i class="fas fa-video"></i> تشغيل الماسح</button>
             
@@ -219,8 +229,7 @@
            ---------------------------------------------------------------------- */
         
         async function fetchRequests() {
-            // (كود تحميل الطلبات وإنشاء بطاقات الطلبات - تم نسخه من الكود السابق)
-             const list = document.getElementById('requests-list');
+            const list = document.getElementById('requests-list');
             list.innerHTML = '<p style="text-align: center; color: var(--pending-color);">جاري تحميل الطلبات...</p>';
             
             try {
@@ -259,11 +268,9 @@
             } catch (error) {
                 list.innerHTML = '<p style="text-align: center; color: var(--danger-color);">فشل تحميل الطلبات. تأكد من أن الخادم يعمل.</p>';
             }
-            // (نهاية كود تحميل الطلبات)
         }
         
         function createRequestCard(req) {
-            // (كود إنشاء بطاقة الطلب - تم نسخه من الكود السابق)
              const card = document.createElement('div');
             card.classList.add('request-card');
             
@@ -280,7 +287,7 @@
             info.innerHTML = `
                 <p><strong>الاسم:</strong> ${req.fullName}</p>
                 <p><strong>المرحلة/المادة:</strong> ${req.stage} - ${req.subject}</p>
-                <p><strong>الفرع:</strong> ${req.branch || 'غير محدد'}</p>
+                <p><strong>الفرع/الشعبة:</strong> ${req.branch || 'غير محدد'}</p>
                 <p><strong>الحالة:</strong> <span style="color: ${req.status === 'approved' ? 'var(--success-color)' : req.status === 'rejected' ? 'var(--danger-color)' : 'var(--pending-color)'}">${req.status === 'pending' ? 'معلق' : req.status === 'approved' ? 'موافق عليه' : 'مرفوض'}</span></p>
                 ${req.barcode ? `<p><strong>كود البار:</strong> <code style="color: var(--accent-color); font-size: 0.9rem; direction: ltr;">${req.barcode}</code></p> 
                                   <p><strong>الدفع:</strong> <span class="status-badge status-${req.paymentStatus}">${req.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع'}</span></p>` : ''}
@@ -309,7 +316,6 @@
             
             card.appendChild(actions);
             return card;
-            // (نهاية كود إنشاء بطاقة الطلب)
         }
 
         async function handleAction(id, action) {
@@ -347,15 +353,15 @@
         function startScanner() {
             document.getElementById('scan-messages').textContent = 'جاري طلب إذن الكاميرا...';
             document.getElementById('scan-btn').textContent = 'إيقاف الماسح';
-            document.getElementById('scan-btn').classList.add('btn-reject');
-            document.getElementById('scan-btn').classList.remove('btn-approve');
+            document.getElementById('scan-btn').style.backgroundColor = 'var(--danger-color)';
+            document.getElementById('scan-btn').style.color = 'white';
             document.getElementById('scan-result-card').style.display = 'none';
 
             Quagga.init({
                 inputStream : {
                     name : "Live",
                     type : "LiveStream",
-                    target: document.querySelector('#scan-area'),
+                    target: document.querySelector('#interactive'),
                     constraints: {
                         facingMode: "environment" // استخدام الكاميرا الخلفية
                     }
@@ -365,7 +371,7 @@
                 }
             }, function(err) {
                 if (err) {
-                    console.error(err);
+                    console.error("Quagga initialization error:", err);
                     document.getElementById('scan-messages').textContent = '⚠️ خطأ: فشل تشغيل الكاميرا. يرجى التأكد من الأذونات.';
                     stopScanner();
                     return
@@ -376,11 +382,11 @@
             });
 
             Quagga.onDetected(function(result) {
-                Quagga.stop(); // إيقاف الكاميرا فور المسح
+                Quagga.stop(); 
                 scannerIsRunning = false;
                 
                 const code = result.codeResult.code;
-                document.getElementById('scan-messages').textContent = `تم مسح الكود: ${code}`;
+                document.getElementById('scan-messages').textContent = `تم مسح الكود بنجاح. جاري التحقق...`;
                 checkScannedCode(code);
             });
         }
@@ -390,13 +396,13 @@
             scannerIsRunning = false;
             document.getElementById('scan-messages').textContent = 'لم يتم تشغيل الكاميرا بعد.';
             document.getElementById('scan-btn').textContent = 'تشغيل الماسح';
-            document.getElementById('scan-btn').classList.remove('btn-reject');
-            document.getElementById('scan-btn').classList.add('btn-approve');
+            document.getElementById('scan-btn').style.backgroundColor = 'var(--primary-color)';
+            document.getElementById('scan-btn').style.color = 'var(--primary-dark)';
         }
 
         async function checkScannedCode(barcode) {
             const resultDiv = document.getElementById('scan-result-card');
-            resultDiv.style.display = 'none';
+            resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<p style="text-align: center; color: var(--pending-color);"><i class="fas fa-spinner fa-spin"></i> جاري التحقق من حالة الكود...</p>';
             
             try {
@@ -407,7 +413,6 @@
                 });
 
                 const result = await response.json();
-                resultDiv.style.display = 'block';
                 
                 if (result.success && result.status !== 'Invalid') {
                     const req = result.request;
@@ -420,26 +425,25 @@
                         <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 0;">
                         <p><strong>الطالب:</strong> ${req.fullName}</p>
                         <p><strong>المرحلة/المادة:</strong> ${req.stage} - ${req.subject}</p>
-                        <p><strong>الفرع:</strong> ${req.branch || 'غير محدد'}</p>
+                        <p><strong>الفرع/الشعبة:</strong> ${req.branch || 'غير محدد'}</p>
                         <p><strong>حالة الدفع:</strong> <span class="status-badge status-paid">${req.paymentStatus === 'paid' ? 'مدفوع' : 'غير مدفوع'}</span></p>
                     `;
+                    document.getElementById('scan-messages').textContent = `تم التحقق من الكود بنجاح.`;
                 } else {
                      resultDiv.innerHTML = `<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> فشل التحقق: ${result.message}</p>`;
+                     document.getElementById('scan-messages').textContent = `فشل في العثور على حالة الكود.`;
                 }
 
             } catch (error) {
                 resultDiv.innerHTML = '<p style="color: var(--danger-color);">فشل الاتصال بالخادم للتحقق.</p>';
-                resultDiv.style.display = 'block';
             }
             
-            // إعادة تشغيل الماسح للقيام بمسح آخر
-            startScanner();
+            // إعادة تشغيل الماسح للقيام بمسح آخر بعد تأخير بسيط
+            setTimeout(startScanner, 2000); 
         }
         
-        // تحميل الطلبات عند بدء تشغيل لوحة التحكم
         document.addEventListener('DOMContentLoaded', () => {
             fetchRequests();
-            document.getElementById('scan-btn').classList.add('btn-approve');
         });
     </script>
 
