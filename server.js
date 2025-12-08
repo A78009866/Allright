@@ -1,46 +1,47 @@
 // server.js
+
 // استدعاء الوحدات المطلوبة
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs'; // لاستخدام وظيفة قراءة الملفات
 
-// تهيئة dotenv لقراءة المتغيرات البيئية من ملف .env
+// 1. تهيئة dotenv لقراءة المتغيرات البيئية من ملف .env
 dotenv.config();
 
-// الحصول على المسار المطلق للملف الحالي (مطلوب عند استخدام 'type: "module"' في package.json)
+// إعداد المسارات المطلوبة
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// تحديد مسار ملف HTML داخل مجلد views
+const INDEX_FILE_PATH = path.join(__dirname, 'views', 'index.html');
 
 const app = express();
-// استخدام المتغير البيئي PORT، أو 3000 كقيمة افتراضية
 const PORT = process.env.PORT || 3000;
 
-// تعيين محرك القوالب (EJS كمثال، لكن يمكن استخدام plain HTML)
-// إذا كنت تريد خدمة ملفات HTML ثابتة فقط، يمكن حذف هذا الجزء واستخدام express.static
-app.set('view engine', 'html');
-app.engine('html', (filePath, options, callback) => {
-    import('fs').then(fs => {
-        fs.readFile(filePath, 'utf-8', callback);
+// --- إزالة: لا يوجد استخدام لـ express.static لخدمة مجلد public ---
+
+// 2. التوجيه للصفحة الرئيسية (/)
+app.get('/', (req, res) => {
+    // قراءة ملف index.html وإرساله كاستجابة
+    fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
+        if (err) {
+            // في حالة حدوث خطأ (مثل عدم العثور على الملف)
+            console.error(`❌ خطأ في قراءة ملف index.html: ${err.message}`);
+            return res.status(500).send('<h1>خطأ 500: لم يتم العثور على الصفحة الرئيسية. تأكد من وجود الملف في مجلد views/index.html</h1>');
+        }
+        
+        // إرسال محتوى الملف إلى المتصفح
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(data);
     });
 });
 
-// خدمة الملفات الثابتة (CSS، صور، JavaScript) من مجلد 'public'
-app.use(express.static(path.join(__dirname, 'views)));
+// 3. رسالة تأكيد القراءة والتشغيل
+console.log(`✅ تم تحميل متغير بيئي: DATABASE_URL = ${process.env.DATABASE_URL || 'غير محدد'}`);
 
-// التوجيه للصفحة الرئيسية
-app.get('/', (req, res) => {
-    // عرض ملف index.html
-    res.render(path.join(__dirname, 'views', 'index.html'), {});
-});
-
-// مثال على قراءة وعرض متغير بيئي (للتأكد من عمل dotenv)
-console.log(`✅ تم تحميل متغير بيئي: DATABASE_URL = ${process.env.DATABASE_URL}`);
-console.log(`⚙️  الخادم يعمل على المنفذ: ${PORT}`);
-
-// تشغيل الخادم
+// 4. تشغيل الخادم
 app.listen(PORT, () => {
-    console.log(`🚀 خادم أكاديمية الأعالي يعمل على http://localhost:${PORT}`);
+    console.log(`🚀 خادم أكاديمية المعالي يعمل على http://localhost:${PORT}`);
+    console.log(`💡 الخادم يخدم ملف index.html فقط من المسار: ${INDEX_FILE_PATH}`);
 });
-
-
