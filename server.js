@@ -13,13 +13,15 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ******* التصحيح: تحديد مسار مجلد views *******
+// تحديد مسار مجلد views
 const VIEWS_DIR = path.join(__dirname, 'views');
 const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html'); 
 const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
-// **********************************************
 
-let enrollmentRequests = []; // قاعدة بيانات وهمية لتخزين الطلبات
+// قاعدة بيانات وهمية في الذاكرة لتخزين الطلبات
+// الحالة (status): pending (معلق), approved (موافق عليه), rejected (مرفوض)
+// paymentStatus: unpaid (لم يتم الدفع), paid (تم الدفع)
+let enrollmentRequests = [];
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,7 +38,6 @@ app.get('/', (req, res) => {
     fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
              console.error(`❌ خطأ في قراءة ملف index.html: ${err.message}`);
-             // رسالة خطأ موجهة للتأكد من المسار
              return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html. يرجى التأكد من وجوده في مجلد views/</h1>');
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -68,13 +69,12 @@ app.post('/api/register', (req, res) => {
         return res.status(400).json({ success: false, message: 'بيانات التسجيل غير كاملة.' });
     }
     
-    // إنشاء طلب جديد
     const newRequest = {
-        id: uuidv4(), // معرّف فريد للطلب
+        id: uuidv4(), 
         ...data,
-        status: 'pending', // حالة معلقة دائمًا في البداية
-        barcode: null, // لا يوجد كود بار حتى الموافقة
-        paymentStatus: 'unpaid', // لم يتم الدفع بعد
+        status: 'pending', 
+        barcode: null, 
+        paymentStatus: 'unpaid', // يبدأ دائماً بـ "لم يتم الدفع"
         timestamp: new Date().toISOString()
     };
     
@@ -87,7 +87,7 @@ app.get('/api/requests', (req, res) => {
     res.json(enrollmentRequests.map(req => ({ ...req })));
 });
 
-// 4.3. الموافقة على طلب (للأدمن)
+// 4.3. الموافقة على طلب (للأدمن) - الموافقة تعني الدفع وتوليد الباركود
 app.post('/api/approve', (req, res) => {
     const { id } = req.body;
     const request = enrollmentRequests.find(r => r.id === id);
@@ -96,17 +96,19 @@ app.post('/api/approve', (req, res) => {
         return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
     }
     
-    if (request.status === 'approved') {
-         return res.json({ success: true, message: 'تمت الموافقة عليه مسبقًا.' });
+    if (request.status === 'approved' && request.paymentStatus === 'paid') {
+         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا.' });
     }
     
-    // توليد كود بار فريد بعد الموافقة (محاكاة)
+    // 1. توليد كود بار فريد (محاكاة QR Code)
     const barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
     
+    // 2. تحديث الحالة
     request.status = 'approved';
+    request.paymentStatus = 'paid'; // ******* تم تعيين الدفع تلقائياً *******
     request.barcode = barcode; 
     
-    res.json({ success: true, message: 'تمت الموافقة وتوليد كود البار.', barcode });
+    res.json({ success: true, message: 'تمت الموافقة وتسجيل الدفع وتوليد كود البار.', barcode });
 });
 
 // 4.4. رفض طلب (للأدمن)
@@ -133,13 +135,12 @@ app.post('/api/check-status', (req, res) => {
         return res.json({ success: false, status: 'Invalid', message: 'كود غير صالح أو لم تتم الموافقة عليه بعد.', barcode });
     }
     
-    // تبديل حالة الدفع بين مدفوع وغير مدفوع لغرض التجربة
-    if (request.paymentStatus === 'unpaid') {
-        request.paymentStatus = 'paid';
-        return res.json({ success: true, status: 'paid', message: 'تم تسجيل الدفع بنجاح.', request: request });
+    // عرض حالة الطالب
+    if (request.paymentStatus === 'paid') {
+        return res.json({ success: true, status: 'paid', message: 'تم تسجيل الطالب بنجاح (مدفوع).', request: request });
     } else {
-        request.paymentStatus = 'unpaid';
-        return res.json({ success: true, status: 'unpaid', message: 'تم إلغاء حالة الدفع (للتجربة).', request: request });
+        // هذا لن يحدث في سيناريو الموافقة التلقائية، ولكنه يترك للحماية
+        return res.json({ success: true, status: 'unpaid', message: 'الطالب موافق عليه ولكن لم يسجل الدفع بعد.', request: request });
     }
 
 });
@@ -153,7 +154,6 @@ app.get('/api/status/:id', (req, res) => {
         return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
     }
     
-    // إرجاع البيانات الهامة للطالب فقط
     res.json({
         success: true,
         status: request.status,
