@@ -4,35 +4,29 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs'; 
-import { v4 as uuidv4 } from 'uuid'; // وحدة UUID لإنشاء IDs فريدة
+import { v4 as uuidv4 } from 'uuid'; 
 
-// 1. تهيئة dotenv
 dotenv.config();
 
-// إعداد المسارات
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// تحديد مسار مجلد views
 const VIEWS_DIR = path.join(__dirname, 'views');
 const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html'); 
 const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
 
 // قاعدة بيانات وهمية في الذاكرة لتخزين الطلبات
-// الموافقة تعني تلقائياً (approved, paid)
 let enrollmentRequests = [];
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 2. تفعيل Body-parser لقراءة بيانات JSON
 app.use(express.json());
 
 // ----------------------------------------------------------------------
-// 3. مسارات الواجهات الأمامية (Serving HTML)
+// 1. مسارات الواجهات الأمامية (Serving HTML)
 // ----------------------------------------------------------------------
 
-// واجهة الطالب
 app.get('/', (req, res) => {
     fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
@@ -43,7 +37,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// واجهة الأدمن 
 app.get('/admin', (req, res) => {
     fs.readFile(ADMIN_FILE_PATH, 'utf-8', (err, data) => {
         if (err) {
@@ -56,17 +49,16 @@ app.get('/admin', (req, res) => {
 
 
 // ----------------------------------------------------------------------
-// 4. نقاط نهاية API لإدارة الطلبات
+// 2. نقاط نهاية API لإدارة الطلبات
 // ----------------------------------------------------------------------
 
-// 4.1. استقبال طلب تسجيل جديد (الطالب)
+// 2.1. استقبال طلب تسجيل جديد (الطالب)
 app.post('/api/register', (req, res) => {
     const data = req.body;
     if (!data.fullName || !data.subject || !data.stage || !data.branch) {
-        return res.status(400).json({ success: false, message: 'بيانات التسجيل غير كاملة.' });
+        return res.status(400).json({ success: false, message: 'الرجاء تعبئة حقول (الاسم واللقب، المرحلة، المادة، والشعبة) بشكل كامل.' });
     }
     
-    // دعم إعادة التسجيل: إذا كان الطالب موجوداً بمعرف (ID) سابق، يتم تسجيل طلب جديد له
     const newRequest = {
         id: uuidv4(), 
         ...data,
@@ -77,96 +69,93 @@ app.post('/api/register', (req, res) => {
     };
     
     enrollmentRequests.push(newRequest);
-    res.json({ success: true, message: 'تم إرسال طلبك. حالته معلق.', requestId: newRequest.id });
+    res.json({ success: true, message: '🎉 تهانينا! تم استلام طلب تسجيلك بنجاح. يمكنك متابعة حالته في هذه الصفحة.', requestId: newRequest.id });
 });
 
-// 4.2. جلب طلبات التسجيل (للأدمن)
+// 2.2. جلب طلبات التسجيل (للأدمن)
 app.get('/api/requests', (req, res) => {
     res.json(enrollmentRequests.map(req => ({ ...req })));
 });
 
-// 4.3. الموافقة على طلب (للأدمن) - الموافقة تعني الدفع وتوليد الباركود/QR
+// 2.3. الموافقة على طلب (للأدمن) 
 app.post('/api/approve', (req, res) => {
     const { id } = req.body;
     const request = enrollmentRequests.find(r => r.id === id);
 
     if (!request) {
-        return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
+        return res.status(404).json({ success: false, message: 'عذراً، الطلب غير موجود في النظام.' });
     }
     
     if (request.status === 'approved') {
-         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا.', barcode: request.barcode });
+         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا لهذا الطلب.' });
     }
     
-    // توليد كود بار فريد (محاكاة QR Code)
     const barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
     
-    // تحديث الحالة: موافق + مدفوع + كود باركود
     request.status = 'approved';
     request.paymentStatus = 'paid'; 
     request.barcode = barcode; 
     
-    res.json({ success: true, message: 'تمت الموافقة وتسجيل الدفع وتوليد كود البار.', barcode });
+    res.json({ success: true, message: `✅ تمت الموافقة على طلب ${request.fullName} بنجاح. تم تأكيد الدفع وتوليد كود الدخول.`, barcode });
 });
 
-// 4.4. رفض طلب (للأدمن)
+// 2.4. رفض طلب (للأدمن)
 app.post('/api/reject', (req, res) => {
     const { id } = req.body;
     const request = enrollmentRequests.find(r => r.id === id);
 
     if (!request) {
-        return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
+        return res.status(404).json({ success: false, message: 'عذراً، الطلب غير موجود في النظام.' });
     }
     
     request.status = 'rejected';
     request.barcode = null; 
     
-    res.json({ success: true, message: 'تم رفض طلب التسجيل.' });
+    res.json({ success: true, message: `❌ تم رفض طلب التسجيل لـ ${request.fullName}.` });
 });
 
-// 4.5. التحقق من حالة الطلب باستخدام كود البار (ماسح الكود - للأدمن)
+// 2.5. التحقق من حالة الطلب باستخدام كود البار (ماسح الكود - للأدمن)
 app.post('/api/check-status', (req, res) => {
     const { barcode } = req.body;
     const request = enrollmentRequests.find(r => r.barcode === barcode);
 
     if (!request) {
-        return res.json({ success: false, status: 'Invalid', message: 'كود غير صالح أو لم تتم الموافقة عليه بعد.', barcode });
+        return res.json({ success: false, status: 'Invalid', message: 'كود الدخول غير صالح أو غير موجود في قاعدة بيانات الموافقات.' });
     }
     
     if (request.status !== 'approved') {
         return res.json({ 
             success: true, 
             status: request.status, 
-            message: `الطلب ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}`,
+            message: `⚠️ تنبيه: الطلب لـ ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}`,
             request: request
         });
     }
     
-    // في نظامنا، الموافقة تعني الدفع، لذا يكون دائماً مدفوع
     if (request.paymentStatus === 'paid') {
         return res.json({ 
             success: true, 
             status: 'paid', 
-            message: `✅ تم تسجيل دخول الطالب: ${request.fullName}. (مدفوع)`, 
+            message: `✅ تم تسجيل دخول الطالب: ${request.fullName}. مرحباً بك في شعبة ${request.branch}.`, 
             request: request 
         });
     } else {
          return res.json({ 
             success: true, 
             status: 'unpaid', 
-            message: `⚠️ الطالب ${request.fullName} موافق عليه ولكن الدفع غير مسجل! (حالة نادرة)`, 
+            message: `🔴 تنبيه: الطالب ${request.fullName} موافق عليه ولكن سجل الدفع يشير إلى عدم الدفع!`, 
             request: request 
         });
     }
 });
 
-// 4.6. جلب حالة طلب محدد (للطالب)
+// 2.6. جلب حالة طلب محدد (للطالب)
 app.get('/api/status/:id', (req, res) => {
     const { id } = req.params;
     const request = enrollmentRequests.find(r => r.id === id);
     
     if (!request) {
-        return res.status(404).json({ success: false, message: 'الطلب غير موجود.' });
+        return res.status(404).json({ success: false, message: 'عذراً، رقم الطلب هذا غير مسجل لدينا.' });
     }
     
     res.json({
@@ -177,11 +166,11 @@ app.get('/api/status/:id', (req, res) => {
         fullName: request.fullName,
         barcode: request.barcode,
         paymentStatus: request.paymentStatus,
-        branch: request.branch // إضافة الفرع
+        branch: request.branch
     });
 });
 
-// 5. تشغيل الخادم
+// 3. تشغيل الخادم
 app.listen(PORT, () => {
     console.log(`🚀 خادم أكاديمية المعالي يعمل على http://localhost:${PORT}`);
 });
