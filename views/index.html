@@ -317,8 +317,92 @@ footer{
   font-size:13px;  
   border-top: 1px solid var(--border-color);  
 }  
+  /* --- Custom Modal/Alert Styles --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px); /* تأثير الزجاج */
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+}
+
+.custom-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal-content {
+    background: rgba(10, 10, 10, 0.9); /* أسود شفاف */
+    padding: 30px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+.custom-modal-overlay.show .custom-modal-content {
+    transform: scale(1);
+}
+
+.modal-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    color: #10b981; /* لون النجاح */
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.modal-body {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    white-space: pre-line; /* للحفاظ على تنسيق السطور الجديدة (\n) */
+    margin-bottom: 20px;
+}
+
+.modal-close-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.modal-close-btn:hover {
+    background-color: #2563eb;
+}
+
 </style>  </head>  
-<body>  <div class="page">  
+<body>  
+  <div class="custom-modal-overlay" id="customModalOverlay">
+  <div class="custom-modal-content">
+    <svg class="modal-icon" id="modalIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <h3 class="modal-title" id="modalTitle"></h3>
+    <p class="modal-body" id="modalBody"></p>
+    <button class="modal-close-btn" onclick="closeCustomModal()">حسناً</button>
+  </div>
+</div>
+
+  <div class="page">  
   <header class="navbar">  
     <button class="menu-toggle" id="menuBtn">  
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>  
