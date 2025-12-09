@@ -39,9 +39,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // 5. لخدمة ملف HTML للواجهة الأمامية
+// 🔴 التعديل هنا لخدمة index.html من مجلد "views"
 app.get('/', (req, res) => {
-    // نفترض أن ملفك HTML يسمى index.html ويقع في نفس مجلد الخادم
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 // --- المسارات (API Endpoints) ---
