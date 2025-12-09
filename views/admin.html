@@ -1,324 +1,391 @@
 <!doctype html>
+
 <html lang="ar" dir="rtl">  
 <head>  
 <meta charset="utf-8">  
 <meta name="viewport" content="width=device-width,initial-scale=1">  
-<title>لوحة الإدارة (🔒)</title>
+<title>أكاديمية المعالي - لوحة الإدارة</title>  
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">  
 <style>  
-/* (حافظ على نفس أنماط CSS التي أرسلتها سابقاً في admin.html) */
 :root{  
   --bg: #0b0b0c;  
+  --drawer-bg: #151517;  
   --text-primary: #ffffff;  
   --text-secondary: #a1a1aa;  
   --border-color: rgba(255,255,255,0.08);  
   --accent-color: #3b82f6;   
-  --nav-height: 72px;  
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --pending-color: #f59e0b;
   --radius: 12px;  
 }  
-/* ... (كود CSS نفسه من admin.html السابق) ... */
+  
 *{box-sizing:border-box;}  
+  
 html,body{  
   height:100%;  
   margin:0;  
   font-family: "Tajawal", sans-serif;  
   background-color: var(--bg);  
-  background-image:   
-    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),  
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);  
   color: var(--text-primary);  
-  -webkit-font-smoothing:antialiased;  
-  direction: rtl;  
 }  
-.page{  
-  min-height:100vh;  
-  display:flex;  
-  flex-direction:column;
+  
+.site-container{  
+  padding: 20px;  
+  max-width: 1200px;  
+  margin: auto;  
 }  
-.navbar{  
-  height: var(--nav-height);  
-  display: flex;  
-  align-items: center;  
-  justify-content: space-between;  
-  padding: 0 20px;  
-  margin: 16px;  
-  border-radius: var(--radius);  
-  background: rgba(26, 26, 29, 0.85);   
-  backdrop-filter: blur(12px);  
-  border: 1px solid var(--border-color);  
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);  
-  position: relative;  
-  z-index: 1000;  
-}  
-.brand{  
-  display:flex;  
-  align-items:center;  
-  gap:14px;  
-  flex-shrink: 0;   
-}  
-.brand img{  
-  width:48px;  
-  height:48px;  
-  border-radius: 10px;  
-  object-fit: cover;  
-  border: 1px solid rgba(255,255,255,0.1);  
-}  
-.brand .title .name{  
-  font-weight: 800;  
-  font-size: 18px;  
-  color: #fff;  
-  line-height: 1.2;  
-}  
-.brand .title .tag{  
-  font-size: 13px;  
-  color: var(--text-secondary);  
-  font-weight: 400;  
-  margin-top: 2px;  
-}  
-.dashboard{
-    padding: 20px;
-    flex: 1;
+
+.header {
+    text-align: center;
+    padding: 40px 0 20px;
 }
-.dashboard h1{
-    font-size: 24px;
-    border-bottom: 2px solid var(--accent-color);
-    display: inline-block;
-    padding-bottom: 5px;
-    margin-bottom: 30px;
-}
-.card{
-    background: rgba(26, 26, 29, 0.6);
-    backdrop-filter: blur(8px);
-    border-radius: var(--radius);
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 20px;
-}
-.card h2{
-    font-size: 18px;
-    margin-top: 0;
+.header h1 {
+    font-size: 2.5rem;
     color: var(--accent-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    margin-bottom: 5px;
+}
+.header p {
+    color: var(--text-secondary);
+}
+
+.section{  
+  background-color: var(--drawer-bg);  
+  padding: 20px;  
+  border-radius: var(--radius);  
+  margin-bottom: 25px;  
+  border: 1px solid var(--border-color);
+}  
+  
+.section-title{  
+  font-size: 1.5rem;  
+  margin-top: 0;  
+  margin-bottom: 15px;  
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
 }
-.requests-table {
+
+.input-group input[type="text"], .input-group input[type="password"] {
+    flex-grow: 1;
+    padding: 12px;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+}
+
+.main-button {
+    background-color: var(--accent-color);
+    color: var(--text-primary);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.2s;
+}
+
+.main-button:hover {
+    background-color: #5c99ff;
+}
+
+#registrations-list {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    margin-top: 20px;
+    font-size: 0.9rem;
 }
-.requests-table th, .requests-table td {
+
+#registrations-list th, #registrations-list td {
     padding: 12px 15px;
     text-align: right;
     border-bottom: 1px solid var(--border-color);
 }
-.requests-table th {
-    background-color: rgba(255,255,255,0.05);
-    color: #fff;
-    font-weight: 600;
-}
-.requests-table tr:hover {
-    background-color: rgba(255,255,255,0.03);
-}
-.requests-table tbody tr:last-child td {
-    border-bottom: none;
-}
-.action-btn {
-    padding: 8px 15px;
-    margin: 5px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
-    font-family: inherit;
-    font-size: 13px;
-}
-.accept-btn {
-    background-color: #10b981; 
-    color: white;
-}
-.reject-btn {
-    background-color: #ef4444; 
-    color: white;
-}
-.accept-btn:hover { background-color: #059669; }
-.reject-btn:hover { background-color: #dc2626; }
-#loadingMessage {
+
+#registrations-list th {
+    background-color: var(--bg);
     color: var(--text-secondary);
-    text-align: center;
-    padding: 30px;
+    font-weight: 500;
 }
-#noRequests {
-    color: #fcd34d; 
+
+.status-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 700;
     text-align: center;
-    padding: 30px;
+    min-width: 80px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
-footer{  
-  text-align:center;  
-  padding:20px;  
-  color:var(--text-secondary);  
-  font-size:13px;  
-  border-top: 1px solid var(--border-color);
-  margin-top: auto;
-} 
+
+.status-accepted {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+.status-pending {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: var(--pending-color);
+    border: 1px solid var(--pending-color);
+}
+.status-rejected {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+.status-tag:hover {
+    opacity: 0.8;
+}
+
+.action-menu {
+    position: absolute;
+    background-color: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 50;
+    display: none;
+    padding: 5px;
+}
+
+.action-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 15px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    text-align: right;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.action-menu button:hover {
+    background-color: var(--bg);
+}
+
+#loading-indicator {
+    text-align: center;
+    padding: 20px;
+    display: none;
+}
+
+#admin-message-box {
+    margin-bottom: 20px;
+}
+
 </style>  
 </head>  
 <body>  
-<div class="page">  
-  <header class="navbar">  
-    <div class="brand">  
-      <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
-      <div class="title">  
-        <div class="name">لوحة تحكم الأكاديمية</div>  
-        <div class="tag">إدارة طلبات التسجيل (وصول سري)</div>  
-      </div>  
-    </div>  
-    <a href="/" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
-        ⬅️ العودة للصفحة الرئيسية
-    </a>
-  </header>  
 
-  <main class="dashboard">
-    <h1>طلبات التسجيل المعلقة</h1>
+<div class="site-container">  
+    <header class="header">
+        <h1>🔑 لوحة إدارة التسجيلات</h1>
+        <p>مراجعة طلبات الطلاب وتحديث حالتها.</p>
+    </header>
 
-    <div class="card">
-        <h2>📋 الطلبات قيد المراجعة</h2>
-        <p id="loadingMessage">جاري تحميل الطلبات...</p>
-        <p id="noRequests" style="display: none;">لا توجد طلبات تسجيل معلقة حالياً. النظام نظيف!</p>
+    <section class="section">
+        <h2 class="section-title">إدارة التسجيلات</h2>
+
+        <div class="input-group">
+            <input type="password" id="admin-secret-input" placeholder="أدخل مفتاح المسؤول السري (ADMIN_SECRET)" required>
+            <button id="fetch-registrations-btn" class="main-button" style="min-width: 100px;">جلب الطلبات</button>
+        </div>
         
-        <div style="overflow-x: auto;">
-            <table class="requests-table" id="pendingRequestsTable" style="display: none;">
+        <div id="admin-message-box" class="message-box secondary" style="display:none;"></div>
+        <div id="loading-indicator">🔄 جارٍ تحميل البيانات...</div>
+
+        <div id="table-container" style="overflow-x: auto;">
+            <table id="registrations-list">
                 <thead>
                     <tr>
-                        <th>الاسم الكامل</th>
+                        <th>الاسم</th>
                         <th>المستوى</th>
-                        <th>المادة المطلوبة</th>
-                        <th>رقم التواصل</th>
-                        <th>تاريخ الطلب</th>
-                        <th>الإجراء</th>
+                        <th>المادة</th>
+                        <th>الاتصال</th>
+                        <th>رقم التسجيل (ID)</th>
+                        <th>الحالة</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="registrations-body">
                     </tbody>
             </table>
         </div>
-    </div>
+    </section>
+</div>
 
-  </main>
+<div id="action-menu" class="action-menu">
+    <button data-status="accepted">قبول (Accepted)</button>
+    <button data-status="pending">قيد الانتظار (Pending)</button>
+    <button data-status="rejected">رفض (Rejected)</button>
+</div>
 
-  <footer>  
-    <span id="year"></span> © أكاديمية المعالي - لوحة الإدارة
-  </footer>  
-</div>  
+<script>  
+    const adminSecretInput = document.getElementById('admin-secret-input');
+    const fetchButton = document.getElementById('fetch-registrations-btn');
+    const registrationsBody = document.getElementById('registrations-body');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const adminMessageBox = document.getElementById('admin-message-box');
+    const actionMenu = document.getElementById('action-menu');
 
-<script>
-    document.getElementById('year').innerText = new Date().getFullYear();
+    let currentTargetTag = null; // لتخزين عنصر حالة التسجيل الذي تم النقر عليه
 
-    // 🔴 استخراج المفتاح السري من URL الصفحة
-    const pathParts = window.location.pathname.split('/');
-    const secretKey = pathParts[pathParts.length - 1]; 
-    
-    if (secretKey.length < 5) {
-        // رسالة تنبيه إذا لم يتم إدخال المفتاح السري بشكل صحيح
-        document.body.innerHTML = '<h1 style="color: #ef4444; text-align: center; margin-top: 50px;">وصول غير مصرح به. الرجاء استخدام الرابط السري الكامل.</h1>';
-        throw new Error("Secret Key Missing or Invalid");
+    function showAdminMessage(message, isError = false) {
+        adminMessageBox.className = isError ? 'message-box error' : 'message-box success';
+        adminMessageBox.innerHTML = message;
+        adminMessageBox.style.display = 'block';
     }
 
-    // بناء الهيدر الذي سيُرسل مع كل طلب
-    const headers = { 
-        'Content-Type': 'application/json',
-        'x-admin-secret': secretKey 
-    };
-
-    async function fetchPendingRequests() {
-        const loadingMessage = document.getElementById('loadingMessage');
-        const noRequests = document.getElementById('noRequests');
-        const table = document.getElementById('pendingRequestsTable');
-        const tbody = table.querySelector('tbody');
-
-        loadingMessage.style.display = 'block';
-        table.style.display = 'none';
-        tbody.innerHTML = '';
-
-        try {
-            const response = await fetch('/api/admin/pending', { headers });
-            const requests = await response.json();
-
-            loadingMessage.style.display = 'none';
-
-            if (!response.ok) {
-                if (response.status === 403) {
-                    loadingMessage.innerText = '🔒 فشل التحقق: المفتاح السري غير صحيح.';
-                } else {
-                    loadingMessage.innerText = `❌ فشل في جلب الطلبات: ${requests.message || response.statusText}`;
-                }
-                return;
-            }
-
-            if (requests.length === 0) {
-                noRequests.style.display = 'block';
-                return;
-            }
-
-            requests.forEach(req => {
-                const tr = document.createElement('tr');
-                const date = new Date(req.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                
-                tr.innerHTML = `
-                    <td>${req.name}</td>
-                    <td>${req.level} - ${req.year}</td>
-                    <td>${req.subject}</td>
-                    <td>${req.contact || '---'}</td>
-                    <td>${date}</td>
-                    <td>
-                        <button class="action-btn accept-btn" onclick="handleAction('${req.id}', 'accept')">قبول</button>
-                        <button class="action-btn reject-btn" onclick="handleAction('${req.id}', 'reject')">رفض</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            noRequests.style.display = 'none';
-            table.style.display = 'table';
-
-        } catch (error) {
-            loadingMessage.innerText = '❌ فشل في جلب الطلبات. تأكد من تشغيل الخادم.';
-            console.error('Fetching error:', error);
-        }
+    function hideActionMenu() {
+        actionMenu.style.display = 'none';
+        currentTargetTag = null;
     }
 
-    async function handleAction(id, action) {
-        if (!confirm(`هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} طلب التسجيل للطالب؟`)) {
+    // 1. جلب جميع التسجيلات من الخادم
+    async function fetchRegistrations() {
+        const adminSecret = adminSecretInput.value.trim();
+        if (!adminSecret) {
+            showAdminMessage('الرجاء إدخال مفتاح المسؤول السري أولاً.', true);
             return;
         }
 
-        const endpoint = `/api/admin/${action}/${id}`;
-        
+        loadingIndicator.style.display = 'block';
+        registrationsBody.innerHTML = '';
+        adminMessageBox.style.display = 'none';
+        hideActionMenu();
+
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetch('/api/admin/registrations', {
                 method: 'POST',
-                headers: headers // استخدام الهيدر الذي يحتوي على المفتاح السري
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminSecret })
             });
 
             const data = await response.json();
 
-            if (response.ok) {
-                alert(`✅ تم بنجاح: ${data.message}`);
-                // إعادة تحميل الطلبات بعد النجاح
-                fetchPendingRequests();
-            } else {
-                alert(`❌ فشل الإجراء: ${data.message}`);
+            if (!response.ok) {
+                showAdminMessage(data.message || 'خطأ في جلب البيانات.', true);
+                return;
             }
 
+            renderRegistrations(data.registrations);
+            showAdminMessage(`✅ تم جلب ${data.registrations.length} طلب تسجيل بنجاح.`, false);
+
         } catch (error) {
-            console.error('Action error:', error);
-            alert('⚠️ خطأ في الاتصال بالخادم.');
+            console.error('Fetch Admin Error:', error);
+            showAdminMessage('حدث خطأ في الاتصال بالخادم. تأكد من تشغيل server.js.', true);
+        } finally {
+            loadingIndicator.style.display = 'none';
         }
     }
 
-    // جلب الطلبات عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', fetchPendingRequests);
+    // 2. عرض البيانات في الجدول
+    function renderRegistrations(registrations) {
+        registrationsBody.innerHTML = '';
+        if (registrations.length === 0) {
+            registrationsBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">لا توجد طلبات تسجيل حالياً.</td></tr>';
+            return;
+        }
+
+        registrations.forEach(reg => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${reg.name}</td>
+                <td>${reg.level} / ${reg.year}</td>
+                <td>${reg.subject}</td>
+                <td>${reg.contact || 'N/A'}</td>
+                <td dir="ltr" style="font-family: monospace; font-size: 0.8rem;">${reg.id}</td>
+                <td><div class="status-tag status-${reg.status}" data-id="${reg.id}" data-current-status="${reg.status}">${getStatusText(reg.status)}</div></td>
+            `;
+            registrationsBody.appendChild(row);
+        });
+        
+        // إضافة مستمعي الأحداث لزر تغيير الحالة
+        document.querySelectorAll('.status-tag').forEach(tag => {
+            tag.addEventListener('click', showActionMenuForTag);
+        });
+    }
+
+    function getStatusText(status) {
+        switch(status) {
+            case 'accepted': return 'مقبول';
+            case 'pending': return 'قيد الانتظار';
+            case 'rejected': return 'مرفوض';
+            default: return 'غير معروف';
+        }
+    }
+
+    // 3. إظهار قائمة تغيير الحالة (Context Menu)
+    function showActionMenuForTag(event) {
+        currentTargetTag = event.currentTarget;
+        const rect = currentTargetTag.getBoundingClientRect();
+        
+        actionMenu.style.top = `${rect.bottom + 5}px`;
+        actionMenu.style.left = `${rect.left}px`;
+        actionMenu.style.display = 'block';
+        event.stopPropagation();
+    }
+
+    // 4. تحديث الحالة في الخادم
+    async function updateRegistrationStatus(newStatus) {
+        if (!currentTargetTag) return;
+
+        const registrationId = currentTargetTag.dataset.id;
+        const adminSecret = adminSecretInput.value.trim();
+        hideActionMenu();
+
+        try {
+            const response = await fetch('/api/admin/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminSecret, registrationId, newStatus })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showAdminMessage(data.message || 'فشل في تحديث الحالة.', true);
+                return;
+            }
+
+            // تحديث الواجهة الأمامية مباشرة
+            currentTargetTag.className = `status-tag status-${newStatus}`;
+            currentTargetTag.textContent = getStatusText(newStatus);
+            currentTargetTag.dataset.currentStatus = newStatus;
+
+            showAdminMessage(`✅ تم تحديث حالة ${registrationId} إلى ${getStatusText(newStatus)}.`);
+
+        } catch (error) {
+            console.error('Update Status Error:', error);
+            showAdminMessage('حدث خطأ في الاتصال بالخادم أثناء التحديث.', true);
+        }
+    }
+
+    // 5. ربط الأحداث
+    fetchButton.addEventListener('click', fetchRegistrations);
+    
+    // ربط أزرار القائمة المنبثقة بدالة التحديث
+    actionMenu.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            updateRegistrationStatus(event.currentTarget.dataset.status);
+        });
+    });
+
+    // إخفاء القائمة عند النقر في أي مكان آخر
+    document.addEventListener('click', (event) => {
+        if (!actionMenu.contains(event.target) && !event.target.classList.contains('status-tag')) {
+            hideActionMenu();
+        }
+    });
 
 </script>  
 </body>  
