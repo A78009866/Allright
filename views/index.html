@@ -4,7 +4,9 @@
 <head>  
 <meta charset="utf-8">  
 <meta name="viewport" content="width=device-width,initial-scale=1">  
-<title>أكاديمية المعالي</title>  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">  <style>  
+<title>أكاديمية المعالي</title>  
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">  
+<style>  
 :root{  
   --bg: #0b0b0c;  
   --drawer-bg: #151517;  
@@ -34,7 +36,7 @@ html,body{
 .page{  
   min-height:100vh;  
   display:flex;  
-  flex-direction:column;  
+  flex-direction:column;
 }  
   
 /* --- NAVBAR --- */  
@@ -317,7 +319,8 @@ footer{
   font-size:13px;  
   border-top: 1px solid var(--border-color);  
 }  
-  /* --- Custom Modal/Alert Styles --- */
+
+/* --- Custom Modal/Alert Styles --- */
 .custom-modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -357,7 +360,7 @@ footer{
     width: 50px;
     height: 50px;
     margin-bottom: 15px;
-    color: #10b981; /* لون النجاح */
+    color: #10b981; /* لون النجاح الافتراضي */
 }
 
 .modal-title {
@@ -388,9 +391,11 @@ footer{
     background-color: #2563eb;
 }
 
-</style>  </head>  
+</style>  
+</head>  
 <body>  
-  <div class="custom-modal-overlay" id="customModalOverlay">
+
+<div class="custom-modal-overlay" id="customModalOverlay">
   <div class="custom-modal-content">
     <svg class="modal-icon" id="modalIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -402,537 +407,547 @@ footer{
   </div>
 </div>
 
-  <div class="page">  
+<div class="page">  
   <header class="navbar">  
     <button class="menu-toggle" id="menuBtn">  
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>  
-    </button>  <div class="brand">  
-  <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
-  <div class="title">  
-    <div class="name">أكاديمية المعالي</div>  
-    <div class="tag">للتعليم والتطوير</div>  
-  </div>  
-</div>  
-<div style="width: 30px;"></div>
+    </button>  
+    <div class="brand">  
+      <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
+      <div class="title">  
+        <div class="name">أكاديمية المعالي</div>  
+        <div class="tag">للتعليم والتطوير</div>  
+      </div>  
+    </div>  
+    <a href="/admin" style="color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500;">
+        الإدارة
+    </a>
+  </header>    
 
-  </header>    <div class="side-drawer-overlay" id="drawerOverlay"></div>    <aside class="side-drawer" id="sideDrawer">  
+  <div class="side-drawer-overlay" id="drawerOverlay"></div>    
+  <aside class="side-drawer" id="sideDrawer">  
     <div class="drawer-header">  
       <h3>المستويات التعليمية</h3>  
       <button class="close-btn" id="closeBtn">  
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>  
       </button>  
-    </div>  <div class="drawer-content">  
-
-  <div class="accordion-item level-item">  
-    <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
-      <span class="level-title">التعليم الإبتدائي</span>  
-      <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
     </div>  
-    <div class="accordion-body level-body">  
-        
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الأولى ابتدائي</span>  
-          </div>  
+    <div class="drawer-content">  
+
+      <div class="accordion-item level-item">  
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
+          <span class="level-title">التعليم الإبتدائي</span>  
           <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
         </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-             <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
-           </div>  
-        </div>  
-      </div>  
-
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثانية ابتدائي</span>  
+        <div class="accordion-body level-body">  
+            
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الأولى ابتدائي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+                <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
+              </div>  
+            </div>  
           </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-             <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
-           </div>  
-        </div>  
-      </div>  
 
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثالثة ابتدائي</span>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثانية ابتدائي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+                <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
+              </div>  
+            </div>  
           </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-           </div>  
-        </div>  
-      </div>  
 
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الرابعة ابتدائي</span>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثالثة ابتدائي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+              </div>  
+            </div>  
           </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-             <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
-           </div>  
-        </div>  
-      </div>  
 
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الخامسة ابتدائي</span>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الرابعة ابتدائي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+                <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
+              </div>  
+            </div>  
           </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-             <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
-           </div>  
-        </div>  
-      </div>  
 
-    </div>  
-  </div>  
-
-  <div class="accordion-item level-item">  
-    <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
-      <span class="level-title">التعليم المتوسط</span>  
-      <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-    </div>  
-    <div class="accordion-body level-body">  
-        
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الأولى متوسط</span>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الخامسة ابتدائي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+                <button class="sub-btn" data-subject="التربية العلمية">التربية العلمية</button>  
+              </div>  
+            </div>  
           </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-             <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-             <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
-           </div>  
-        </div>  
-      </div>  
-
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثانية متوسط</span>  
-          </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-             <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-           </div>  
-        </div>  
-      </div>  
-
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثالثة متوسط</span>  
-          </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-             <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-           </div>  
-        </div>  
-      </div>  
-
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الرابعة متوسط (BEM)</span>  
-          </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-           <div class="subject-list">  
-             <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-             <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-             <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-             <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-             <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-             <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-             <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-             <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
-             <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
-           </div>  
-        </div>  
-      </div>  
-    </div>  
-  </div>  
-
-  <div class="accordion-item level-item">  
-    <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
-      <span class="level-title">التعليم الثانوي</span>  
-      <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-    </div>  
-    <div class="accordion-body level-body">  
-        
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الأولى ثانوي</span>  
-          </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-             
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">جذع مشترك علوم وتكنولوجيا</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-                 <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-                 <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-                 <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-                 <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-                 <button class="sub-btn" data-subject="تربية إسلامية">تربية إسلامية</button>  
-                 <button class="sub-btn" data-subject="تكنولوجيا">تكنولوجيا</button>  
-                 <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
-               </div>  
-             </div>  
-           </div>  
-
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">جذع مشترك آداب</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
-                 <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
-                 <button class="sub-btn" data-subject="العلوم الإسلامية">العلوم الإسلامية</button>  
-                 <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-                 <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="علوم الطبيعة">علوم الطبيعة</button>  
-                 <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
-               </div>  
-             </div>  
-           </div>  
 
         </div>  
       </div>  
 
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثانية ثانوي</span>  
-          </div>  
+      <div class="accordion-item level-item">  
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
+          <span class="level-title">التعليم المتوسط</span>  
           <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
         </div>  
-        <div class="accordion-body year-body">  
-             
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة علوم تجريبية</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-                 <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-                 <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-               </div>  
-             </div>  
-           </div>  
+        <div class="accordion-body level-body">  
+            
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الأولى متوسط</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+                <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
+              </div>  
+            </div>  
+          </div>  
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة رياضيات</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-                 <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-               </div>  
-             </div>  
-           </div>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثانية متوسط</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+              </div>  
+            </div>  
+          </div>  
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة تقني رياضي</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="الفيزياء">الفيزياء</button>  
-                 <button class="sub-btn" data-subject="تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)">تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)</button>  
-                 <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
-               </div>  
-             </div>  
-           </div>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثالثة متوسط</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+              </div>  
+            </div>  
+          </div>  
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة تسيير واقتصاد</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>  
-                 <button class="sub-btn" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>  
-                 <button class="sub-btn" data-subject="قانون">قانون</button>  
-                 <button class="sub-btn" data-subject="رياضيات">رياضيات</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-               </div>  
-             </div>  
-           </div>  
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الرابعة متوسط (BEM)</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+              <div class="subject-list">  
+                <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                <button class="sub-btn" data-subject="التربية الإسلامية">التربية الإسلامية</button>  
+                <button class="sub-btn" data-subject="التربية المدنية">التربية المدنية</button>  
+              </div>  
+            </div>  
+          </div>  
+        </div>  
+      </div>  
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة لغات أجنبية</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-                 <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-                 <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-                 <button class="sub-btn" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-               </div>  
-             </div>  
-           </div>  
+      <div class="accordion-item level-item">  
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">  
+          <span class="level-title">التعليم الثانوي</span>  
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+        </div>  
+        <div class="accordion-body level-body">  
+            
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الأولى ثانوي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+                
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">جذع مشترك علوم وتكنولوجيا</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                    <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                    <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                    <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                    <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                    <button class="sub-btn" data-subject="تربية إسلامية">تربية إسلامية</button>  
+                    <button class="sub-btn" data-subject="تكنولوجيا">تكنولوجيا</button>  
+                    <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
+                  </div>  
+                </div>  
+              </div>  
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة آداب وفلسفة</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-               </div>  
-             </div>  
-           </div>  
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">جذع مشترك آداب</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
+                    <button class="sub-btn" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>  
+                    <button class="sub-btn" data-subject="العلوم الإسلامية">العلوم الإسلامية</button>  
+                    <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                    <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="علوم الطبيعة">علوم الطبيعة</button>  
+                    <button class="sub-btn" data-subject="إعلام آلي">إعلام آلي</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+            </div>  
+          </div>  
+
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثانية ثانوي</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+                
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة علوم تجريبية</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                    <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                    <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة رياضيات</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                    <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة تقني رياضي</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="الفيزياء">الفيزياء</button>  
+                    <button class="sub-btn" data-subject="تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)">تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)</button>  
+                    <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة تسيير واقتصاد</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>  
+                    <button class="sub-btn" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>  
+                    <button class="sub-btn" data-subject="قانون">قانون</button>  
+                    <button class="sub-btn" data-subject="رياضيات">رياضيات</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة لغات أجنبية</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                    <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                    <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                    <button class="sub-btn" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة آداب وفلسفة</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+            </div>  
+          </div>  
+
+          <div class="accordion-item year-item">  
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
+              <div class="title-wrap">  
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
+                <span>السنة الثالثة ثانوي (BAC)</span>  
+              </div>  
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+            </div>  
+            <div class="accordion-body year-body">  
+                
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة علوم تجريبية</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                    <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
+                    <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة رياضيات</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
+                    <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة تقني رياضي</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
+                    <button class="sub-btn" data-subject="الفيزياء">الفيزياء</button>  
+                    <button class="sub-btn" data-subject="هندسة ميكانيكية">هندسة ميكانيكية</button>  
+                    <button class="sub-btn" data-subject="هندسة كهربائية">هندسة كهربائية</button>  
+                    <button class="sub-btn" data-subject="هندسة مدنية">هندسة مدنية</button>  
+                    <button class="sub-btn" data-subject="هندسة الطرائق">هندسة الطرائق</button>  
+                    <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة تسيير واقتصاد</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>  
+                    <button class="sub-btn" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>  
+                    <button class="sub-btn" data-subject="قانون">قانون</button>  
+                    <button class="sub-btn" data-subject="رياضيات">رياضيات</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة لغات أجنبية</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
+                    <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
+                    <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
+                    <button class="sub-btn" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+              <div class="accordion-item stream-item">  
+                <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
+                  <span class="stream-title">شعبة آداب وفلسفة</span>  
+                  <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
+                </div>  
+                <div class="accordion-body stream-body">  
+                  <div class="subject-list">  
+                    <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
+                    <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
+                    <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
+                    <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
+                  </div>  
+                </div>  
+              </div>  
+
+            </div>  
+          </div>  
 
         </div>  
       </div>  
 
-      <div class="accordion-item year-item">  
-        <div class="accordion-header year-header" onclick="toggleAccordion(this)">  
-          <div class="title-wrap">  
-            <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>  
-            <span>السنة الثالثة ثانوي (BAC)</span>  
-          </div>  
-          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-        </div>  
-        <div class="accordion-body year-body">  
-             
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة علوم تجريبية</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-                 <button class="sub-btn" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>  
-                 <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-               </div>  
-             </div>  
-           </div>  
+    </div>
 
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة رياضيات</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>  
-                 <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-               </div>  
-             </div>  
-           </div>  
-
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة تقني رياضي</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="الرياضيات">الرياضيات</button>  
-                 <button class="sub-btn" data-subject="الفيزياء">الفيزياء</button>  
-                 <button class="sub-btn" data-subject="هندسة ميكانيكية">هندسة ميكانيكية</button>  
-                 <button class="sub-btn" data-subject="هندسة كهربائية">هندسة كهربائية</button>  
-                 <button class="sub-btn" data-subject="هندسة مدنية">هندسة مدنية</button>  
-                 <button class="sub-btn" data-subject="هندسة الطرائق">هندسة الطرائق</button>  
-                 <button class="sub-btn" data-subject="لغة عربية">لغة عربية</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-               </div>  
-             </div>  
-           </div>  
-
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة تسيير واقتصاد</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>  
-                 <button class="sub-btn" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>  
-                 <button class="sub-btn" data-subject="قانون">قانون</button>  
-                 <button class="sub-btn" data-subject="رياضيات">رياضيات</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-               </div>  
-             </div>  
-           </div>  
-
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة لغات أجنبية</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="اللغة العربية">اللغة العربية</button>  
-                 <button class="sub-btn" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>  
-                 <button class="sub-btn" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>  
-                 <button class="sub-btn" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-               </div>  
-             </div>  
-           </div>  
-
-           <div class="accordion-item stream-item">  
-             <div class="accordion-header stream-header" onclick="toggleAccordion(this)">  
-               <span class="stream-title">شعبة آداب وفلسفة</span>  
-               <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>  
-             </div>  
-             <div class="accordion-body stream-body">  
-               <div class="subject-list">  
-                 <button class="sub-btn" data-subject="فلسفة">فلسفة</button>  
-                 <button class="sub-btn" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>  
-                 <button class="sub-btn" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>  
-                 <button class="sub-btn" data-subject="لغات أجنبية">لغات أجنبية</button>  
-               </div>  
-             </div>  
-           </div>  
-
-        </div>  
-      </div>  
-
-    </div>  
-  </div>  
-
-</div>
-
-  </aside>    <main class="hero">  
+  </aside>    
+  <main class="hero">  
     <div class="hero-content">  
       <h1>مرحباً بك في أكاديمية المعالي</h1>  
       <p>منصتك الأولى للدعم المدرسي الشامل. اختر المستوى التعليمي من القائمة لتبدأ رحلة التفوق.</p>  
     </div>  
-  </main>    <footer>  
+  </main>    
+  <footer>  
     <span id="year"></span> © أكاديمية المعالي  
   </footer>  
-</div>  <script>  
+</div>  
+
+<script>  
   document.getElementById('year').innerText = new Date().getFullYear();  
   
   const menuBtn = document.getElementById('menuBtn');  
@@ -941,6 +956,12 @@ footer{
   const overlay = document.getElementById('drawerOverlay');  
   const subjectButtons = document.querySelectorAll('.sub-btn');
 
+  // --- عناصر الـ Modal المخصصة ---
+  const modalOverlay = document.getElementById('customModalOverlay');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const modalIcon = document.getElementById('modalIcon');
+  
   function openDrawer() {  
     sideDrawer.classList.add('open');  
     overlay.classList.add('open');  
@@ -961,7 +982,26 @@ footer{
     event.stopPropagation();  
   }  
 
-  // --- كود JavaScript الجديد للتسجيل ---
+  // --- وظائف الـ Modal الجديدة (رسالة التسجيل) ---
+  function showCustomModal(title, body, isSuccess) {
+      modalTitle.innerText = title;
+      modalBody.innerText = body;
+      
+      // تغيير لون الأيقونة حسب حالة النجاح/الفشل
+      const iconColor = isSuccess ? '#10b981' : '#ef4444';
+      modalIcon.style.color = iconColor; 
+      
+      // في حالة الفشل، نستخدم أيقونة مختلفة (خطأ) إذا توفرت، ولكن هنا نكتفي بتغيير اللون
+      // للتصحيح: نستخدم نفس الأيقونة ولكن نعتمد على اللون لتوضيح الحالة
+      
+      modalOverlay.classList.add('show');
+  }
+
+  function closeCustomModal() {
+      modalOverlay.classList.remove('show');
+  }
+
+  // --- كود JavaScript الجديد للتسجيل (يستخدم الـ Modal) ---
   subjectButtons.forEach(button => {
       button.addEventListener('click', handleRegistration);
   });
@@ -969,33 +1009,30 @@ footer{
   async function handleRegistration(event) {
       const subject = event.target.dataset.subject || event.target.innerText;
       
-      // 1. استخراج المستوى والسنة من العناصر الأبوية
+      // 1. استخراج المستوى والسنة
       const subjectItem = event.target.closest('.subject-list');
-      if (!subjectItem) return alert("حدث خطأ في تحديد بيانات المادة.");
+      if (!subjectItem) return showCustomModal("خطأ", "حدث خطأ في تحديد بيانات المادة.", false);
 
-      // البحث عن السنة (Parent of subject-list)
       const yearItem = subjectItem.closest('.year-item');
       let year = yearItem ? yearItem.querySelector('.year-header span').innerText.trim() : 'غير محدد';
       
-      // إذا كانت داخل "شعبة" (Stream)، نقوم بدمج الشعبة في اسم السنة
       const streamItem = subjectItem.closest('.stream-item');
       if (streamItem) {
           const streamTitle = streamItem.querySelector('.stream-title').innerText.trim();
           year = `${year} (${streamTitle})`;
       }
 
-      // البحث عن المستوى (Parent of year-item/level-body)
       const levelItem = yearItem.closest('.level-item');
       const level = levelItem ? levelItem.querySelector('.level-title').innerText.trim() : 'غير محدد';
       
-      // 2. طلب اسم الطالب
+      // 2. طلب اسم الطالب (باستخدام prompt مؤقتاً)
       const studentName = prompt(`الرجاء إدخال اسمك الكامل للتسجيل في:\nالمستوى: ${level}\nالسنة/الشعبة: ${year}\nالمادة: ${subject}`);
 
       if (!studentName || studentName.trim() === "") {
-          return alert("تم إلغاء عملية التسجيل أو لم يتم إدخال الاسم.");
+          return showCustomModal("إلغاء التسجيل", "تم إلغاء عملية التسجيل أو لم يتم إدخال الاسم.", false);
       }
 
-      // 3. إرسال البيانات إلى الخادم (server.js)
+      // 3. إرسال البيانات إلى الخادم
       try {
           const response = await fetch('/api/register', {
               method: 'POST',
@@ -1013,15 +1050,17 @@ footer{
           const data = await response.json();
 
           if (response.ok) {
-              alert(`✅ نجاح التسجيل:\n${data.message}\nرقم طلبك: ${data.registrationId}`);
+              const bodyMessage = `${data.message}\n\nرقم طلبك: ${data.registrationId}`;
+              showCustomModal("✅ نجاح التسجيل", bodyMessage, true);
           } else {
-              alert(`❌ فشل التسجيل:\n${data.message}`);
+              showCustomModal("❌ فشل التسجيل", data.message, false);
           }
 
       } catch (error) {
           console.error('Fetch Error:', error);
-          alert('⚠️ حدث خطأ في الاتصال بالخادم. تأكد من تشغيل server.js.');
+          showCustomModal("⚠️ خطأ الاتصال", 'حدث خطأ في الاتصال بالخادم. تأكد من تشغيل server.js والاتصال بالإنترنت.', false);
       }
   }
-</script>  </body>  
+</script>  
+</body>  
 </html>
