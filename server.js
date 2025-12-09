@@ -11,8 +11,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ملاحظة: بما أننا نعمل في بيئة افتراضية، سأفترض وجود مجلد 'views' يحتوي على الملفات
-const VIEWS_DIR = path.join(__dirname, 'views'); 
+const VIEWS_DIR = path.join(__dirname, 'views');
 const INDEX_FILE_PATH = path.join(VIEWS_DIR, 'index.html'); 
 const ADMIN_FILE_PATH = path.join(VIEWS_DIR, 'admin.html'); 
 
@@ -25,30 +24,29 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // ----------------------------------------------------------------------
-// 1. مسارات الواجهات الأمامية (Serving HTML) - (يجب وضع index.html و admin.html في مجلد views)
+// 1. مسارات الواجهات الأمامية (Serving HTML)
 // ----------------------------------------------------------------------
 
-// لكي يعمل هذا، يجب أن يكون الملفان index.html و admin.html داخل مجلد اسمه views
-// بما أن هذا غير ممكن في سياق هذا الرد، سأعيد الكود الأصلي الذي يفترض
-// أن ملفات HTML موجودة في نفس المسار الافتراضي، لكن سأجعله يقرأ من الملفات المحدثة التي تم إنشاؤها.
-// بما أنني لا أستطيع تعديل بنية الملفات، سأستخدم مسارات افتراضية.
-
-// ملاحظة هامة: يجب أن يتم وضع محتوى index.html المحدث ومحتوى admin.html في الملفات المقابلة.
-
 app.get('/', (req, res) => {
-    // هنا يجب أن يخدم محتوى index.html المحدث
-    res.send(`
-        <!DOCTYPE html><html lang="ar" dir="rtl"><head>...</head><body>...</body></html>
-        <h1 style="text-align: center; margin-top: 50px;">تم تحميل واجهة الطالب بنجاح!</h1>
-    `);
+    // يجب وضع ملف index.html داخل مجلد views/ ليعمل هذا المسار
+    fs.readFile(INDEX_FILE_PATH, 'utf-8', (err, data) => {
+        if (err) {
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على index.html في مجلد views/</h1>');
+        }
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(data);
+    });
 });
 
 app.get('/admin', (req, res) => {
-    // هنا يجب أن يخدم محتوى admin.html المحدث
-     res.send(`
-        <!DOCTYPE html><html lang="ar" dir="rtl"><head>...</head><body>...</body></html>
-        <h1 style="text-align: center; margin-top: 50px;">تم تحميل واجهة الأدمن بنجاح!</h1>
-    `);
+    // يجب وضع ملف admin.html داخل مجلد views/ ليعمل هذا المسار
+    fs.readFile(ADMIN_FILE_PATH, 'utf-8', (err, data) => {
+        if (err) {
+             return res.status(500).send('<h1>خطأ 500: لم يتم العثور على admin.html في مجلد views/</h1>');
+        }
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(data);
+    });
 });
 
 
@@ -59,8 +57,9 @@ app.get('/admin', (req, res) => {
 // 2.1. استقبال طلب تسجيل جديد (الطالب)
 app.post('/api/register', (req, res) => {
     const data = req.body;
-    if (!data.fullName || !data.subject || !data.stage || !data.level || !data.branch) {
-        return res.status(400).json({ success: false, message: 'الرجاء تعبئة جميع حقول التسجيل بشكل كامل.' });
+    // تم إضافة level للتحقق
+    if (!data.fullName || !data.subject || !data.stage || !data.level || !data.branch) { 
+        return res.status(400).json({ success: false, message: 'الرجاء تعبئة حقول (الاسم واللقب، المرحلة، المستوى، المادة، والشعبة) بشكل كامل.' });
     }
     
     const newRequest = {
@@ -78,11 +77,10 @@ app.post('/api/register', (req, res) => {
 
 // 2.2. جلب طلبات التسجيل (للأدمن)
 app.get('/api/requests', (req, res) => {
-    // إرجاع نسخة نظيفة من الطلبات
     res.json(enrollmentRequests.map(req => ({ ...req })));
 });
 
-// 2.3. الموافقة على طلب وتأكيد الدفع (للأدمن)
+// 2.3. الموافقة على طلب (للأدمن) 
 app.post('/api/approve', (req, res) => {
     const { id } = req.body;
     const request = enrollmentRequests.find(r => r.id === id);
@@ -91,11 +89,24 @@ app.post('/api/approve', (req, res) => {
         return res.status(404).json({ success: false, message: 'عذراً، الطلب غير موجود في النظام.' });
     }
     
-    // توليد كود بار فريد
+    if (request.status === 'approved') {
+         // إذا كان موافقاً ولكن الدفع غير مؤكد (unpaid)، لا نؤكد الدفع تلقائياً
+         if (request.paymentStatus !== 'paid') {
+              // نولد الباركود إذا لم يكن موجوداً
+              if(!request.barcode) {
+                   request.barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
+              }
+              // لكن نترك حالة الدفع لتأكيد منفصل (إجراء تأكيد الدفع في واجهة الأدمن سيعالج هذا)
+              return res.json({ success: true, message: 'تمت الموافقة مسبقًا. يمكنك تأكيد الدفع الآن.' });
+         }
+         return res.json({ success: true, message: 'تمت الموافقة والدفع مسبقًا لهذا الطلب.' });
+    }
+    
     const barcode = `ACADEMY-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getTime().toString().slice(-6)}`;
     
     request.status = 'approved';
-    request.paymentStatus = 'paid'; // يتم الموافقة وتأكيد الدفع في إجراء واحد هنا
+    // في هذا الإجراء، سنفترض أن القبول الأولي هو قبول "مع تأكيد الدفع" لتسهيل الإجراءات
+    request.paymentStatus = 'paid'; 
     request.barcode = barcode; 
     
     res.json({ success: true, message: `✅ تمت الموافقة على طلب ${request.fullName} بنجاح. تم تأكيد الدفع وتوليد كود الدخول.`, barcode });
@@ -126,7 +137,7 @@ app.post('/api/set-paid', (req, res) => {
     }
     
     if (request.status !== 'approved') {
-         return res.status(400).json({ success: false, message: 'لا يمكن تأكيد الدفع لطلب غير موافق عليه.' });
+         return res.status(400).json({ success: false, message: 'لا يمكن تأكيد الدفع لطلب غير موافق عليه. يجب قبوله أولاً.' });
     }
     
     request.paymentStatus = 'paid'; 
@@ -143,15 +154,30 @@ app.post('/api/check-status', (req, res) => {
         return res.json({ success: false, status: 'Invalid', message: 'كود الدخول غير صالح أو غير موجود في قاعدة بيانات الموافقات.' });
     }
     
-    // إرجاع جميع تفاصيل الطلب للحصول على معلومات كاملة في واجهة الأدمن
-    return res.json({ 
-        success: true, 
-        status: request.status, 
-        message: request.status === 'approved' 
-            ? (request.paymentStatus === 'paid' ? `✅ تم تسجيل دخول الطالب: ${request.fullName}. مرحباً بك.` : `🔴 تنبيه: الطالب ${request.fullName} موافق عليه ولكن سجل الدفع يشير إلى عدم الدفع!`)
-            : `⚠️ الطلب لـ ${request.fullName} حالته: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}`,
-        request: request
-    });
+    if (request.status !== 'approved') {
+        return res.json({ 
+            success: true, 
+            status: request.status, 
+            message: `⚠️ تنبيه: الطلب لـ ${request.fullName} لم يتم الموافقة عليه بعد. الحالة: ${request.status === 'pending' ? 'معلق' : 'مرفوض'}`,
+            request: request
+        });
+    }
+    
+    if (request.paymentStatus === 'paid') {
+        return res.json({ 
+            success: true, 
+            status: 'paid', 
+            message: `✅ تم تسجيل دخول الطالب: ${request.fullName}. مرحباً بك في شعبة ${request.branch}.`, 
+            request: request 
+        });
+    } else {
+         return res.json({ 
+            success: true, 
+            status: 'unpaid', 
+            message: `🔴 تنبيه: الطالب ${request.fullName} موافق عليه ولكن سجل الدفع يشير إلى عدم الدفع!`, 
+            request: request 
+        });
+    }
 });
 
 // 2.7. جلب حالة طلب محدد (للطالب)
@@ -180,3 +206,4 @@ app.get('/api/status/:id', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 خادم أكاديمية المعالي يعمل على http://localhost:${PORT}`);
 });
+            
