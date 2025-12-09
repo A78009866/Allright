@@ -5,30 +5,29 @@ const express = require('express');
 const mongoose = require('mongoose');
 const QRCode = require('qrcode');
 const bodyParser = require('body-parser');
-const path = require('path'); // لإدارة المسارات
+const path = require('path'); 
 
 const app = express();
 const port = 3000;
 
 // 2. إعداد قاعدة البيانات (MongoDB)
-// ⚠️ هام: استبدل الرابط برابط قاعدة بياناتك الفعلي 
 const dbURI = 'mongodb://localhost:27017/MaaliAcademyDB'; 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('✅ MongoDB Connected Successfully.'))
   .catch(err => console.log('❌ MongoDB Connection Error:', err));
 
-// 3. تعريف مخطط (Schema) وموديل (Model) التسجيل
+// 3. تعريف مخطط (Schema) وموديل (Model) التسجيل (كما هو)
 const registrationSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  level: { type: String, required: true }, 
-  year: { type: String, required: true }, 
+  level: { type: String, required: true },
+  year: { type: String, required: true },
   subject: { type: String, required: true },
   status: { 
     type: String, 
     enum: ['pending', 'accepted', 'rejected'], 
     default: 'pending' 
   },
-  qrCodeData: { type: String, default: null }, // لتخزين بيانات رمز QR (Data URL)
+  qrCodeData: { type: String, default: null },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -38,20 +37,36 @@ const Registration = mongoose.model('Registration', registrationSchema);
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 5. لخدمة ملف HTML للواجهة الأمامية
-// 🔴 التعديل هنا لخدمة index.html من مجلد "views"
+// --- المسارات (API Endpoints) ---
+
+// 5. لخدمة ملف HTML للواجهة الأمامية (الطلاب)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// --- المسارات (API Endpoints) ---
+// 🔴 إضافة مسار لخدمة صفحة الإدارة (Admin)
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+// 🔴 المسار الجديد: جلب كل طلبات التسجيل المعلقة (للأدمن)
+app.get('/api/admin/pending', async (req, res) => {
+    try {
+        // جلب جميع الطلبات التي حالتها 'pending'
+        const pendingRegistrations = await Registration.find({ status: 'pending' }).sort({ createdAt: 1 });
+        res.json(pendingRegistrations);
+    } catch (error) {
+        console.error('Fetch Pending Error:', error);
+        res.status(500).json({ message: 'فشل في جلب الطلبات المعلقة.' });
+    }
+});
+
 
 // 6. المسار: إنشاء طلب تسجيل جديد (لواجهة المستخدم)
 app.post('/api/register', async (req, res) => {
   try {
     const { name, level, year, subject } = req.body;
     
-    // التحقق الأساسي من البيانات
     if (!name || !level || !year || !subject) {
         return res.status(400).json({ message: 'الرجاء إكمال جميع حقول التسجيل.' });
     }
@@ -81,8 +96,7 @@ app.post('/api/admin/accept/:id', async (req, res) => {
       return res.status(404).json({ message: 'لم يتم العثور على طلب التسجيل.' });
     }
     
-    // بيانات رمز QR: استخدام ID فريد للتحقق
-    const qrData = `MAALI-REG-ID:${registration._id}`;
+    const qrData = `MAALI-REG-ID:${registrationId}`; // نستخدم ID كبيانات لـ QR
     const qrCodeImage = await QRCode.toDataURL(qrData);
 
     registration.status = 'accepted';
@@ -90,6 +104,7 @@ app.post('/api/admin/accept/:id', async (req, res) => {
     await registration.save();
 
     res.json({ 
+      success: true,
       message: 'تم قبول التسجيل بنجاح وإنشاء رمز QR.', 
       qrCodeImage: qrCodeImage, 
       registrationDetails: registration 
@@ -97,12 +112,37 @@ app.post('/api/admin/accept/:id', async (req, res) => {
 
   } catch (error) {
     console.error('Acceptance Error:', error);
-    res.status(500).json({ message: 'حدث خطأ أثناء القبول.' });
+    res.status(500).json({ success: false, message: 'حدث خطأ أثناء القبول.' });
   }
 });
 
-// 8. المسار: مسح رمز QR والتحقق من صلاحيته (جهاز الأدمن/الماسح)
+// 🔴 إضافة مسار لرفض طلب التسجيل (لوحة الأدمن)
+app.post('/api/admin/reject/:id', async (req, res) => {
+  try {
+    const registrationId = req.params.id;
+    const registration = await Registration.findById(registrationId);
+
+    if (!registration) {
+      return res.status(404).json({ message: 'لم يتم العثور على طلب التسجيل.' });
+    }
+    
+    registration.status = 'rejected';
+    await registration.save();
+
+    res.json({ 
+      success: true,
+      message: 'تم رفض طلب التسجيل بنجاح.', 
+    });
+
+  } catch (error) {
+    console.error('Rejection Error:', error);
+    res.status(500).json({ success: false, message: 'حدث خطأ أثناء الرفض.' });
+  }
+});
+
+// 8. المسار: مسح رمز QR والتحقق من صلاحيته (جهاز الأدمن/الماسح) (كما هو)
 app.post('/api/admin/scan', async (req, res) => {
+    // ... (الكود كما هو)
     try {
         const { scannedData } = req.body; 
 
