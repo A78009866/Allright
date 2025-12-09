@@ -35,14 +35,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- المسارات (API Endpoints) ---
 
-// 4. لخدمة ملف HTML للواجهة الأمامية (الطلاب)
+// 4. لخدمة ملف HTML للواجهة الأمامية (الطلاب) - تم التعديل للإشارة إلى views/index.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// 5. لخدمة ملف HTML للواجهة الإدارية (المسؤول)
+// 5. لخدمة ملف HTML للواجهة الإدارية (المسؤول) - تم التعديل للإشارة إلى views/admin.html
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
+    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
 // 6. مسار التسجيل (للمستخدمين الجدد)
