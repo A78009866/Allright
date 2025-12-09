@@ -1,83 +1,84 @@
 // server.js
 
-// 1. استيراد المكتبات الضرورية
+// 1. استيراد المكتبات الضرورية و dotenv
+require('dotenv').config(); // تحميل المتغيرات من .env
 const express = require('express');
-const mongoose = require('mongoose');
-const QRCode = require('qrcode');
 const bodyParser = require('body-parser');
-const path = require('path'); 
+const path = require('path');
+const QRCode = require('qrcode');
+const admin = require('firebase-admin');
 
 const app = express();
 const port = 3000;
 
-// 2. إعداد قاعدة البيانات (MongoDB)
-const dbURI = 'mongodb://localhost:27017/MaaliAcademyDB'; 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('✅ MongoDB Connected Successfully.'))
-  .catch(err => console.log('❌ MongoDB Connection Error:', err));
+// 2. إعداد Firebase باستخدام متغيرات .env
+const serviceAccount = require('./serviceAccountKey.json'); // ⚠️ تأكد من وجود ملف مفتاح الخدمة الخاص بك
 
-// 3. تعريف مخطط (Schema) وموديل (Model) التسجيل (كما هو)
-const registrationSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  level: { type: String, required: true },
-  year: { type: String, required: true },
-  subject: { type: String, required: true },
-  status: { 
-    type: String, 
-    enum: ['pending', 'accepted', 'rejected'], 
-    default: 'pending' 
-  },
-  qrCodeData: { type: String, default: null },
-  createdAt: { type: Date, default: Date.now }
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
 });
 
-const Registration = mongoose.model('Registration', registrationSchema);
+const db = admin.database();
+const registrationsRef = db.ref('registrations'); // اسم العقدة في قاعدة البيانات
 
-// 4. الإعدادات الوسطية (Middleware)
+// سحب المفتاح السري من .env
+const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY;
+if (!ADMIN_SECRET) {
+    console.error("❌ ERROR: ADMIN_SECRET_KEY is not defined in .env file.");
+    process.exit(1);
+}
+
+// 3. الإعدادات الوسطية (Middleware)
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- المسارات (API Endpoints) ---
 
-// 5. لخدمة ملف HTML للواجهة الأمامية (الطلاب)
+// 4. لخدمة ملف HTML للواجهة الأمامية (الطلاب)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// 🔴 إضافة مسار لخدمة صفحة الإدارة (Admin)
-app.get('/admin', (req, res) => {
+// 🔴 5. المسار المحمي لصفحة الإدارة (Admin)
+// لا يمكن الوصول للصفحة إلا عبر URL يحتوي على المفتاح السري
+app.get(`/admin/${ADMIN_SECRET}`, (req, res) => {
+    // يمكن حذف الرابط من الواجهة الأمامية index.html الآن
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
-});
-
-// 🔴 المسار الجديد: جلب كل طلبات التسجيل المعلقة (للأدمن)
-app.get('/api/admin/pending', async (req, res) => {
-    try {
-        // جلب جميع الطلبات التي حالتها 'pending'
-        const pendingRegistrations = await Registration.find({ status: 'pending' }).sort({ createdAt: 1 });
-        res.json(pendingRegistrations);
-    } catch (error) {
-        console.error('Fetch Pending Error:', error);
-        res.status(500).json({ message: 'فشل في جلب الطلبات المعلقة.' });
-    }
 });
 
 
 // 6. المسار: إنشاء طلب تسجيل جديد (لواجهة المستخدم)
 app.post('/api/register', async (req, res) => {
   try {
-    const { name, level, year, subject } = req.body;
+    const { name, level, year, subject, contact } = req.body;
     
     if (!name || !level || !year || !subject) {
-        return res.status(400).json({ message: 'الرجاء إكمال جميع حقول التسجيل.' });
+        return res.status(400).json({ message: 'الرجاء إكمال جميع حقول التسجيل الأساسية.' });
     }
 
-    const newRegistration = new Registration({ name, level, year, subject });
-    await newRegistration.save();
+    // إضافة تسجيل جديد إلى Firebase
+    const newRegistrationRef = registrationsRef.push();
+    const registrationId = newRegistrationRef.key;
+    
+    const newRegistration = { 
+        id: registrationId,
+        name, 
+        level, 
+        year, 
+        subject, 
+        contact: contact || 'غير متوفر', // إضافة حقل اتصال اختياري
+        status: 'pending', 
+        qrCodeData: null,
+        createdAt: admin.database.ServerValue.TIMESTAMP // للحصول على وقت الخادم
+    };
+
+    await newRegistrationRef.set(newRegistration);
 
     res.status(201).json({ 
       success: true,
       message: 'تم إرسال طلب التسجيل بنجاح. سيتم مراجعته من قبل الإدارة.', 
-      registrationId: newRegistration._id 
+      registrationId 
     });
 
   } catch (error) {
@@ -86,63 +87,85 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// 7. المسار: قبول طلب التسجيل وإنشاء رمز QR (لوحة الأدمن)
-app.post('/api/admin/accept/:id', async (req, res) => {
+// 🔴 7. المسار الجديد: جلب كل طلبات التسجيل المعلقة (للأدمن)
+app.get('/api/admin/pending', async (req, res) => {
+    // التحقق من المفتاح السري الممرر في Header
+    if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
+        return res.status(403).json({ message: 'وصول غير مصرح به.' });
+    }
+
+    try {
+        const snapshot = await registrationsRef.orderByChild('status').equalTo('pending').once('value');
+        
+        const pendingRegistrations = [];
+        snapshot.forEach(childSnapshot => {
+            pendingRegistrations.push(childSnapshot.val());
+        });
+
+        // فرز الطلبات حسب تاريخ الإنشاء (الأقدم أولاً)
+        pendingRegistrations.sort((a, b) => a.createdAt - b.createdAt);
+        
+        res.json(pendingRegistrations);
+    } catch (error) {
+        console.error('Fetch Pending Error:', error);
+        res.status(500).json({ message: 'فشل في جلب الطلبات المعلقة.' });
+    }
+});
+
+
+// 🔴 8. المسار: قبول/رفض طلب التسجيل (لوحة الأدمن)
+app.post('/api/admin/:action/:id', async (req, res) => {
+  const { action, id } = req.params;
+  
+  if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
+    return res.status(403).json({ message: 'وصول غير مصرح به.' });
+  }
+
+  if (action !== 'accept' && action !== 'reject') {
+      return res.status(400).json({ message: 'الإجراء غير صالح.' });
+  }
+
   try {
-    const registrationId = req.params.id;
-    const registration = await Registration.findById(registrationId);
+    const registrationRef = registrationsRef.child(id);
+    const snapshot = await registrationRef.once('value');
+    const registration = snapshot.val();
 
     if (!registration) {
       return res.status(404).json({ message: 'لم يتم العثور على طلب التسجيل.' });
     }
-    
-    const qrData = `MAALI-REG-ID:${registrationId}`; // نستخدم ID كبيانات لـ QR
-    const qrCodeImage = await QRCode.toDataURL(qrData);
 
-    registration.status = 'accepted';
-    registration.qrCodeData = qrCodeImage;
-    await registration.save();
+    let updateData = { status: action };
+    let message;
 
-    res.json({ 
-      success: true,
-      message: 'تم قبول التسجيل بنجاح وإنشاء رمز QR.', 
-      qrCodeImage: qrCodeImage, 
-      registrationDetails: registration 
-    });
+    if (action === 'accept') {
+        const qrData = `MAALI-REG-ID:${id}`;
+        const qrCodeImage = await QRCode.toDataURL(qrData);
 
-  } catch (error) {
-    console.error('Acceptance Error:', error);
-    res.status(500).json({ success: false, message: 'حدث خطأ أثناء القبول.' });
-  }
-});
+        updateData.qrCodeData = qrCodeImage;
+        message = 'تم قبول التسجيل بنجاح وإنشاء رمز QR.';
 
-// 🔴 إضافة مسار لرفض طلب التسجيل (لوحة الأدمن)
-app.post('/api/admin/reject/:id', async (req, res) => {
-  try {
-    const registrationId = req.params.id;
-    const registration = await Registration.findById(registrationId);
-
-    if (!registration) {
-      return res.status(404).json({ message: 'لم يتم العثور على طلب التسجيل.' });
+    } else if (action === 'reject') {
+        message = 'تم رفض طلب التسجيل بنجاح.';
+        updateData.qrCodeData = null; 
     }
     
-    registration.status = 'rejected';
-    await registration.save();
+    await registrationRef.update(updateData);
 
-    res.json({ 
-      success: true,
-      message: 'تم رفض طلب التسجيل بنجاح.', 
-    });
+    res.json({ success: true, message });
 
   } catch (error) {
-    console.error('Rejection Error:', error);
-    res.status(500).json({ success: false, message: 'حدث خطأ أثناء الرفض.' });
+    console.error(`${action} Error:`, error);
+    res.status(500).json({ success: false, message: `حدث خطأ أثناء معالجة ${action}.` });
   }
 });
 
-// 8. المسار: مسح رمز QR والتحقق من صلاحيته (جهاز الأدمن/الماسح) (كما هو)
+// 9. المسار: مسح رمز QR والتحقق من صلاحيته (جهاز الأدمن/الماسح) (لم يتغير)
 app.post('/api/admin/scan', async (req, res) => {
-    // ... (الكود كما هو)
+    // ... (الكود كما هو، لكن يستخدم Firebase)
+    if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
+        return res.status(403).json({ message: 'وصول غير مصرح به.' });
+    }
+
     try {
         const { scannedData } = req.body; 
 
@@ -152,7 +175,8 @@ app.post('/api/admin/scan', async (req, res) => {
 
         const registrationId = scannedData.split(':')[1];
         
-        const registration = await Registration.findById(registrationId);
+        const snapshot = await registrationsRef.child(registrationId).once('value');
+        const registration = snapshot.val();
 
         if (!registration) {
             return res.status(404).json({ message: 'هذا الرمز لا يمثل تسجيلًا صالحًا في النظام.' });
@@ -179,7 +203,8 @@ app.post('/api/admin/scan', async (req, res) => {
 });
 
 
-// 9. تشغيل الخادم
+// 10. تشغيل الخادم
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+  console.log(`🔒 Admin URL (Secret): http://localhost:${port}/admin/${ADMIN_SECRET}`);
 });
