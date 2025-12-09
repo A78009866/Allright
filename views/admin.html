@@ -3,9 +3,10 @@
 <head>  
 <meta charset="utf-8">  
 <meta name="viewport" content="width=device-width,initial-scale=1">  
-<title>أكاديمية المعالي - لوحة الإدارة</title>
+<title>لوحة الإدارة (🔒)</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">  
 <style>  
+/* (حافظ على نفس أنماط CSS التي أرسلتها سابقاً في admin.html) */
 :root{  
   --bg: #0b0b0c;  
   --text-primary: #ffffff;  
@@ -15,9 +16,8 @@
   --nav-height: 72px;  
   --radius: 12px;  
 }  
-  
+/* ... (كود CSS نفسه من admin.html السابق) ... */
 *{box-sizing:border-box;}  
-  
 html,body{  
   height:100%;  
   margin:0;  
@@ -30,14 +30,11 @@ html,body{
   -webkit-font-smoothing:antialiased;  
   direction: rtl;  
 }  
-  
 .page{  
   min-height:100vh;  
   display:flex;  
-  flex-direction:column;  
+  flex-direction:column;
 }  
-  
-/* --- NAVBAR --- */  
 .navbar{  
   height: var(--nav-height);  
   display: flex;  
@@ -53,14 +50,12 @@ html,body{
   position: relative;  
   z-index: 1000;  
 }  
-  
 .brand{  
   display:flex;  
   align-items:center;  
   gap:14px;  
   flex-shrink: 0;   
 }  
-  
 .brand img{  
   width:48px;  
   height:48px;  
@@ -68,7 +63,6 @@ html,body{
   object-fit: cover;  
   border: 1px solid rgba(255,255,255,0.1);  
 }  
-  
 .brand .title .name{  
   font-weight: 800;  
   font-size: 18px;  
@@ -81,13 +75,10 @@ html,body{
   font-weight: 400;  
   margin-top: 2px;  
 }  
-
-/* --- MAIN CONTENT / DASHBOARD --- */
 .dashboard{
     padding: 20px;
     flex: 1;
 }
-
 .dashboard h1{
     font-size: 24px;
     border-bottom: 2px solid var(--accent-color);
@@ -95,7 +86,6 @@ html,body{
     padding-bottom: 5px;
     margin-bottom: 30px;
 }
-
 .card{
     background: rgba(26, 26, 29, 0.6);
     backdrop-filter: blur(8px);
@@ -104,7 +94,6 @@ html,body{
     border: 1px solid var(--border-color);
     margin-bottom: 20px;
 }
-
 .card h2{
     font-size: 18px;
     margin-top: 0;
@@ -113,35 +102,27 @@ html,body{
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
-
-/* --- Table Styles --- */
 .requests-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
 }
-
 .requests-table th, .requests-table td {
     padding: 12px 15px;
     text-align: right;
     border-bottom: 1px solid var(--border-color);
 }
-
 .requests-table th {
     background-color: rgba(255,255,255,0.05);
     color: #fff;
     font-weight: 600;
 }
-
 .requests-table tr:hover {
     background-color: rgba(255,255,255,0.03);
 }
-
 .requests-table tbody tr:last-child td {
     border-bottom: none;
 }
-
-/* --- Buttons --- */
 .action-btn {
     padding: 8px 15px;
     margin: 5px;
@@ -153,33 +134,26 @@ html,body{
     font-family: inherit;
     font-size: 13px;
 }
-
 .accept-btn {
-    background-color: #10b981; /* Green */
+    background-color: #10b981; 
     color: white;
 }
-
 .reject-btn {
-    background-color: #ef4444; /* Red */
+    background-color: #ef4444; 
     color: white;
 }
-
 .accept-btn:hover { background-color: #059669; }
 .reject-btn:hover { background-color: #dc2626; }
-
 #loadingMessage {
     color: var(--text-secondary);
     text-align: center;
     padding: 30px;
 }
-
 #noRequests {
-    color: #fcd34d; /* Yellow */
+    color: #fcd34d; 
     text-align: center;
     padding: 30px;
 }
-
-/* --- Footer --- */
 footer{  
   text-align:center;  
   padding:20px;  
@@ -193,15 +167,13 @@ footer{
 <body>  
 <div class="page">  
   <header class="navbar">  
-    <a href="/" style="text-decoration: none;">
-      <div class="brand">  
-        <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
-        <div class="title">  
-          <div class="name">لوحة تحكم الأكاديمية</div>  
-          <div class="tag">إدارة طلبات التسجيل</div>  
-        </div>  
+    <div class="brand">  
+      <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
+      <div class="title">  
+        <div class="name">لوحة تحكم الأكاديمية</div>  
+        <div class="tag">إدارة طلبات التسجيل (وصول سري)</div>  
       </div>  
-    </a>
+    </div>  
     <a href="/" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
         ⬅️ العودة للصفحة الرئيسية
     </a>
@@ -221,8 +193,8 @@ footer{
                     <tr>
                         <th>الاسم الكامل</th>
                         <th>المستوى</th>
-                        <th>السنة/الشعبة</th>
                         <th>المادة المطلوبة</th>
+                        <th>رقم التواصل</th>
                         <th>تاريخ الطلب</th>
                         <th>الإجراء</th>
                     </tr>
@@ -243,6 +215,22 @@ footer{
 <script>
     document.getElementById('year').innerText = new Date().getFullYear();
 
+    // 🔴 استخراج المفتاح السري من URL الصفحة
+    const pathParts = window.location.pathname.split('/');
+    const secretKey = pathParts[pathParts.length - 1]; 
+    
+    if (secretKey.length < 5) {
+        // رسالة تنبيه إذا لم يتم إدخال المفتاح السري بشكل صحيح
+        document.body.innerHTML = '<h1 style="color: #ef4444; text-align: center; margin-top: 50px;">وصول غير مصرح به. الرجاء استخدام الرابط السري الكامل.</h1>';
+        throw new Error("Secret Key Missing or Invalid");
+    }
+
+    // بناء الهيدر الذي سيُرسل مع كل طلب
+    const headers = { 
+        'Content-Type': 'application/json',
+        'x-admin-secret': secretKey 
+    };
+
     async function fetchPendingRequests() {
         const loadingMessage = document.getElementById('loadingMessage');
         const noRequests = document.getElementById('noRequests');
@@ -251,13 +239,22 @@ footer{
 
         loadingMessage.style.display = 'block';
         table.style.display = 'none';
-        tbody.innerHTML = ''; // تفريغ الجدول
+        tbody.innerHTML = '';
 
         try {
-            const response = await fetch('/api/admin/pending');
+            const response = await fetch('/api/admin/pending', { headers });
             const requests = await response.json();
 
             loadingMessage.style.display = 'none';
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                    loadingMessage.innerText = '🔒 فشل التحقق: المفتاح السري غير صحيح.';
+                } else {
+                    loadingMessage.innerText = `❌ فشل في جلب الطلبات: ${requests.message || response.statusText}`;
+                }
+                return;
+            }
 
             if (requests.length === 0) {
                 noRequests.style.display = 'block';
@@ -266,17 +263,17 @@ footer{
 
             requests.forEach(req => {
                 const tr = document.createElement('tr');
-                const date = new Date(req.createdAt).toLocaleDateString('ar-EG');
+                const date = new Date(req.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 
                 tr.innerHTML = `
                     <td>${req.name}</td>
-                    <td>${req.level}</td>
-                    <td>${req.year}</td>
+                    <td>${req.level} - ${req.year}</td>
                     <td>${req.subject}</td>
+                    <td>${req.contact || '---'}</td>
                     <td>${date}</td>
                     <td>
-                        <button class="action-btn accept-btn" onclick="handleAction('${req._id}', 'accept')">قبول</button>
-                        <button class="action-btn reject-btn" onclick="handleAction('${req._id}', 'reject')">رفض</button>
+                        <button class="action-btn accept-btn" onclick="handleAction('${req.id}', 'accept')">قبول</button>
+                        <button class="action-btn reject-btn" onclick="handleAction('${req.id}', 'reject')">رفض</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -286,7 +283,7 @@ footer{
             table.style.display = 'table';
 
         } catch (error) {
-            loadingMessage.innerText = '❌ فشل في جلب الطلبات. تأكد من تشغيل الخادم والاتصال بقاعدة البيانات.';
+            loadingMessage.innerText = '❌ فشل في جلب الطلبات. تأكد من تشغيل الخادم.';
             console.error('Fetching error:', error);
         }
     }
@@ -301,7 +298,7 @@ footer{
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: headers // استخدام الهيدر الذي يحتوي على المفتاح السري
             });
 
             const data = await response.json();
