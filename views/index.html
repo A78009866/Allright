@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= pageTitle %> - الصفحة الرئيسية</title>
+    <title>أكاديمية المعالي - الصفحة الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* ==================================== */
@@ -189,11 +189,13 @@
         <div class="nav-links">
             <a href="#">الرئيسية</a>
             <a href="#">الدورات</a>
-            <a href="#">المستويات</a> <a href="#">التواصل</a> </div>
+            <a href="#">المستويات</a> 
+            <a href="#">التواصل</a> 
+        </div>
     </nav>
 
     <div class="levels-container">
-        <div class="level-item" onclick="toggleSubLevels('primary')">
+        <div class="level-item" data-level="primary">
             <span class="level-title">التعليم الإبتدائي</span>
             <div class="level-counter">
                 <span class="counter-icon">&lt;</span>
@@ -201,7 +203,7 @@
             </div>
         </div>
         
-        <div class="level-item" onclick="toggleSubLevels('middle')">
+        <div class="level-item" data-level="middle">
             <span class="level-title">التعليم المتوسط</span>
             <div class="level-counter">
                 <span class="counter-icon">&lt;</span>
@@ -210,7 +212,7 @@
         </div>
         
         <div class="secondary-level-group">
-            <div class="level-item" onclick="toggleSubLevels('secondary')">
+            <div class="level-item" data-level="secondary-toggle">
                 <span class="level-title">التعليم الثانوي</span>
                 <div class="level-counter">
                     <span class="counter-icon" id="secondary-icon">&lt;</span>
@@ -245,36 +247,27 @@
     </div>
     
     <script>
-        function toggleSubLevels(levelId) {
-            const container = document.getElementById(levelId + '-sub-levels');
-            const icon = document.getElementById(levelId + '-icon');
-
-            if (!container) return; // لعدم حدوث خطأ في الابتدائي والمتوسط
+        // دالة التبديل (Toggle)
+        function toggleSubLevels() {
+            const container = document.getElementById('secondary-sub-levels');
+            const icon = document.getElementById('secondary-icon');
 
             container.classList.toggle('active');
 
             // تغيير اتجاه الأيقونة (للدلالة على الفتح/الإغلاق)
-            if (icon) {
-                if (container.classList.contains('active')) {
-                    icon.innerHTML = '&nabla;'; // سهم لأسفل
-                } else {
-                    icon.innerHTML = '&lt;'; // سهم لليسار
-                }
+            if (container.classList.contains('active')) {
+                icon.innerHTML = '&nabla;'; // سهم لأسفل
+            } else {
+                icon.innerHTML = '&lt;'; // سهم لليسار
             }
         }
         
-        // ربط التعليم الثانوي بالدالة بشكل مباشر (لتبسيط الكود)
-        // يمكننا استخدام مُحدد مختلف للابتدائي والمتوسط إذا كان لهما أقسام فرعية لاحقاً
-        const primaryItem = document.querySelector('.level-item:nth-child(1)');
-        const middleItem = document.querySelector('.level-item:nth-child(2)');
+        // ربط الدالة بحدث النقر على عنصر التعليم الثانوي
+        document.querySelector('[data-level="secondary-toggle"]').addEventListener('click', toggleSubLevels);
         
-        // إلغاء وظيفة toggleSubLevels المؤقتة للمستويين الأولين لعدم وجود divs فرعية لهم
-        primaryItem.onclick = () => console.log('Primary clicked');
-        middleItem.onclick = () => console.log('Middle clicked');
-
-        // ربط التعليم الثانوي
-        document.querySelector('.secondary-level-group .level-item').onclick = () => toggleSubLevels('secondary');
-
+        // يمكننا إضافة مستمعين للنقر للابتدائي والمتوسط إذا كان هناك محتوى مختلف لعرضه
+        document.querySelector('[data-level="primary"]').addEventListener('click', () => console.log('Primary clicked'));
+        document.querySelector('[data-level="middle"]').addEventListener('click', () => console.log('Middle clicked'));
     </script>
 </body>
 </html>
