@@ -1,410 +1,328 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أكاديمية المعالي - لوحة تحكم الإدارة</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/html5-qrcode"></script>
+<!doctype html>
+<html lang="ar" dir="rtl">  
+<head>  
+<meta charset="utf-8">  
+<meta name="viewport" content="width=device-width,initial-scale=1">  
+<title>أكاديمية المعالي - لوحة الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">  
+<style>  
+:root{  
+  --bg: #0b0b0c;  
+  --text-primary: #ffffff;  
+  --text-secondary: #a1a1aa;  
+  --border-color: rgba(255,255,255,0.08);  
+  --accent-color: #3b82f6;   
+  --nav-height: 72px;  
+  --radius: 12px;  
+}  
+  
+*{box-sizing:border-box;}  
+  
+html,body{  
+  height:100%;  
+  margin:0;  
+  font-family: "Tajawal", sans-serif;  
+  background-color: var(--bg);  
+  background-image:   
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),  
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);  
+  color: var(--text-primary);  
+  -webkit-font-smoothing:antialiased;  
+  direction: rtl;  
+}  
+  
+.page{  
+  min-height:100vh;  
+  display:flex;  
+  flex-direction:column;  
+}  
+  
+/* --- NAVBAR --- */  
+.navbar{  
+  height: var(--nav-height);  
+  display: flex;  
+  align-items: center;  
+  justify-content: space-between;  
+  padding: 0 20px;  
+  margin: 16px;  
+  border-radius: var(--radius);  
+  background: rgba(26, 26, 29, 0.85);   
+  backdrop-filter: blur(12px);  
+  border: 1px solid var(--border-color);  
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);  
+  position: relative;  
+  z-index: 1000;  
+}  
+  
+.brand{  
+  display:flex;  
+  align-items:center;  
+  gap:14px;  
+  flex-shrink: 0;   
+}  
+  
+.brand img{  
+  width:48px;  
+  height:48px;  
+  border-radius: 10px;  
+  object-fit: cover;  
+  border: 1px solid rgba(255,255,255,0.1);  
+}  
+  
+.brand .title .name{  
+  font-weight: 800;  
+  font-size: 18px;  
+  color: #fff;  
+  line-height: 1.2;  
+}  
+.brand .title .tag{  
+  font-size: 13px;  
+  color: var(--text-secondary);  
+  font-weight: 400;  
+  margin-top: 2px;  
+}  
 
-    <style>
-        /* نفس أنماط index.html الأساسية */
-        :root {
-            --primary-color: #00bcd4;
-            --accent-color: #f39c12;
-            --glass-bg-color: rgba(0, 0, 0, 0.75); 
-            --glass-border-color: rgba(255, 255, 255, 0.15); 
-            --text-light: #f0f0f0;
-            --pure-black: #000000;
-            --success-color: #2ecc71;
-            --error-color: #e74c3c;
-            --pending-color: #f1c40f;
-            --info-color: #3498db;
-        }
+/* --- MAIN CONTENT / DASHBOARD --- */
+.dashboard{
+    padding: 20px;
+    flex: 1;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+.dashboard h1{
+    font-size: 24px;
+    border-bottom: 2px solid var(--accent-color);
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+}
 
-        body {
-            font-family: 'Changa', sans-serif;
-            background-color: var(--pure-black);
-            color: var(--text-light);
-            min-height: 100vh;
-        }
+.card{
+    background: rgba(26, 26, 29, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.card h2{
+    font-size: 18px;
+    margin-top: 0;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* --- Table Styles --- */
+.requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.requests-table th, .requests-table td {
+    padding: 12px 15px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.requests-table th {
+    background-color: rgba(255,255,255,0.05);
+    color: #fff;
+    font-weight: 600;
+}
+
+.requests-table tr:hover {
+    background-color: rgba(255,255,255,0.03);
+}
+
+.requests-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- Buttons --- */
+.action-btn {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.accept-btn {
+    background-color: #10b981; /* Green */
+    color: white;
+}
+
+.reject-btn {
+    background-color: #ef4444; /* Red */
+    color: white;
+}
+
+.accept-btn:hover { background-color: #059669; }
+.reject-btn:hover { background-color: #dc2626; }
+
+#loadingMessage {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 30px;
+}
+
+#noRequests {
+    color: #fcd34d; /* Yellow */
+    text-align: center;
+    padding: 30px;
+}
+
+/* --- Footer --- */
+footer{  
+  text-align:center;  
+  padding:20px;  
+  color:var(--text-secondary);  
+  font-size:13px;  
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+} 
+</style>  
+</head>  
+<body>  
+<div class="page">  
+  <header class="navbar">  
+    <a href="/" style="text-decoration: none;">
+      <div class="brand">  
+        <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">  
+        <div class="title">  
+          <div class="name">لوحة تحكم الأكاديمية</div>  
+          <div class="tag">إدارة طلبات التسجيل</div>  
+        </div>  
+      </div>  
+    </a>
+    <a href="/" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
+        ⬅️ العودة للصفحة الرئيسية
+    </a>
+  </header>  
+
+  <main class="dashboard">
+    <h1>طلبات التسجيل المعلقة</h1>
+
+    <div class="card">
+        <h2>📋 الطلبات قيد المراجعة</h2>
+        <p id="loadingMessage">جاري تحميل الطلبات...</p>
+        <p id="noRequests" style="display: none;">لا توجد طلبات تسجيل معلقة حالياً. النظام نظيف!</p>
         
-        .navbar {
-            width: 100%;
-            background: var(--glass-bg-color); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--glass-border-color);
-            padding: 0.8rem 5%;
-            display: flex;
-            justify-content: space-between; 
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo-container { /* ... (نفس تصميم الشعار) */ }
-        .logo { height: 35px; width: 35px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 5px var(--primary-color); }
-        .brand-name { font-size: 1.3rem; font-weight: 700; color: var(--text-light); }
-        
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            padding: 30px 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-        
-        .glass-card {
-            background: var(--glass-bg-color);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border-color);
-        }
-
-        h2 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-        /* جدول الطلبات */
-        .requests-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            text-align: right;
-        }
-        .requests-table th, .requests-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .requests-table th {
-            background-color: var(--primary-color);
-            color: var(--pure-black);
-            font-weight: 700;
-        }
-        .requests-table tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .action-btn {
-            padding: 5px 10px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-        .approve-btn { background-color: var(--success-color); color: var(--pure-black); }
-        .reject-btn { background-color: var(--error-color); color: var(--pure-black); }
-        .paid-btn { background-color: var(--info-color); color: var(--pure-black); }
-        .action-btn:hover { opacity: 0.8; }
-        
-        /* قسم الماسح الضوئي */
-        #scanner-card {
-            max-width: 500px;
-            margin: 20px auto;
-        }
-        #reader-title {
-            color: var(--accent-color);
-            margin-top: 10px;
-        }
-        #reader {
-            width: 100%;
-            border: 2px solid var(--primary-color);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 20px;
-            min-height: 200px;
-        }
-        #scan-result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.1);
-            font-size: 1.1rem;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-right: 5px;
-        }
-        .status-pending-badge { background-color: var(--pending-color); color: var(--pure-black); }
-        .status-approved-badge { background-color: var(--success-color); color: var(--pure-black); }
-        .status-rejected-badge { background-color: var(--error-color); color: var(--pure-black); }
-        .payment-paid-badge { background-color: var(--info-color); color: var(--pure-black); }
-        .payment-unpaid-badge { background-color: var(--error-color); color: var(--text-light); }
-
-
-    </style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <div class="logo-container">
-            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" 
-                 alt="شعار أكاديمية المعالي" 
-                 class="logo">
-            <span class="brand-name">أكاديمية المعالي - لوحة الأدمن</span>
-        </div>
-        
-        <div>
-            <button class="nav-button" onclick="loadRequests()"><i class="fas fa-sync-alt"></i> تحديث الطلبات</button>
-        </div>
-    </nav>
-
-    <main class="main-content">
-        
-        <div class="glass-card">
-            <h2><i class="fas fa-list-alt"></i> طلبات التسجيل للمراجعة (<span id="pending-count">0</span>)</h2>
-            <div style="overflow-x: auto;">
-                <table class="requests-table">
-                    <thead>
-                        <tr>
-                            <th>الاسم</th>
-                            <th>المرحلة/المستوى</th>
-                            <th>الشعبة/المادة</th>
-                            <th>الحالة الحالية</th>
-                            <th>الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="requests-tbody">
-                        <tr><td colspan="5" style="text-align: center;">جاري تحميل الطلبات...</td></tr>
+        <div style="overflow-x: auto;">
+            <table class="requests-table" id="pendingRequestsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>الاسم الكامل</th>
+                        <th>المستوى</th>
+                        <th>السنة/الشعبة</th>
+                        <th>المادة المطلوبة</th>
+                        <th>تاريخ الطلب</th>
+                        <th>الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
+    </div>
 
-        <div class="glass-card" id="scanner-card">
-            <h2 id="reader-title"><i class="fas fa-qrcode"></i> ماسح كود الدخول</h2>
-            <div id="reader"></div>
-            <div id="scan-result">
-                <p>الماسح الضوئي جاهز. انقر على "فتح الكاميرا" للمسح.</p>
-                <button id="camera-toggle-btn" class="action-btn paid-btn" onclick="toggleCamera()">فتح الكاميرا</button>
-            </div>
-        </div>
-    </main>
+  </main>
 
-    <script>
-        const API_BASE = '/api';
-        const requestsTbody = document.getElementById('requests-tbody');
-        const pendingCount = document.getElementById('pending-count');
-        const scanResultDiv = document.getElementById('scan-result');
-        const cameraToggleBtn = document.getElementById('camera-toggle-btn');
-        let html5QrCode = null;
-        let isScanning = false;
+  <footer>  
+    <span id="year"></span> © أكاديمية المعالي - لوحة الإدارة
+  </footer>  
+</div>  
 
-        document.addEventListener('DOMContentLoaded', loadRequests);
+<script>
+    document.getElementById('year').innerText = new Date().getFullYear();
 
-        // ----------------------------------------------------------------------
-        // 1. إدارة الطلبات
-        // ----------------------------------------------------------------------
+    async function fetchPendingRequests() {
+        const loadingMessage = document.getElementById('loadingMessage');
+        const noRequests = document.getElementById('noRequests');
+        const table = document.getElementById('pendingRequestsTable');
+        const tbody = table.querySelector('tbody');
 
-        async function loadRequests() {
-            requestsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">جاري تحميل الطلبات...</td></tr>';
-            try {
-                const response = await fetch(`${API_BASE}/requests`);
-                const requests = await response.json();
+        loadingMessage.style.display = 'block';
+        table.style.display = 'none';
+        tbody.innerHTML = ''; // تفريغ الجدول
+
+        try {
+            const response = await fetch('/api/admin/pending');
+            const requests = await response.json();
+
+            loadingMessage.style.display = 'none';
+
+            if (requests.length === 0) {
+                noRequests.style.display = 'block';
+                return;
+            }
+
+            requests.forEach(req => {
+                const tr = document.createElement('tr');
+                const date = new Date(req.createdAt).toLocaleDateString('ar-EG');
                 
-                requestsTbody.innerHTML = '';
-                let pending = 0;
-
-                if (requests.length === 0) {
-                    requestsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">لا توجد طلبات في النظام حالياً.</td></tr>';
-                    pendingCount.textContent = 0;
-                    return;
-                }
-
-                requests.forEach(req => {
-                    if (req.status === 'pending') {
-                         pending++;
-                    }
-                    const row = document.createElement('tr');
-                    
-                    // تحديد شارة الحالة
-                    let statusBadgeClass = `status-${req.status}-badge`;
-                    let statusText = (req.status === 'approved' ? 'موافق' : (req.status === 'rejected' ? 'مرفوض' : 'معلق'));
-                    let paymentBadgeClass = `payment-${req.paymentStatus}-badge`;
-                    let paymentText = (req.paymentStatus === 'paid' ? 'دُفعت' : 'لم تُدفع');
-                    
-                    row.innerHTML = `
-                        <td>${req.fullName}</td>
-                        <td>${req.stage} / ${req.level}</td>
-                        <td>${req.branch} / ${req.subject}</td>
-                        <td>
-                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
-                            ${req.status === 'approved' ? `<span class="status-badge ${paymentBadgeClass}">${paymentText}</span>` : ''}
-                        </td>
-                        <td>
-                            ${req.status !== 'approved' ? 
-                                `<button class="action-btn approve-btn" onclick="handleAction('${req.id}', 'approve')">قبول وتأكيد الدفع</button>` : ''}
-                            ${req.status !== 'rejected' ? 
-                                `<button class="action-btn reject-btn" onclick="handleAction('${req.id}', 'reject')">رفض</button>` : ''}
-                            ${req.status === 'approved' && req.paymentStatus !== 'paid' ? 
-                                `<button class="action-btn paid-btn" onclick="handleAction('${req.id}', 'setPaid')">تأكيد الدفع فقط</button>` : ''}
-                        </td>
-                    `;
-                    requestsTbody.appendChild(row);
-                });
-                
-                pendingCount.textContent = pending;
-
-            } catch (error) {
-                requestsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error-color);">خطأ في تحميل الطلبات من الخادم.</td></tr>';
-            }
-        }
-        
-        async function handleAction(id, action) {
-            if (!confirm(`هل أنت متأكد من تنفيذ الإجراء (${action}) على هذا الطلب؟`)) return;
-
-            const endpoint = 
-                action === 'approve' ? `${API_BASE}/approve` : 
-                action === 'reject' ? `${API_BASE}/reject` :
-                action === 'setPaid' ? `${API_BASE}/set-paid` :
-                null;
-
-            if (!endpoint) return;
-
-            try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert(result.message);
-                    loadRequests(); // تحديث الجدول بعد النجاح
-                } else {
-                    alert(`فشل الإجراء: ${result.message}`);
-                }
-            } catch (error) {
-                alert('حدث خطأ في الاتصال بالخادم.');
-            }
-        }
-
-        // ----------------------------------------------------------------------
-        // 2. ماسح QR Code
-        // ----------------------------------------------------------------------
-        
-        function onScanSuccess(decodedText, decodedResult) {
-            if (isScanning) {
-                console.log(`Scan result: ${decodedText}`, decodedResult);
-                checkBarcodeStatus(decodedText);
-                // إيقاف الماسح لمنع القراءة المتكررة
-                stopScanning();
-            }
-        }
-
-        function onScanError(errorMessage) {
-            // تجاهل الأخطاء البسيطة
-        }
-
-        function toggleCamera() {
-            if (isScanning) {
-                stopScanning();
-            } else {
-                startScanning();
-            }
-        }
-
-        function startScanning() {
-             scanResultDiv.innerHTML = '<p style="color: var(--primary-color);">جاري البحث عن الكاميرا وبدء المسح...</p>';
-             cameraToggleBtn.textContent = 'إيقاف الكاميرا';
-             cameraToggleBtn.style.backgroundColor = var(--error-color);
-             
-             html5QrCode = new Html5Qrcode("reader");
-
-             html5QrCode.start(
-                { facingMode: "environment" }, 
-                { fps: 10, qrbox: { width: 250, height: 250 } },
-                onScanSuccess,
-                onScanError
-            ).then(() => {
-                isScanning = true;
-                scanResultDiv.innerHTML = '<p style="color: var(--success-color);">الكاميرا تعمل. وجّه الكود نحوها.</p>';
-            }).catch(err => {
-                isScanning = false;
-                cameraToggleBtn.textContent = 'فتح الكاميرا';
-                cameraToggleBtn.style.backgroundColor = var(--info-color);
-                scanResultDiv.innerHTML = `<p style="color: var(--error-color);">فشل في الوصول للكاميرا: ${err}.</p>`;
+                tr.innerHTML = `
+                    <td>${req.name}</td>
+                    <td>${req.level}</td>
+                    <td>${req.year}</td>
+                    <td>${req.subject}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="action-btn accept-btn" onclick="handleAction('${req._id}', 'accept')">قبول</button>
+                        <button class="action-btn reject-btn" onclick="handleAction('${req._id}', 'reject')">رفض</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
+
+            noRequests.style.display = 'none';
+            table.style.display = 'table';
+
+        } catch (error) {
+            loadingMessage.innerText = '❌ فشل في جلب الطلبات. تأكد من تشغيل الخادم والاتصال بقاعدة البيانات.';
+            console.error('Fetching error:', error);
+        }
+    }
+
+    async function handleAction(id, action) {
+        if (!confirm(`هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} طلب التسجيل للطالب؟`)) {
+            return;
         }
 
-        function stopScanning() {
-            if (html5QrCode && isScanning) {
-                html5QrCode.stop().then(() => {
-                    isScanning = false;
-                    cameraToggleBtn.textContent = 'فتح الكاميرا';
-                    cameraToggleBtn.style.backgroundColor = var(--info-color);
-                    scanResultDiv.innerHTML += '<p style="color: var(--pending-color);">تم إيقاف الماسح.</p>';
-                }).catch(err => {
-                    console.error("Failed to stop scanning:", err);
-                });
-            }
-        }
+        const endpoint = `/api/admin/${action}/${id}`;
         
-        async function checkBarcodeStatus(barcode) {
-            scanResultDiv.innerHTML = `<p>جاري البحث عن الكود: <strong>${barcode}</strong>...</p>`;
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-            try {
-                const response = await fetch(`${API_BASE}/check-status`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ barcode })
-                });
+            const data = await response.json();
 
-                const result = await response.json();
-                
-                let htmlContent = '';
-
-                if (result.success) {
-                    const req = result.request;
-                    const statusText = (req.status === 'approved' ? 'موافق' : (req.status === 'rejected' ? 'مرفوض' : 'معلق'));
-                    const paymentText = (req.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع');
-                    const statusClass = `status-badge status-${req.status}-badge`;
-                    const paymentClass = `status-badge payment-${req.paymentStatus}-badge`;
-                    
-                    htmlContent = `
-                        <p style="font-size: 1.2rem; color: var(--success-color); margin-bottom: 10px;"><i class="fas fa-check-circle"></i> تم العثور على الطالب!</p>
-                        <p><strong>الطالب:</strong> ${req.fullName}</p>
-                        <p><strong>المرحلة/المادة:</strong> ${req.level} / ${req.subject}</p>
-                        <p><strong>حالة الطلب:</strong> <span class="${statusClass}">${statusText}</span></p>
-                        <p><strong>حالة الدفع:</strong> <span class="${paymentClass}">${paymentText}</span></p>
-                        <p style="margin-top: 15px;">${result.message}</p>
-                        ${req.status === 'approved' && req.paymentStatus !== 'paid' ? 
-                            `<button class="action-btn paid-btn" onclick="handleAction('${req.id}', 'setPaid')">تأكيد الدفع الآن</button>` : ''}
-                    `;
-                } else {
-                    htmlContent = `<p style="font-size: 1.2rem; color: var(--error-color);"><i class="fas fa-times-circle"></i> ${result.message}</p>`;
-                }
-                
-                scanResultDiv.innerHTML = htmlContent;
-
-            } catch (error) {
-                scanResultDiv.innerHTML = `<p style="color: var(--error-color);">خطأ في الاتصال بالخادم للتحقق من الكود.</p>`;
+            if (response.ok) {
+                alert(`✅ تم بنجاح: ${data.message}`);
+                // إعادة تحميل الطلبات بعد النجاح
+                fetchPendingRequests();
+            } else {
+                alert(`❌ فشل الإجراء: ${data.message}`);
             }
-        }
-    </script>
 
-</body>
-    </html>
-    
+        } catch (error) {
+            console.error('Action error:', error);
+            alert('⚠️ خطأ في الاتصال بالخادم.');
+        }
+    }
+
+    // جلب الطلبات عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', fetchPendingRequests);
+
+</script>  
+</body>  
+</html>
