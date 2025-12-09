@@ -3,621 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أكاديمية المعالي - التسجيل ومتابعة الحالة</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-
+    <title>أكاديمية المعالي - الصفحة الرئيسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* المتغيرات الأساسية */
-        :root {
-            --primary-color: #00bcd4; /* أزرق سماوي لامع */
-            --accent-color: #f39c12; /* برتقالي للتأكيد */
-            --glass-bg-color: rgba(0, 0, 0, 0.75); 
-            --glass-border-color: rgba(255, 255, 255, 0.15); 
-            --text-light: #f0f0f0;
-            --pure-black: #000000; 
-            --glass-button-color: rgba(255, 255, 255, 0.2); 
-            --success-color: #2ecc71;
-            --error-color: #e74c3c;
-            --pending-color: #f1c40f;
-            --secondary-color: #f874d1; /* لون جديد للأرقام المضاءة */
-        }
-
-        * {
-            box-sizing: border-box;
+        /* أنماط أساسية لإعداد الصفحة */
+        body {
+            font-family: 'Cairo', sans-serif;
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            font-family: 'Changa', sans-serif;
-            background-color: var(--pure-black);
-            color: var(--text-light);
+            /* الخلفية السوداء #000000 */
+            background-color: #000000; 
+            color: #fff;
             min-height: 100vh;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* خلفية بسيطة لإظهار تأثير الزجاج */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><radialGradient id="g" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop offset="0%" style="stop-color:rgb(20, 20, 20);stop-opacity:1"/><stop offset="100%" style="stop-color:rgb(0, 0, 0);stop-opacity:1"/></radialGradient></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>');
+            background-size: cover;
+            background-attachment: fixed;
+            overflow-x: hidden;
         }
-        
+
+        /* أنماط شريط التنقل (Navbar) - لتحقيق المظهر الزجاجي */
         .navbar {
-            width: 100%;
-            background: var(--glass-bg-color); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--glass-border-color);
-            padding: 1rem 5%;
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        /* ... (تنسيقات Navbar الأخرى من الكود السابق) ... */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo {
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 0 5px var(--primary-color); 
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-light);
-        }
-        
-        .nav-button {
-            padding: 0.4rem 1.25rem; 
-            background-color: var(--glass-button-color); 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            color: var(--text-light); 
-            font-weight: 500;
-            text-decoration: none;
-            border-radius: 50px; 
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-family: 'Changa', sans-serif;
-            font-size: 0.95rem; 
-        }
-        .nav-button:hover {
-            background-color: rgba(255, 255, 255, 0.35); 
-            border-color: var(--primary-color); 
-            transform: scale(1.05); 
-        }
-        
-        /* المحتوى الرئيسي و بطاقة الزجاج */
-        .main-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 64px); 
-            padding: 20px;
-        }
-
-        .glass-card {
-            width: 100%;
-            max-width: 650px;
-            background: var(--glass-bg-color);
-            border-radius: 15px;
-            padding: 35px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border-color);
-        }
-
-        h2 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-        /* حقول الإدخال العادية */
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-light);
-            font-weight: 400;
-            font-size: 1.05rem;
-        }
-
-        input[type="text"], select:not(.select-stage) {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid var(--primary-color);
-            border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-light);
-            font-family: 'Changa', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        input:focus, select:focus {
-             outline: none;
-             border-color: var(--accent-color);
-        }
-        select option {
-            background-color: var(--glass-bg-color); 
-            color: var(--text-light);
-        }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--accent-color);
-            color: var(--pure-black);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: background-color 0.3s;
+            width: 90%;
+            padding: 10px 20px;
             margin-top: 20px;
-        }
-        button.submit-btn:hover { background-color: #e67e22; }
-        
-        /* -------------------------------------------
-           تنسيق القائمة التفاعلية للمراحل (Accordion)
-           ------------------------------------------- */
-        .selection-container {
-            margin-bottom: 25px;
-            border: 1px solid var(--glass-border-color);
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .stage-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            cursor: pointer;
-            background-color: var(--glass-bg-color);
-            border-bottom: 1px solid var(--glass-border-color);
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: background-color 0.3s;
-        }
-
-        .stage-header:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .stage-header.selected-stage {
-            background-color: rgba(0, 188, 212, 0.2); 
-            color: var(--primary-color);
-        }
-
-        .stage-details {
-            display: none;
-            padding: 0 20px;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-
-        .stage-details.active {
-            display: block;
-        }
-        
-        /* تنسيق الصفوف المتفرعة (Sub-options) */
-        .year-option, .branch-option {
-            padding: 12px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-        }
-        .year-option:last-child, .branch-option:last-child { border-bottom: none; }
-        
-        .year-option:hover, .branch-option:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        
-        .year-option.selected, .branch-option.selected {
-            background-color: rgba(243, 156, 18, 0.2); 
-            color: var(--accent-color);
-            font-weight: 700;
-        }
-
-        /* تنسيق الرقم المضاء (Badge) */
-        .stage-badge {
-            background-color: var(--secondary-color);
-            color: var(--pure-black);
-            padding: 4px 10px;
             border-radius: 15px;
+            z-index: 10;
+            
+            /* تأثير Glassmorphism الزجاجي */
+            background: rgba(255, 255, 255, 0.1); /* خلفية شبه شفافة */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* ظل خفيف */
+            backdrop-filter: blur(10px); /* التمويه الزجاجي */
+            -webkit-backdrop-filter: blur(10px); /* دعم المتصفحات القديمة */
+            border: 1px solid rgba(255, 255, 255, 0.18); /* حدود شفافة */
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-section img {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px; /* مسافة بين الشعار والنص في RTL */
+            border-radius: 50%;
+        }
+
+        .logo-section h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: #fff;
             font-weight: 700;
-            box-shadow: 0 0 8px var(--secondary-color);
         }
 
-        .selected-info {
-            margin: 15px 0 20px;
-            padding: 10px;
-            border-left: 5px solid var(--primary-color);
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-        }
-        .selected-info strong { color: var(--accent-color); }
-        .selected-info small { color: gray; }
-
-        /* ... (تنسيقات حالة الطلب من الكود السابق) ... */
-        #status-section {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px dashed var(--primary-color);
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .status-message { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; }
-        .status-pending { color: var(--pending-color); }
-        .status-approved { color: var(--success-color); }
-        .status-rejected { color: var(--error-color); }
-
-        #qrcode {
-            margin: 20px auto;
-            padding: 10px;
-            background-color: white; 
-            border-radius: 5px;
-            display: inline-block;
-        }
-        
-        #approved-details p {
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
             font-size: 1rem;
-            margin: 8px 0;
-            text-align: right;
-        }
-        
-        #approved-details strong {
-            color: var(--primary-color);
+            opacity: 0.8;
+            transition: opacity 0.3s;
         }
 
+        .nav-links a:hover {
+            opacity: 1;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        /* أنماط المحتوى الرئيسي */
+        .content {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            width: 80%;
+        }
+        
+        .content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            /* تأثير بسيط للتوهج مع الخلفية السوداء */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo-container">
-            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" 
-                 alt="شعار أكاديمية المعالي" 
-                 class="logo">
-            
-            <span class="brand-name">أكاديمية المعالي</span>
+        <div class="logo-section">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="شعار أكاديمية المعالي">
+            <h1>أكاديمية المعالي</h1>
         </div>
-        
-        <div>
-            <button class="nav-button" onclick="resetForm()"><i class="fas fa-redo"></i> تسجيل مادة أخرى</button>
+        <div class="nav-links">
+            <a href="#">الرئيسية</a>
+            <a href="#">الدورات</a>
+            <a href="#">من نحن</a>
+            <a href="#">اتصل بنا</a>
         </div>
     </nav>
 
-    <main class="main-content">
-        <div class="glass-card">
-            
-            <h2 id="card-title"><i class="fas fa-user-plus"></i> نموذج التسجيل الأولي</h2>
-
-            <div id="registration-form">
-                
-                <label for="fullName"><i class="fas fa-user"></i> الاسم واللقب:</label>
-                <input type="text" id="fullName" required>
-
-                <label><i class="fas fa-school"></i> اختيار المرحلة والصف والشعبة:</label>
-                
-                <div class="selected-info">
-                    <p><strong>المرحلة/الصف:</strong> <span id="selectedStageDisplay">لم يتم الاختيار</span></p>
-                    <p><strong>الشعبة:</strong> <span id="selectedBranchDisplay">لم يتم الاختيار</span></p>
-                    <input type="hidden" id="hiddenStage" value="">
-                    <input type="hidden" id="hiddenBranch" value="">
-                </div>
-
-                <div class="selection-container">
-                    
-                    <div class="stage-header" data-stage="التعليم الابتدائي">
-                        <span>التعليم الابتدائي</span>
-                        <span class="stage-badge">13447</span>
-                    </div>
-                    <div class="stage-details" data-stage="التعليم الابتدائي">
-                        <div class="year-option" data-year="السنة الأولى ابتدائي">السنة الأولى ابتدائي</div>
-                        <div class="year-option" data-year="السنة الثانية ابتدائي">السنة الثانية ابتدائي</div>
-                        <div class="year-option" data-year="السنة الثالثة ابتدائي">السنة الثالثة ابتدائي</div>
-                        <div class="year-option" data-year="السنة الرابعة ابتدائي">السنة الرابعة ابتدائي</div>
-                        <div class="year-option" data-year="السنة الخامسة ابتدائي">السنة الخامسة ابتدائي</div>
-                        <div class="year-option" data-year="السنة السادسة ابتدائي">السنة السادسة ابتدائي</div>
-                        <div class="branch-option" data-branch="موحد" style="display:none;"></div> 
-                    </div>
-
-                    <div class="stage-header" data-stage="التعليم المتوسط">
-                        <span>التعليم المتوسط</span>
-                        <span class="stage-badge">18286</span>
-                    </div>
-                    <div class="stage-details" data-stage="التعليم المتوسط">
-                        <div class="year-option" data-year="السنة الأولى متوسط">السنة الأولى متوسط</div>
-                        <div class="year-option" data-year="السنة الثانية متوسط">السنة الثانية متوسط</div>
-                        <div class="year-option" data-year="السنة الثالثة متوسط">السنة الثالثة متوسط</div>
-                        <div class="year-option" data-year="السنة الرابعة متوسط">السنة الرابعة متوسط</div>
-                        <div class="branch-option" data-branch="موحد" style="display:none;"></div> 
-                    </div>
-
-                    <div class="stage-header" data-stage="التعليم الثانوي">
-                        <span>التعليم الثانوي</span>
-                        <span class="stage-badge">17098</span>
-                    </div>
-                    <div class="stage-details" data-stage="التعليم الثانوي">
-                        <div class="year-option" data-year="السنة الأولى ثانوي">السنة الأولى ثانوي</div>
-                        <div class="year-option" data-year="السنة الثانية ثانوي">السنة الثانية ثانوي</div>
-                        <div class="year-option" data-year="السنة الثالثة ثانوي">السنة الثالثة ثانوي</div>
-                        <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 10px 0;">
-                        <p style="padding: 5px 10px; color: var(--primary-color);">اختر الشعبة:</p>
-                        <div class="branch-option" data-branch="علمي">شعبة علمي</div>
-                        <div class="branch-option" data-branch="أدبي">شعبة أدبي</div>
-                        <div class="branch-option" data-branch="مهني">شعبة مهني</div>
-                    </div>
-
-                </div>
-
-                <label for="subject"><i class="fas fa-book"></i> المادة المطلوبة:</label>
-                <select id="subject" required>
-                    <option value="" disabled selected>اختر المادة</option>
-                    <option value="الرياضيات">الرياضيات</option>
-                    <option value="الفيزياء">الفيزياء</option>
-                    <option value="الكيمياء">الكيمياء</option>
-                    <option value="اللغة العربية">اللغة العربية</option>
-                </select>
-                
-                <button class="submit-btn" onclick="submitRegistration()"><i class="fas fa-paper-plane"></i> إرسال طلب الانضمام</button>
-            </div>
-
-            <div id="tracking-section" style="display: none;">
-                <h2 style="color: var(--accent-color); text-align: center; margin-bottom: 20px;"><i class="fas fa-search"></i> متابعة حالة طلبك</h2>
-                <p style="margin: 15px 0; text-align: center;">رقم طلبك الحالي هو: <strong id="requestIdDisplay" style="color: var(--primary-color);"></strong></p>
-                <button onclick="checkStatus()" style="background-color: var(--primary-color); color: var(--pure-black);"><i class="fas fa-sync-alt"></i> تحديث الحالة</button>
-
-                <div id="status-section">
-                    <p id="statusMessage" class="status-message status-pending">الرجاء الضغط على تحديث الحالة...</p>
-                    
-                    <div id="approved-details" style="display: none; text-align: right;">
-                        <p style="color: var(--success-color); font-size: 1.2rem;"><i class="fas fa-check-circle"></i> تم القبول! أهلاً بك في أكاديمية المعالي.</p>
-                        <p><strong>الطالب:</strong> <span id="studentName"></span></p>
-                        <p><strong>المرحلة/الصف:</strong> <span id="studentCourse"></span></p>
-                        <p><strong>الشعبة:</strong> <span id="studentBranch"></span></p>
-
-                        <h3 style="margin-top: 20px; color: var(--accent-color);">كود الدخول (QR Code)</h3>
-                        <div id="qrcode"></div>
-                        <small style="color: gray;">**مهم:** يرجى إظهار هذا الكود لموظف الإدارة عند الدخول.</small>
-                    </div>
-                </div>
-            </div>
+    <div class="content">
+        <h2>مرحباً بك في أكاديمية المعالي</h2>
+        <p>نحن نقدم أفضل البرامج التعليمية لتطوير مهاراتك.</p>
         </div>
-    </main>
-
-    <script>
-        const API_BASE = '/api';
-        let currentRequestId = localStorage.getItem('academyRequestId');
-        
-        // -------------------------------------------------------------
-        // منطق القائمة التفاعلية (Accordion)
-        // -------------------------------------------------------------
-
-        document.querySelectorAll('.stage-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const stage = header.getAttribute('data-stage');
-                const details = document.querySelector(`.stage-details[data-stage="${stage}"]`);
-                
-                // إغلاق كل الأقسام الأخرى
-                document.querySelectorAll('.stage-details').forEach(d => {
-                    if (d !== details) d.classList.remove('active');
-                });
-                document.querySelectorAll('.stage-header').forEach(h => {
-                    if (h !== header) h.classList.remove('selected-stage');
-                });
-
-                // فتح/إغلاق القسم المطلوب
-                details.classList.toggle('active');
-                header.classList.toggle('selected-stage');
-                
-                // إعادة تعيين اختيار الصف والشعبة عند فتح مرحلة جديدة
-                if (details.classList.contains('active')) {
-                     // إلغاء تحديد الصفوف والشعب من جميع الأقسام
-                     document.querySelectorAll('.year-option, .branch-option').forEach(el => el.classList.remove('selected'));
-                     // مسح المدخلات المخفية
-                     document.getElementById('hiddenStage').value = '';
-                     document.getElementById('hiddenBranch').value = '';
-                     document.getElementById('selectedStageDisplay').textContent = stage;
-                     document.getElementById('selectedBranchDisplay').textContent = 'لم يتم الاختيار';
-                } else {
-                     header.classList.remove('selected-stage');
-                }
-            });
-        });
-
-        // منطق اختيار الصف
-        document.querySelectorAll('.year-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const year = option.getAttribute('data-year');
-                const parentStage = option.closest('.stage-details').getAttribute('data-stage');
-
-                // إلغاء تحديد كل الصفوف والشعب
-                document.querySelectorAll('.year-option, .branch-option').forEach(el => el.classList.remove('selected'));
-                
-                // تحديد الصف الحالي
-                option.classList.add('selected');
-                
-                // تحديث المدخلات المخفية والشاشة
-                document.getElementById('hiddenStage').value = `${parentStage} - ${year}`;
-                document.getElementById('selectedStageDisplay').textContent = `${parentStage} - ${year}`;
-
-                // للمرحلة الثانوية: ترك حقل الشعبة مفتوحاً، وللأخرى: تعيينه "موحد"
-                if (parentStage !== 'التعليم الثانوي') {
-                    document.getElementById('hiddenBranch').value = 'موحد';
-                    document.getElementById('selectedBranchDisplay').textContent = 'موحد';
-                } else {
-                     document.getElementById('hiddenBranch').value = '';
-                     document.getElementById('selectedBranchDisplay').textContent = 'يرجى اختيار الشعبة';
-                }
-            });
-        });
-
-        // منطق اختيار الشعبة (للمرحلة الثانوية فقط)
-        document.querySelectorAll('.branch-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const branch = option.getAttribute('data-branch');
-                const parentStage = option.closest('.stage-details').getAttribute('data-stage');
-                
-                // هذا الخيار متاح فقط إذا تم اختيار صف ثانوي مسبقاً
-                if (parentStage === 'التعليم الثانوي' && document.getElementById('hiddenStage').value.startsWith('التعليم الثانوي')) {
-                    // إلغاء تحديد الشعب الأخرى
-                    document.querySelectorAll('.branch-option').forEach(el => el.classList.remove('selected'));
-                    
-                    // تحديد الشعبة الحالية
-                    option.classList.add('selected');
-                    
-                    // تحديث المدخلات المخفية والشاشة
-                    document.getElementById('hiddenBranch').value = branch;
-                    document.getElementById('selectedBranchDisplay').textContent = branch;
-                } else if (parentStage !== 'التعليم الثانوي') {
-                    // هذا للتأكد من أن الصفوف غير الثانوية تضبط الشعبة على "موحد" بشكل ضمني
-                    document.getElementById('hiddenBranch').value = branch; // ستكون 'موحد' في هذه الحالة
-                    document.getElementById('selectedBranchDisplay').textContent = branch;
-                }
-            });
-        });
-
-        // -------------------------------------------------------------
-        // منطق API والتسجيل
-        // -------------------------------------------------------------
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (currentRequestId) {
-                document.getElementById('card-title').textContent = 'متابعة حالة الطلب الحالي';
-                document.getElementById('registration-form').style.display = 'none';
-                document.getElementById('tracking-section').style.display = 'block';
-                document.getElementById('requestIdDisplay').textContent = currentRequestId;
-                checkStatus();
-            }
-        });
-
-        function resetForm() {
-            if (confirm('هل تريد فعلاً بدء عملية تسجيل جديدة لمادة أخرى؟ سيتم حفظ رقم طلبك القديم للمتابعة.')) {
-                document.getElementById('card-title').textContent = 'نموذج التسجيل الأولي';
-                document.getElementById('registration-form').style.display = 'block';
-                document.getElementById('tracking-section').style.display = 'none';
-                
-                document.getElementById('fullName').value = '';
-                document.getElementById('subject').selectedIndex = 0;
-                
-                // إعادة تعيين واجهة الاختيار التفاعلية
-                document.querySelectorAll('.stage-details').forEach(d => d.classList.remove('active'));
-                document.querySelectorAll('.stage-header').forEach(h => h.classList.remove('selected-stage'));
-                document.querySelectorAll('.year-option, .branch-option').forEach(el => el.classList.remove('selected'));
-                document.getElementById('hiddenStage').value = '';
-                document.getElementById('hiddenBranch').value = '';
-                document.getElementById('selectedStageDisplay').textContent = 'لم يتم الاختيار';
-                document.getElementById('selectedBranchDisplay').textContent = 'لم يتم الاختيار';
-            }
-        }
-
-        async function submitRegistration() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const stage = document.getElementById('hiddenStage').value; // المرحلة + الصف (مثال: 'التعليم المتوسط - السنة الأولى متوسط')
-            const branch = document.getElementById('hiddenBranch').value; // الشعبة (مثال: 'علمي' أو 'موحد')
-            const subject = document.getElementById('subject').value;
-
-            if (!fullName || !stage || !subject || !branch) {
-                alert('الرجاء تعبئة الاسم واللقب، واختيار المرحلة والصف والشعبة والمادة المطلوبة بشكل كامل.');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, stage, subject, branch })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    currentRequestId = result.requestId;
-                    localStorage.setItem('academyRequestId', currentRequestId);
-                    
-                    document.getElementById('card-title').textContent = 'متابعة حالة الطلب الحالي';
-                    document.getElementById('registration-form').style.display = 'none';
-                    document.getElementById('tracking-section').style.display = 'block';
-                    document.getElementById('requestIdDisplay').textContent = currentRequestId;
-                    alert(result.message + ` رقم طلبك: ${currentRequestId}`);
-                    checkStatus();
-                } else {
-                    alert(`فشل التسجيل: ${result.message}`);
-                }
-            } catch (error) {
-                alert('حدث خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.');
-            }
-        }
-
-        async function checkStatus() {
-            if (!currentRequestId) return;
-
-            const statusMessageEl = document.getElementById('statusMessage');
-            const approvedDetailsEl = document.getElementById('approved-details');
-            const qrcodeContainer = document.getElementById('qrcode');
-            
-            statusMessageEl.textContent = 'جاري التحقق من الحالة... نرجو الانتظار.';
-            statusMessageEl.className = 'status-message status-pending';
-            approvedDetailsEl.style.display = 'none';
-            qrcodeContainer.innerHTML = '';
-
-            try {
-                const response = await fetch(`${API_BASE}/status/${currentRequestId}`);
-                const result = await response.json();
-
-                if (result.success) {
-                    const status = result.status;
-                    
-                    if (status === 'approved') {
-                        statusMessageEl.textContent = '🎉 حالة طلبك: تمت الموافقة! يمكنك الآن الحصول على كود الدخول.';
-                        statusMessageEl.className = 'status-message status-approved';
-                        approvedDetailsEl.style.display = 'block';
-
-                        document.getElementById('studentName').textContent = result.fullName;
-                        document.getElementById('studentCourse').textContent = result.stage;
-                        document.getElementById('studentBranch').textContent = result.branch;
-                        
-                        qrcodeContainer.innerHTML = ''; 
-                        new QRCode(qrcodeContainer, {
-                            text: result.barcode,
-                            width: 150,
-                            height: 150,
-                            colorDark: "#000000",
-                            colorLight: "#ffffff",
-                            correctLevel: QRCode.CorrectLevel.H
-                        });
-
-                    } else if (status === 'pending') {
-                        statusMessageEl.textContent = '⏳ حالة طلبك: معلق. طلبك قيد المراجعة حالياً من قبل الإدارة. شكراً لصبرك.';
-                        statusMessageEl.className = 'status-message status-pending';
-                    } else if (status === 'rejected') {
-                        statusMessageEl.textContent = '❌ عذراً، تم رفض طلب التسجيل الخاص بك. يمكنك التواصل مع الإدارة للاستفسار.';
-                        statusMessageEl.className = 'status-message status-rejected';
-                    }
-                } else {
-                    statusMessageEl.textContent = '⚠️ فشل في العثور على رقم الطلب هذا. قد يكون غير صحيح.';
-                    statusMessageEl.className = 'status-message status-rejected';
-                }
-            } catch (error) {
-                statusMessageEl.textContent = '🛑 خطأ في الاتصال بالخادم للتحقق من الحالة.';
-                statusMessageEl.className = 'status-message status-rejected';
-            }
-        }
-    </script>
 
 </body>
 </html>
