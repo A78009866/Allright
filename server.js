@@ -25,7 +25,7 @@ const registrationsRef = db.ref('registrations'); // اسم العقدة في ق
 // سحب المفتاح السري من .env
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY;
 if (!ADMIN_SECRET) {
-    console.error("❌ ERROR: ADMIN_SECRET_KEY is not defined in .env file.");
+    console.error("❌ ERROR: ADMIN_SECRET_KEY is not defined in .env file. Please create a .env file.");
     process.exit(1);
 }
 
@@ -37,135 +37,93 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // 4. لخدمة ملف HTML للواجهة الأمامية (الطلاب)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 🔴 5. المسار المحمي لصفحة الإدارة (Admin)
-// لا يمكن الوصول للصفحة إلا عبر URL يحتوي على المفتاح السري
-app.get(`/admin/${ADMIN_SECRET}`, (req, res) => {
-    // يمكن حذف الرابط من الواجهة الأمامية index.html الآن
-    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+// 5. لخدمة ملف HTML للواجهة الإدارية (المسؤول)
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-
-// 6. المسار: إنشاء طلب تسجيل جديد (لواجهة المستخدم)
+// 6. مسار التسجيل (للمستخدمين الجدد)
 app.post('/api/register', async (req, res) => {
-  try {
-    const { name, level, year, subject, contact } = req.body;
-    
-    if (!name || !level || !year || !subject) {
-        return res.status(400).json({ message: 'الرجاء إكمال جميع حقول التسجيل الأساسية.' });
-    }
-
-    // إضافة تسجيل جديد إلى Firebase
-    const newRegistrationRef = registrationsRef.push();
-    const registrationId = newRegistrationRef.key;
-    
-    const newRegistration = { 
-        id: registrationId,
-        name, 
-        level, 
-        year, 
-        subject, 
-        contact: contact || 'غير متوفر', // إضافة حقل اتصال اختياري
-        status: 'pending', 
-        qrCodeData: null,
-        createdAt: admin.database.ServerValue.TIMESTAMP // للحصول على وقت الخادم
-    };
-
-    await newRegistrationRef.set(newRegistration);
-
-    res.status(201).json({ 
-      success: true,
-      message: 'تم إرسال طلب التسجيل بنجاح. سيتم مراجعته من قبل الإدارة.', 
-      registrationId 
-    });
-
-  } catch (error) {
-    console.error('Registration Error:', error);
-    res.status(500).json({ success: false, message: 'حدث خطأ أثناء معالجة الطلب.' });
-  }
-});
-
-// 🔴 7. المسار الجديد: جلب كل طلبات التسجيل المعلقة (للأدمن)
-app.get('/api/admin/pending', async (req, res) => {
-    // التحقق من المفتاح السري الممرر في Header
-    if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
-        return res.status(403).json({ message: 'وصول غير مصرح به.' });
-    }
-
     try {
-        const snapshot = await registrationsRef.orderByChild('status').equalTo('pending').once('value');
+        const { name, level, year, subject, contact } = req.body;
         
-        const pendingRegistrations = [];
-        snapshot.forEach(childSnapshot => {
-            pendingRegistrations.push(childSnapshot.val());
+        if (!name || !level || !year || !subject) {
+            return res.status(400).json({ message: 'الرجاء ملء جميع الحقول المطلوبة (الاسم، المستوى، السنة، المادة).' });
+        }
+
+        const registrationData = {
+            name,
+            level,
+            year,
+            subject,
+            contact: contact || 'غير متوفر',
+            status: 'pending', // الافتراضية هي قيد الانتظار
+            timestamp: admin.database.ServerValue.TIMESTAMP
+        };
+
+        const newRegistrationRef = registrationsRef.push(registrationData);
+        const registrationId = newRegistrationRef.key;
+
+        res.json({ 
+            message: 'تم استلام طلب التسجيل بنجاح. سيتم مراجعته من قبل الإدارة.', 
+            registrationId: registrationId,
+            status: 'pending' 
         });
 
-        // فرز الطلبات حسب تاريخ الإنشاء (الأقدم أولاً)
-        pendingRegistrations.sort((a, b) => a.createdAt - b.createdAt);
-        
-        res.json(pendingRegistrations);
     } catch (error) {
-        console.error('Fetch Pending Error:', error);
-        res.status(500).json({ message: 'فشل في جلب الطلبات المعلقة.' });
+        console.error('Registration Error:', error);
+        res.status(500).json({ message: 'حدث خطأ أثناء عملية التسجيل.' });
     }
 });
 
+// 7. مسار التحقق من الحالة وعرض QR (للطالب)
+app.post('/api/status', async (req, res) => {
+    try {
+        const { registrationId } = req.body;
 
-// 🔴 8. المسار: قبول/رفض طلب التسجيل (لوحة الأدمن)
-app.post('/api/admin/:action/:id', async (req, res) => {
-  const { action, id } = req.params;
-  
-  if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
-    return res.status(403).json({ message: 'وصول غير مصرح به.' });
-  }
+        if (!registrationId) {
+            return res.status(400).json({ message: 'الرجاء إدخال رقم التسجيل للتحقق.' });
+        }
 
-  if (action !== 'accept' && action !== 'reject') {
-      return res.status(400).json({ message: 'الإجراء غير صالح.' });
-  }
+        const snapshot = await registrationsRef.child(registrationId).once('value');
+        const registration = snapshot.val();
 
-  try {
-    const registrationRef = registrationsRef.child(id);
-    const snapshot = await registrationRef.once('value');
-    const registration = snapshot.val();
+        if (!registration) {
+            return res.status(404).json({ message: 'لا يوجد تسجيل بهذا الرقم.' });
+        }
+        
+        // إذا كان التسجيل مقبولاً، نقوم بإنشاء رمز الـ QR
+        if (registration.status === 'accepted') {
+            // صياغة البيانات التي ستحملها الـ QR
+            const qrData = `MAALI-REG-ID:${registrationId}`; 
+            const qrCodeImage = await QRCode.toDataURL(qrData); // إنشاء رمز QR كصورة Base64
 
-    if (!registration) {
-      return res.status(404).json({ message: 'لم يتم العثور على طلب التسجيل.' });
+            return res.json({
+                message: '✅ تسجيلك مقبول وجاهز!',
+                status: 'accepted',
+                qrCode: qrCodeImage,
+                details: registration
+            });
+        }
+        
+        // للحالات الأخرى
+        res.json({
+            message: `حالة التسجيل الحالية: ${registration.status}. (لم يتم القبول بعد)`,
+            status: registration.status,
+            details: registration
+        });
+
+    } catch (error) {
+        console.error('Status Check Error:', error);
+        res.status(500).json({ message: 'حدث خطأ أثناء عملية التحقق من الحالة.' });
     }
-
-    let updateData = { status: action };
-    let message;
-
-    if (action === 'accept') {
-        const qrData = `MAALI-REG-ID:${id}`;
-        const qrCodeImage = await QRCode.toDataURL(qrData);
-
-        updateData.qrCodeData = qrCodeImage;
-        message = 'تم قبول التسجيل بنجاح وإنشاء رمز QR.';
-
-    } else if (action === 'reject') {
-        message = 'تم رفض طلب التسجيل بنجاح.';
-        updateData.qrCodeData = null; 
-    }
-    
-    await registrationRef.update(updateData);
-
-    res.json({ success: true, message });
-
-  } catch (error) {
-    console.error(`${action} Error:`, error);
-    res.status(500).json({ success: false, message: `حدث خطأ أثناء معالجة ${action}.` });
-  }
 });
 
-// 9. المسار: مسح رمز QR والتحقق من صلاحيته (جهاز الأدمن/الماسح) (لم يتغير)
-app.post('/api/admin/scan', async (req, res) => {
-    // ... (الكود كما هو، لكن يستخدم Firebase)
-    if (req.headers['x-admin-secret'] !== ADMIN_SECRET) {
-        return res.status(403).json({ message: 'وصول غير مصرح به.' });
-    }
-
+// 8. مسار مسح رمز QR (لجهاز المسح/التحقق)
+app.post('/api/scan', async (req, res) => {
     try {
         const { scannedData } = req.body; 
 
@@ -203,8 +161,61 @@ app.post('/api/admin/scan', async (req, res) => {
 });
 
 
-// 10. تشغيل الخادم
+// --- مسارات الإدارة (Admin Endpoints) ---
+
+// 9. مسار عرض جميع التسجيلات (للمسؤول)
+app.post('/api/admin/registrations', async (req, res) => {
+    const { adminSecret } = req.body;
+
+    if (adminSecret !== ADMIN_SECRET) {
+        return res.status(401).json({ message: 'مفتاح المسؤول غير صحيح.' });
+    }
+
+    try {
+        const snapshot = await registrationsRef.once('value');
+        const registrations = snapshot.val() || {};
+        
+        // تحويل الكائن إلى مصفوفة لسهولة التعامل معه في الواجهة الأمامية
+        const registrationList = Object.keys(registrations).map(key => ({
+            id: key,
+            ...registrations[key]
+        }));
+
+        res.json({ registrations: registrationList });
+    } catch (error) {
+        console.error('Admin Fetch Error:', error);
+        res.status(500).json({ message: 'حدث خطأ أثناء جلب التسجيلات.' });
+    }
+});
+
+// 10. مسار تحديث حالة التسجيل (للمسؤول)
+app.post('/api/admin/status', async (req, res) => {
+    const { adminSecret, registrationId, newStatus } = req.body;
+
+    if (adminSecret !== ADMIN_SECRET) {
+        return res.status(401).json({ message: 'مفتاح المسؤول غير صحيح.' });
+    }
+
+    if (!registrationId || !['accepted', 'pending', 'rejected'].includes(newStatus)) {
+        return res.status(400).json({ message: 'بيانات غير صالحة.' });
+    }
+
+    try {
+        await registrationsRef.child(registrationId).update({ status: newStatus });
+        res.json({ 
+            message: `تم تحديث حالة التسجيل ${registrationId} إلى ${newStatus} بنجاح.`,
+            id: registrationId,
+            status: newStatus
+        });
+    } catch (error) {
+        console.error('Admin Update Error:', error);
+        res.status(500).json({ message: 'حدث خطأ أثناء تحديث الحالة.' });
+    }
+});
+
+
+// 11. تشغيل الخادم
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log(`🔒 Admin URL (Secret): http://localhost:${port}/admin/${ADMIN_SECRET}`);
+    console.log(`🚀 الخادم يعمل على http://localhost:${port}`);
+    console.log(`🔑 واجهة المسؤول: http://localhost:${port}/admin (تحتاج إلى مفتاح ADMIN_SECRET)`);
 });
