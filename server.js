@@ -4,7 +4,7 @@ const app = express();
 const port = 3000;
 
 // لخدمة الملفات الثابتة (مثل index.html, CSS, الصور)
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views)));
 
 // المسار الرئيسي لعرض الصفحة
 app.get('/', (req, res) => {
@@ -15,4 +15,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
 
