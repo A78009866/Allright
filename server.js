@@ -8,10 +8,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // المسار الرئيسي لعرض الصفحة
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'views, 'index.html'));
 });
 
 // تشغيل الخادم
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+
