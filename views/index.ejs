@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %> - الصفحة الرئيسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==================================== */
+        /* أنماط أساسية وخلفية داكنة (Black/Dark) */
+        /* ==================================== */
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212; /* لون داكن جداً أقرب للأسود */
+            color: #E0E0E0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* ==================================== */
+        /* شريط التنقل (Navbar) الزجاجي */
+        /* ==================================== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            z-index: 10;
+            
+            /* تأثير Glassmorphism الزجاجي */
+            background: rgba(30, 30, 30, 0.4); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-section img {
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-section h1 {
+            font-size: 1.6rem;
+            margin: 0;
+            color: #fff;
+            font-weight: 900;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: #FF69B4; /* لون وردي/مضيء عند التحويم */
+        }
+        
+        /* ==================================== */
+        /* قسم المستويات (المحتوى الرئيسي) */
+        /* ==================================== */
+        .levels-container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 60px;
+            padding: 30px 0;
+            border-radius: 15px;
+            background: rgba(18, 18, 18, 0.7); /* خلفية داكنة للمحتوى */
+        }
+
+        .level-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .level-item:last-child {
+            border-bottom: none;
+        }
+
+        .level-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .level-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* تصميم العدّاد (الرقم المضيء) - محاكاة للصورة */
+        .level-counter {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .counter-icon {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            color: #FF69B4; /* لون وردي */
+        }
+
+        .counter-pill {
+            background-color: #FF69B4; /* لون خلفية العداد */
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            /* تأثير التوهج */
+            box-shadow: 0 0 10px #FF69B4, 0 0 20px rgba(255, 105, 180, 0.5);
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        /* تصميم قوائم المستويات الفرعية (كما في الصورة الثانية) */
+        .sub-levels {
+            display: none; /* مخفية افتراضياً */
+            background-color: #0d0d0d;
+        }
+
+        .sub-levels.active {
+            display: block; /* تظهر عند الضغط */
+        }
+
+        .sub-level-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 40px;
+            font-size: 1rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.05);
+            color: #B0B0B0;
+        }
+
+        .sub-level-icon {
+            margin-left: 10px;
+            color: #FF69B4;
+        }
+        
+        .sub-level-item .counter-pill {
+            background-color: #FF69B4;
+            color: #000;
+            box-shadow: 0 0 8px #FF69B4, 0 0 15px rgba(255, 105, 180, 0.3);
+            font-size: 0.8rem;
+        }
+        
+        /* تباعد لتمييز المستويات الفرعية */
+        .sub-level-item .level-title {
+            padding-right: 20px; 
+            font-size: 1rem;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-section">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="شعار أكاديمية المعالي">
+            <h1>أكاديمية المعالي</h1>
+        </div>
+        <div class="nav-links">
+            <a href="#">الرئيسية</a>
+            <a href="#">الدورات</a>
+            <a href="#">المستويات</a> <a href="#">التواصل</a> </div>
+    </nav>
+
+    <div class="levels-container">
+        <div class="level-item" onclick="toggleSubLevels('primary')">
+            <span class="level-title">التعليم الإبتدائي</span>
+            <div class="level-counter">
+                <span class="counter-icon">&lt;</span>
+                <span class="counter-pill">13447</span>
+            </div>
+        </div>
+        
+        <div class="level-item" onclick="toggleSubLevels('middle')">
+            <span class="level-title">التعليم المتوسط</span>
+            <div class="level-counter">
+                <span class="counter-icon">&lt;</span>
+                <span class="counter-pill">18286</span>
+            </div>
+        </div>
+        
+        <div class="secondary-level-group">
+            <div class="level-item" onclick="toggleSubLevels('secondary')">
+                <span class="level-title">التعليم الثانوي</span>
+                <div class="level-counter">
+                    <span class="counter-icon" id="secondary-icon">&lt;</span>
+                    <span class="counter-pill">17098</span>
+                </div>
+            </div>
+            
+            <div class="sub-levels" id="secondary-sub-levels">
+                <div class="sub-level-item">
+                    <span class="level-title">السنة الأولى ثانوي</span>
+                    <div class="level-counter">
+                        <span class="sub-level-icon">💾</span>
+                        <span class="counter-pill">3727</span>
+                    </div>
+                </div>
+                <div class="sub-level-item">
+                    <span class="level-title">السنة الثانية ثانوي</span>
+                    <div class="level-counter">
+                        <span class="sub-level-icon">💾</span>
+                        <span class="counter-pill">4952</span>
+                    </div>
+                </div>
+                <div class="sub-level-item">
+                    <span class="level-title">السنة الثالثة ثانوي</span>
+                    <div class="level-counter">
+                        <span class="sub-level-icon">💾</span>
+                        <span class="counter-pill">7547</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSubLevels(levelId) {
+            const container = document.getElementById(levelId + '-sub-levels');
+            const icon = document.getElementById(levelId + '-icon');
+
+            if (!container) return; // لعدم حدوث خطأ في الابتدائي والمتوسط
+
+            container.classList.toggle('active');
+
+            // تغيير اتجاه الأيقونة (للدلالة على الفتح/الإغلاق)
+            if (icon) {
+                if (container.classList.contains('active')) {
+                    icon.innerHTML = '&nabla;'; // سهم لأسفل
+                } else {
+                    icon.innerHTML = '&lt;'; // سهم لليسار
+                }
+            }
+        }
+        
+        // ربط التعليم الثانوي بالدالة بشكل مباشر (لتبسيط الكود)
+        // يمكننا استخدام مُحدد مختلف للابتدائي والمتوسط إذا كان لهما أقسام فرعية لاحقاً
+        const primaryItem = document.querySelector('.level-item:nth-child(1)');
+        const middleItem = document.querySelector('.level-item:nth-child(2)');
+        
+        // إلغاء وظيفة toggleSubLevels المؤقتة للمستويين الأولين لعدم وجود divs فرعية لهم
+        primaryItem.onclick = () => console.log('Primary clicked');
+        middleItem.onclick = () => console.log('Middle clicked');
+
+        // ربط التعليم الثانوي
+        document.querySelector('.secondary-level-group .level-item').onclick = () => toggleSubLevels('secondary');
+
+    </script>
+</body>
+</html>
