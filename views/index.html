@@ -313,6 +313,179 @@ html,body{
   color: var(--text-secondary);
   line-height: 1.6;
 }
+
+/* STUDENT CARDS SECTION */
+.student-cards-section {
+  padding: 0 16px 20px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.student-cards-section h2 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 15px;
+    padding-right: 5px;
+    border-right: 4px solid var(--accent-color);
+}
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+.student-card {
+  background: var(--drawer-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.student-card .name {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent-color);
+  border-bottom: 1px dashed rgba(255,255,255,0.1);
+  padding-bottom: 5px;
+}
+.student-card .details {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-indicator {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-active {
+  background: rgba(67, 207, 102, 0.2);
+  color: #43cf66;
+}
+.status-inactive {
+  background: rgba(255, 99, 71, 0.2);
+  color: #ff6347;
+}
+.student-card .subjects {
+  font-size: 13px;
+  color: #e4e4e7;
+  font-weight: 500;
+}
+
+
+/* MODAL STYLES */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.modal-overlay.open {
+    display: flex;
+}
+.modal-content {
+    background: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    position: relative;
+    text-align: right;
+    animation: fadeInScale 0.3s ease-out;
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #e4e4e7;
+}
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+}
+.modal-content button {
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+.modal-content button:hover {
+    background: #2563eb;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.modal-result {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-result h4 {
+  color: #43cf66;
+  margin-bottom: 15px;
+}
+
+.modal-result img {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color);
+  padding: 5px;
+  background: #fff;
+  border-radius: 5px;
+}
+
+.modal-result .print-btn {
+  background: #ffc107;
+  color: #111;
+  margin-top: 10px;
+}
+
 footer{
   text-align:center;
   padding:20px;
@@ -340,6 +513,13 @@ footer{
     <div style="width: 30px;"></div> 
   </header>
 
+  <div class="student-cards-section">
+      <h2>الطلاب المسجلون حاليًا</h2>
+      <div class="cards-container" id="studentCardsContainer">
+          <p id="loadingMessage" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل بيانات الطلاب...</p>
+      </div>
+  </div>
+  
   <div class="side-drawer-overlay" id="drawerOverlay"></div>
 
   <aside class="side-drawer" id="sideDrawer">
@@ -369,11 +549,11 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
-                 <button class="sub-btn">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
                </div>
             </div>
           </div>
@@ -388,11 +568,11 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
-                 <button class="sub-btn">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
                </div>
             </div>
           </div>
@@ -407,13 +587,13 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية العلمية</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
                </div>
             </div>
           </div>
@@ -428,14 +608,14 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
-                 <button class="sub-btn">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
                </div>
             </div>
           </div>
@@ -450,14 +630,14 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
-                 <button class="sub-btn">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
                </div>
             </div>
           </div>
@@ -482,16 +662,16 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">العلوم الفيزيائية</button>
-                 <button class="sub-btn">علوم الطبيعة والحياة</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
-                 <button class="sub-btn">إعلام آلي</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="إعلام آلي">إعلام آلي</button>
                </div>
             </div>
           </div>
@@ -506,15 +686,15 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">العلوم الفيزيائية</button>
-                 <button class="sub-btn">علوم الطبيعة والحياة</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التربية المدنية">التربية المدنية</button>
                </div>
             </div>
           </div>
@@ -529,15 +709,15 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">العلوم الفيزيائية</button>
-                 <button class="sub-btn">علوم الطبيعة والحياة</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التربية المدنية">التربية المدنية</button>
                </div>
             </div>
           </div>
@@ -552,15 +732,15 @@ footer{
             </div>
             <div class="accordion-body year-body">
                <div class="subject-list">
-                 <button class="sub-btn">الرياضيات</button>
-                 <button class="sub-btn">اللغة العربية</button>
-                 <button class="sub-btn">العلوم الفيزيائية</button>
-                 <button class="sub-btn">علوم الطبيعة والحياة</button>
-                 <button class="sub-btn">اللغة الفرنسية</button>
-                 <button class="sub-btn">اللغة الإنجليزية</button>
-                 <button class="sub-btn">التاريخ والجغرافيا</button>
-                 <button class="sub-btn">التربية الإسلامية</button>
-                 <button class="sub-btn">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التربية المدنية">التربية المدنية</button>
                </div>
             </div>
           </div>
@@ -591,16 +771,16 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">العلوم الفيزيائية</button>
-                     <button class="sub-btn">علوم الطبيعة والحياة</button>
-                     <button class="sub-btn">اللغة العربية</button>
-                     <button class="sub-btn">اللغة الفرنسية</button>
-                     <button class="sub-btn">اللغة الإنجليزية</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
-                     <button class="sub-btn">تربية إسلامية</button>
-                     <button class="sub-btn">تكنولوجيا</button>
-                     <button class="sub-btn">إعلام آلي</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة العربية">اللغة العربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تربية إسلامية">تربية إسلامية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تكنولوجيا">تكنولوجيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="إعلام آلي">إعلام آلي</button>
                    </div>
                  </div>
                </div>
@@ -612,14 +792,14 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">اللغة العربية وآدابها</button>
-                     <button class="sub-btn">التاريخ والجغرافيا</button>
-                     <button class="sub-btn">العلوم الإسلامية</button>
-                     <button class="sub-btn">اللغة الفرنسية</button>
-                     <button class="sub-btn">اللغة الإنجليزية</button>
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">علوم الطبيعة</button>
-                     <button class="sub-btn">إعلام آلي</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="العلوم الإسلامية">العلوم الإسلامية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="علوم الطبيعة">علوم الطبيعة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="إعلام آلي">إعلام آلي</button>
                    </div>
                  </div>
                </div>
@@ -644,12 +824,12 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">العلوم الفيزيائية</button>
-                     <button class="sub-btn">علوم الطبيعة والحياة</button>
-                     <button class="sub-btn">لغة عربية</button>
-                     <button class="sub-btn">لغات أجنبية</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="لغة عربية">لغة عربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="لغات أجنبية">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
                    </div>
                  </div>
                </div>
@@ -661,10 +841,10 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">العلوم الفيزيائية</button>
-                     <button class="sub-btn">لغة عربية</button>
-                     <button class="sub-btn">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="لغة عربية">لغة عربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="لغات أجنبية">لغات أجنبية</button>
                    </div>
                  </div>
                </div>
@@ -676,10 +856,10 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">الفيزياء</button>
-                     <button class="sub-btn">تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)</button>
-                     <button class="sub-btn">لغة عربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="الفيزياء">الفيزياء</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)">تكنولوجيا (ميكانيك/كهرباء/مدنية/طرائق)</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="لغة عربية">لغة عربية</button>
                    </div>
                  </div>
                </div>
@@ -691,11 +871,11 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">محاسبة وتسيير مالي</button>
-                     <button class="sub-btn">اقتصاد ومناجمنت</button>
-                     <button class="sub-btn">قانون</button>
-                     <button class="sub-btn">رياضيات</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="قانون">قانون</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="رياضيات">رياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
                    </div>
                  </div>
                </div>
@@ -707,11 +887,11 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">اللغة العربية</button>
-                     <button class="sub-btn">اللغة الفرنسية</button>
-                     <button class="sub-btn">اللغة الإنجليزية</button>
-                     <button class="sub-btn">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة العربية">اللغة العربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
                    </div>
                  </div>
                </div>
@@ -723,10 +903,9 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">اللغة العربية وآدابها</button>
-                     <button class="sub-btn">فلسفة</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
-                     <button class="sub-btn">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="لغات أجنبية">لغات أجنبية</button>
                    </div>
                  </div>
                </div>
@@ -751,12 +930,12 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">العلوم الفيزيائية</button>
-                     <button class="sub-btn">علوم الطبيعة والحياة</button>
-                     <button class="sub-btn">اللغة العربية</button>
-                     <button class="sub-btn">فلسفة</button>
-                     <button class="sub-btn">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="اللغة العربية">اللغة العربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="فلسفة">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="لغات أجنبية">لغات أجنبية</button>
                    </div>
                  </div>
                </div>
@@ -768,11 +947,11 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">العلوم الفيزيائية</button>
-                     <button class="sub-btn">اللغة العربية</button>
-                     <button class="sub-btn">فلسفة</button>
-                     <button class="sub-btn">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="اللغة العربية">اللغة العربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="فلسفة">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="لغات أجنبية">لغات أجنبية</button>
                    </div>
                  </div>
                </div>
@@ -784,14 +963,14 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">الرياضيات</button>
-                     <button class="sub-btn">الفيزياء</button>
-                     <button class="sub-btn">هندسة ميكانيكية</button>
-                     <button class="sub-btn">هندسة كهربائية</button>
-                     <button class="sub-btn">هندسة مدنية</button>
-                     <button class="sub-btn">هندسة الطرائق</button>
-                     <button class="sub-btn">لغة عربية</button>
-                     <button class="sub-btn">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="الرياضيات">الرياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="الفيزياء">الفيزياء</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة ميكانيكية">هندسة ميكانيكية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة كهربائية">هندسة كهربائية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة مدنية">هندسة مدنية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة الطرائق">هندسة الطرائق</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="لغة عربية">لغة عربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="فلسفة">فلسفة</button>
                    </div>
                  </div>
                </div>
@@ -803,12 +982,12 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">محاسبة وتسيير مالي</button>
-                     <button class="sub-btn">اقتصاد ومناجمنت</button>
-                     <button class="sub-btn">قانون</button>
-                     <button class="sub-btn">رياضيات</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
-                     <button class="sub-btn">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="محاسبة وتسيير مالي">محاسبة وتسيير مالي</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="قانون">قانون</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="رياضيات">رياضيات</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="فلسفة">فلسفة</button>
                    </div>
                  </div>
                </div>
@@ -820,12 +999,12 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">اللغة العربية</button>
-                     <button class="sub-btn">اللغة الفرنسية</button>
-                     <button class="sub-btn">اللغة الإنجليزية</button>
-                     <button class="sub-btn">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
-                     <button class="sub-btn">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة العربية">اللغة العربية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="فلسفة">فلسفة</button>
                    </div>
                  </div>
                </div>
@@ -837,10 +1016,10 @@ footer{
                  </div>
                  <div class="accordion-body stream-body">
                    <div class="subject-list">
-                     <button class="sub-btn">فلسفة</button>
-                     <button class="sub-btn">اللغة العربية وآدابها</button>
-                     <button class="sub-btn">تاريخ وجغرافيا</button>
-                     <button class="sub-btn">لغات أجنبية</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="فلسفة">فلسفة</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                     <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="لغات أجنبية">لغات أجنبية</button>
                    </div>
                  </div>
                </div>
@@ -861,6 +1040,30 @@ footer{
     </div>
   </main>
 
+  <div class="modal-overlay" id="registrationModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
+      <h3 id="modalTitle">تسجيل طالب جديد</h3>
+      <div id="modalForm">
+        <label for="studentName">اسم الطالب الكامل:</label>
+        <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+        <label>المواد المختارة:</label>
+        <div id="selectedSubjects" style="padding: 10px; border: 1px dashed var(--border-color); border-radius: 5px; margin-bottom: 20px; color: #fff;">
+          </div>
+        <button id="registerButton">تسجيل وإنشاء QR Code</button>
+      </div>
+
+      <div id="modalResult" class="modal-result" style="display: none;">
+        <h4>تم التسجيل بنجاح!</h4>
+        <p>قم بحفظ أو طباعة الرمز المميز للطالب:</p>
+        <img id="qrCodeImage" src="" alt="QR Code">
+        <p style="font-size: 14px; color: var(--text-secondary);">للطالب: <strong id="qrStudentName"></strong></p>
+        <button class="print-btn" onclick="printQRCode()">طباعة QR Code</button>
+      </div>
+    </div>
+  </div>
+
+
   <footer>
     <span id="year"></span> © أكاديمية المعالي
   </footer>
@@ -873,6 +1076,11 @@ footer{
   const closeBtn = document.getElementById('closeBtn');
   const sideDrawer = document.getElementById('sideDrawer');
   const overlay = document.getElementById('drawerOverlay');
+  const registrationModal = document.getElementById('registrationModal');
+  const studentCardsContainer = document.getElementById('studentCardsContainer');
+  const loadingMessage = document.getElementById('loadingMessage');
+  
+  let subjectsToRegister = [];
 
   function openDrawer() {
     sideDrawer.classList.add('open');
@@ -883,16 +1091,189 @@ footer{
     sideDrawer.classList.remove('open');
     overlay.classList.remove('open');
   }
+  
+  function openRegistrationModal() {
+    registrationModal.classList.add('open');
+  }
+  
+  function closeRegistrationModal() {
+    registrationModal.classList.remove('open');
+    // Reset modal content
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('modalResult').style.display = 'none';
+    document.getElementById('studentName').value = '';
+    subjectsToRegister = []; // Clear selected subjects
+  }
 
   menuBtn.addEventListener('click', openDrawer);
   closeBtn.addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
+  registrationModal.addEventListener('click', (e) => {
+      if (e.target.id === 'registrationModal') {
+          closeRegistrationModal();
+      }
+  });
 
   function toggleAccordion(header) {
     const item = header.parentElement;
     item.classList.toggle('active');
     event.stopPropagation();
   }
+  
+  function getSubjectInfo(button) {
+      const level = button.getAttribute('data-level');
+      const year = button.getAttribute('data-year');
+      const stream = button.getAttribute('data-stream');
+      const subject = button.getAttribute('data-subject');
+      
+      let info = `${level} - ${year}`;
+      if (stream) {
+          info += ` - ${stream}`;
+      }
+      info += ` (${subject})`;
+      
+      return { level, year, stream, subject, fullInfo: info };
+  }
+  
+  // Event delegation for subject buttons
+  document.querySelectorAll('.subject-list').forEach(list => {
+      list.addEventListener('click', (event) => {
+          if (event.target.classList.contains('sub-btn')) {
+              const button = event.target;
+              const subjectInfo = getSubjectInfo(button);
+              
+              // Prevent duplicate selections (optional, for multiple subject registration)
+              if (subjectsToRegister.some(s => s.fullInfo === subjectInfo.fullInfo)) {
+                  alert('هذه المادة مضافة بالفعل.');
+                  return;
+              }
+              
+              // For simplicity, let's assume we allow multiple subjects per registration for now.
+              subjectsToRegister.push(subjectInfo);
+              
+              // Display selected subjects in the modal
+              const selectedSubjectsDiv = document.getElementById('selectedSubjects');
+              selectedSubjectsDiv.innerHTML = subjectsToRegister.map(s => `<div>• ${s.fullInfo}</div>`).join('');
+
+              closeDrawer();
+              openRegistrationModal();
+          }
+      });
+  });
+  
+  // Registration logic
+  document.getElementById('registerButton').addEventListener('click', async () => {
+      const studentName = document.getElementById('studentName').value.trim();
+      
+      if (!studentName || subjectsToRegister.length === 0) {
+          alert('الرجاء إدخال اسم الطالب واختيار مادة واحدة على الأقل.');
+          return;
+      }
+      
+      // Prepare data for the server
+      const registrationData = {
+          name: studentName,
+          subjects: subjectsToRegister.map(s => s.fullInfo) // Send only the full info string
+      };
+      
+      document.getElementById('registerButton').disabled = true;
+      document.getElementById('registerButton').textContent = 'جارٍ التسجيل...';
+
+      try {
+          const response = await fetch('/register', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(registrationData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+              // Registration successful, display QR Code
+              document.getElementById('modalForm').style.display = 'none';
+              document.getElementById('qrCodeImage').src = result.qrCodeUrl;
+              document.getElementById('qrStudentName').textContent = studentName;
+              document.getElementById('modalResult').style.display = 'block';
+              
+              // Reload student cards after successful registration
+              fetchStudentCards();
+
+          } else {
+              alert('فشل التسجيل: ' + result.message);
+          }
+      } catch (error) {
+          console.error('Registration error:', error);
+          alert('حدث خطأ أثناء الاتصال بالخادم.');
+      } finally {
+          document.getElementById('registerButton').disabled = false;
+          document.getElementById('registerButton').textContent = 'تسجيل وإنشاء QR Code';
+      }
+  });
+  
+  function printQRCode() {
+    const qrCodeImage = document.getElementById('qrCodeImage').src;
+    const studentName = document.getElementById('qrStudentName').textContent;
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write('<html><head><title>طباعة QR Code</title>');
+    printWindow.document.write('</head><body dir="rtl" style="text-align: center; font-family: sans-serif;">');
+    printWindow.document.write(`<h2 style="color: #3b82f6;">بطاقة الطالب - أكاديمية المعالي</h2>`);
+    printWindow.document.write(`<p>الطالب: <strong>${studentName}</strong></p>`);
+    printWindow.document.write('<img src="' + qrCodeImage + '" style="width: 200px; height: 200px; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">');
+    printWindow.document.write('<p style="font-size: 12px; color: #555; margin-top: 15px;">احتفظ بهذا الرمز للمسح عند الحضور/المغادرة.</p>');
+    printWindow.document.write('</body></html>');
+    
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  }
+  
+  // Function to fetch and display student cards
+  async function fetchStudentCards() {
+      loadingMessage.style.display = 'block';
+      studentCardsContainer.innerHTML = ''; // Clear existing cards
+      
+      try {
+          const response = await fetch('/students');
+          const students = await response.json();
+
+          loadingMessage.style.display = 'none';
+
+          if (Object.keys(students).length === 0) {
+              studentCardsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">لم يتم تسجيل أي طالب بعد.</p>';
+              return;
+          }
+          
+          for (const [id, student] of Object.entries(students)) {
+              const card = document.createElement('div');
+              card.className = 'student-card';
+              
+              const statusClass = student.isActive ? 'status-active' : 'status-inactive';
+              const statusText = student.isActive ? 'نشط' : 'غير نشط';
+              
+              card.innerHTML = `
+                  <div class="name">${student.name}</div>
+                  <div class="details">
+                      <span>ID: ${id.substring(0, 8)}...</span>
+                      <span class="status-indicator ${statusClass}">${statusText}</span>
+                  </div>
+                  <div class="subjects"><strong>المواد:</strong> ${student.subjects.join(' | ')}</div>
+              `;
+              studentCardsContainer.appendChild(card);
+          }
+          
+      } catch (error) {
+          console.error('Error fetching student cards:', error);
+          loadingMessage.textContent = 'فشل في تحميل بيانات الطلاب.';
+      }
+  }
+
+  // Fetch students on page load
+  fetchStudentCards();
+  
 </script>
 </body>
 </html>
