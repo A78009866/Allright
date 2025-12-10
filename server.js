@@ -1,221 +1,162 @@
-// server.js
-
-// 1. استيراد المكتبات الضرورية و dotenv
-require('dotenv').config(); // تحميل المتغيرات من .env
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
-const QRCode = require('qrcode');
 const admin = require('firebase-admin');
-
+const path = require('path');
 const app = express();
-const port = 3000;
 
-// 2. إعداد Firebase باستخدام متغيرات .env
-const serviceAccount = require('./serviceAccountKey.json'); // ⚠️ تأكد من وجود ملف مفتاح الخدمة الخاص بك
+// إعداد Firebase
+const serviceAccount = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL
+  databaseURL: process.env.FIREBASE_DB_URL
 });
 
 const db = admin.database();
-const registrationsRef = db.ref('registrations'); // اسم العقدة في قاعدة البيانات
 
-// سحب المفتاح السري من .env
-const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY;
-if (!ADMIN_SECRET) {
-    console.error("❌ ERROR: ADMIN_SECRET_KEY is not defined in .env file. Please create a .env file.");
-    process.exit(1);
-}
+app.use(bodyParser.json());
+app.use(express.static('views')); // لخدمة الملفات الثابتة
 
-// 3. الإعدادات الوسطية (Middleware)
-app.use(bodyParser.json()); 
-app.use(bodyParser.urlencoded({ extended: true }));
+// --- Routes (المسارات) ---
 
-// --- المسارات (API Endpoints) ---
-
-// 4. لخدمة ملف HTML للواجهة الأمامية (الطلاب) - تم التعديل للإشارة إلى views/index.html
+// الصفحة الرئيسية (الطالب)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// 5. لخدمة ملف HTML للواجهة الإدارية (المسؤول) - تم التعديل للإشارة إلى views/admin.html
+// صفحة الأدمن
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'admin.html'));
 });
 
-// 6. مسار التسجيل (للمستخدمين الجدد)
-app.post('/api/register', async (req, res) => {
-    try {
-        const { name, level, year, subject, contact } = req.body;
-        
-        if (!name || !level || !year || !subject) {
-            return res.status(400).json({ message: 'الرجاء ملء جميع الحقول المطلوبة (الاسم، المستوى، السنة، المادة).' });
-        }
+// صفحة حالة الطالب (عند مسح الكود)
+app.get('/check', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'status.html'));
+});
 
-        const registrationData = {
-            name,
-            level,
-            year,
+// --- API Endpoints ---
+
+// 1. تسجيل الدخول/انشاء حساب
+app.post('/api/login', async (req, res) => {
+    const { fullName, phone } = req.body;
+    if (!fullName || !phone) return res.status(400).json({ success: false, message: 'بيانات ناقصة' });
+
+    const userRef = db.ref('users/' + phone);
+    
+    try {
+        const snapshot = await userRef.once('value');
+        if (!snapshot.exists()) {
+            // مستخدم جديد
+            await userRef.set({
+                fullName,
+                phone,
+                createdAt: admin.database.ServerValue.TIMESTAMP
+            });
+        }
+        res.json({ success: true, message: 'تم الدخول بنجاح' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 2. إرسال طلب تسجيل مادة
+app.post('/api/register-subject', async (req, res) => {
+    const { phone, fullName, stage, subject, branch } = req.body;
+    
+    try {
+        const newRequestRef = db.ref('requests').push();
+        await newRequestRef.set({
+            requestId: newRequestRef.key,
+            phone,
+            fullName,
+            stage,
             subject,
-            contact: contact || 'غير متوفر',
-            status: 'pending', // الافتراضية هي قيد الانتظار
+            branch,
+            status: 'pending', // pending, approved, rejected
             timestamp: admin.database.ServerValue.TIMESTAMP
-        };
+        });
+        res.json({ success: true, message: 'تم إرسال الطلب بنجاح', requestId: newRequestRef.key });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
-        const newRegistrationRef = registrationsRef.push(registrationData);
-        const registrationId = newRegistrationRef.key;
+// 3. جلب طلبات الطالب (للمتابعة)
+app.get('/api/my-requests/:phone', async (req, res) => {
+    const phone = req.params.phone;
+    try {
+        const ref = db.ref('requests');
+        const snapshot = await ref.orderByChild('phone').equalTo(phone).once('value');
+        const requests = [];
+        snapshot.forEach(child => {
+            requests.push(child.val());
+        });
+        res.json({ success: true, data: requests });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 4. جلب جميع الطلبات (للأدمن)
+app.get('/api/admin/requests', async (req, res) => {
+    try {
+        const ref = db.ref('requests');
+        const snapshot = await ref.once('value');
+        const requests = [];
+        snapshot.forEach(child => {
+            requests.push(child.val());
+        });
+        // ترتيب عكسي (الأحدث أولاً)
+        res.json({ success: true, data: requests.reverse() });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 5. تحديث حالة الطلب (للأدمن)
+app.post('/api/admin/update-status', async (req, res) => {
+    const { requestId, status } = req.body;
+    try {
+        await db.ref('requests/' + requestId).update({ status });
+        res.json({ success: true, message: 'تم تحديث الحالة' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 6. جلب بيانات الطالب عند المسح (Public)
+app.get('/api/student-status/:phone', async (req, res) => {
+    const phone = req.params.phone;
+    try {
+        // جلب بيانات المستخدم
+        const userSnap = await db.ref('users/' + phone).once('value');
+        if(!userSnap.exists()) return res.json({ success: false, message: 'طالب غير مسجل' });
+
+        // جلب المواد المقبولة فقط
+        const reqSnap = await db.ref('requests').orderByChild('phone').equalTo(phone).once('value');
+        const approvedSubjects = [];
+        
+        reqSnap.forEach(child => {
+            const val = child.val();
+            if(val.status === 'approved') {
+                approvedSubjects.push(val);
+            }
+        });
 
         res.json({ 
-            message: 'تم استلام طلب التسجيل بنجاح. سيتم مراجعته من قبل الإدارة.', 
-            registrationId: registrationId,
-            status: 'pending' 
+            success: true, 
+            student: userSnap.val(), 
+            subjects: approvedSubjects 
         });
 
     } catch (error) {
-        console.error('Registration Error:', error);
-        res.status(500).json({ message: 'حدث خطأ أثناء عملية التسجيل.' });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// 7. مسار التحقق من الحالة وعرض QR (للطالب)
-app.post('/api/status', async (req, res) => {
-    try {
-        const { registrationId } = req.body;
-
-        if (!registrationId) {
-            return res.status(400).json({ message: 'الرجاء إدخال رقم التسجيل للتحقق.' });
-        }
-
-        const snapshot = await registrationsRef.child(registrationId).once('value');
-        const registration = snapshot.val();
-
-        if (!registration) {
-            return res.status(404).json({ message: 'لا يوجد تسجيل بهذا الرقم.' });
-        }
-        
-        // إذا كان التسجيل مقبولاً، نقوم بإنشاء رمز الـ QR
-        if (registration.status === 'accepted') {
-            // صياغة البيانات التي ستحملها الـ QR
-            const qrData = `MAALI-REG-ID:${registrationId}`; 
-            const qrCodeImage = await QRCode.toDataURL(qrData); // إنشاء رمز QR كصورة Base64
-
-            return res.json({
-                message: '✅ تسجيلك مقبول وجاهز!',
-                status: 'accepted',
-                qrCode: qrCodeImage,
-                details: registration
-            });
-        }
-        
-        // للحالات الأخرى
-        res.json({
-            message: `حالة التسجيل الحالية: ${registration.status}. (لم يتم القبول بعد)`,
-            status: registration.status,
-            details: registration
-        });
-
-    } catch (error) {
-        console.error('Status Check Error:', error);
-        res.status(500).json({ message: 'حدث خطأ أثناء عملية التحقق من الحالة.' });
-    }
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
-
-// 8. مسار مسح رمز QR (لجهاز المسح/التحقق)
-app.post('/api/scan', async (req, res) => {
-    try {
-        const { scannedData } = req.body; 
-
-        if (!scannedData || !scannedData.startsWith('MAALI-REG-ID:')) {
-            return res.status(400).json({ message: 'رمز QR غير صالح أو بتنسيق خاطئ.' });
-        }
-
-        const registrationId = scannedData.split(':')[1];
-        
-        const snapshot = await registrationsRef.child(registrationId).once('value');
-        const registration = snapshot.val();
-
-        if (!registration) {
-            return res.status(404).json({ message: 'هذا الرمز لا يمثل تسجيلًا صالحًا في النظام.' });
-        }
-
-        if (registration.status !== 'accepted') {
-            return res.status(403).json({ 
-                message: `التسجيل موجود، ولكن حالته: ${registration.status}. (غير مقبول بعد)`,
-                details: registration
-            });
-        }
-        
-        res.json({ 
-            message: '✅ تسجيل صالح ومقبول. تم التحقق بنجاح.', 
-            student: registration.name, 
-            course: `${registration.level} - ${registration.year} - ${registration.subject}`,
-            time: new Date().toLocaleTimeString('ar-EG')
-        });
-
-    } catch (error) {
-        console.error('Scan Error:', error);
-        res.status(500).json({ message: 'حدث خطأ أثناء عملية المسح.' });
-    }
-});
-
-
-// --- مسارات الإدارة (Admin Endpoints) ---
-
-// 9. مسار عرض جميع التسجيلات (للمسؤول)
-app.post('/api/admin/registrations', async (req, res) => {
-    const { adminSecret } = req.body;
-
-    if (adminSecret !== ADMIN_SECRET) {
-        return res.status(401).json({ message: 'مفتاح المسؤول غير صحيح.' });
-    }
-
-    try {
-        const snapshot = await registrationsRef.once('value');
-        const registrations = snapshot.val() || {};
-        
-        // تحويل الكائن إلى مصفوفة لسهولة التعامل معه في الواجهة الأمامية
-        const registrationList = Object.keys(registrations).map(key => ({
-            id: key,
-            ...registrations[key]
-        }));
-
-        res.json({ registrations: registrationList });
-    } catch (error) {
-        console.error('Admin Fetch Error:', error);
-        res.status(500).json({ message: 'حدث خطأ أثناء جلب التسجيلات.' });
-    }
-});
-
-// 10. مسار تحديث حالة التسجيل (للمسؤول)
-app.post('/api/admin/status', async (req, res) => {
-    const { adminSecret, registrationId, newStatus } = req.body;
-
-    if (adminSecret !== ADMIN_SECRET) {
-        return res.status(401).json({ message: 'مفتاح المسؤول غير صحيح.' });
-    }
-
-    if (!registrationId || !['accepted', 'pending', 'rejected'].includes(newStatus)) {
-        return res.status(400).json({ message: 'بيانات غير صالحة.' });
-    }
-
-    try {
-        await registrationsRef.child(registrationId).update({ status: newStatus });
-        res.json({ 
-            message: `تم تحديث حالة التسجيل ${registrationId} إلى ${newStatus} بنجاح.`,
-            id: registrationId,
-            status: newStatus
-        });
-    } catch (error) {
-        console.error('Admin Update Error:', error);
-        res.status(500).json({ message: 'حدث خطأ أثناء تحديث الحالة.' });
-    }
-});
-
-
-// 11. تشغيل الخادم
-app.listen(port, () => {
-    console.log(`🚀 الخادم يعمل على http://localhost:${port}`);
-    console.log(`🔑 واجهة المسؤول: http://localhost:${port}/admin (تحتاج إلى مفتاح ADMIN_SECRET)`);
-});
+      
