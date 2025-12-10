@@ -3,75 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حالة الطالب</title>
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>حالة الطالب - أكاديمية المعالي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #000; color: #fff; font-family: 'Changa', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { 
-            background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; 
-            border: 1px solid #00bcd4; width: 90%; max-width: 500px; text-align: center;
-            box-shadow: 0 0 30px rgba(0, 188, 212, 0.3);
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #0b0b0c;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+            direction: rtl;
         }
-        h1 { color: #00bcd4; margin-bottom: 5px; }
-        .valid-mark { font-size: 5rem; color: #2ecc71; margin: 20px 0; }
-        .error-mark { font-size: 5rem; color: #e74c3c; margin: 20px 0; }
-        .subject-list { text-align: right; margin-top: 20px; }
-        .subject-item { background: #222; padding: 10px; margin: 5px 0; border-radius: 5px; border-right: 3px solid #2ecc71; }
+        .container {
+            background: #151517;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            color: #3b82f6;
+            font-size: 24px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        #student-name {
+            font-weight: 700;
+            color: #fff;
+        }
+        #status-message {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 25px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .active-status {
+            background-color: rgba(67, 207, 102, 0.3);
+            color: #43cf66;
+        }
+        .inactive-status {
+            background-color: rgba(255, 99, 71, 0.3);
+            color: #ff6347;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
     </style>
 </head>
 <body>
-    <div class="card" id="result-card">
-        <h2>جاري التحقق...</h2>
+    <div class="container">
+        <h1>تحديث حالة الطالب</h1>
+        <p>الطالب: <span id="student-name">...</span></p>
+        <div id="status-message">...</div>
+        <button id="toggle-button" style="display: none;">تحديث الحالة</button>
+        <p id="error-message" style="color: #ff6347; display: none;"></p>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const phone = params.get('phone');
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+            const studentNameSpan = document.getElementById('student-name');
+            const statusMessageDiv = document.getElementById('status-message');
+            const toggleButton = document.getElementById('toggle-button');
+            const errorMessage = document.getElementById('error-message');
 
-        async function checkStudent() {
-            const card = document.getElementById('result-card');
-            
-            if(!phone) {
-                card.innerHTML = `<div class="error-mark">?</div><h3>رابط غير صالح</h3>`;
+            if (!studentId) {
+                studentNameSpan.textContent = 'غير معروف';
+                statusMessageDiv.textContent = 'معرّف الطالب مفقود.';
+                statusMessageDiv.className = 'inactive-status';
                 return;
             }
 
-            try {
-                const res = await fetch(`/api/student-status/${phone}`);
-                const data = await res.json();
+            // Function to handle the status update
+            async function toggleStatus() {
+                toggleButton.disabled = true;
+                toggleButton.textContent = 'جارٍ التحديث...';
+                errorMessage.style.display = 'none';
 
-                if(data.success) {
-                    let subjectsHtml = '';
-                    if(data.subjects.length > 0) {
-                        data.subjects.forEach(sub => {
-                            subjectsHtml += `<div class="subject-item">${sub.subject} (${sub.stage})</div>`;
-                        });
+                try {
+                    const response = await fetch(`/check-status/${studentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        studentNameSpan.textContent = result.name;
+                        const statusText = result.newStatus ? 'نشط (تم تسجيل الدخول)' : 'غير نشط (تم تسجيل الخروج)';
+                        const statusClass = result.newStatus ? 'active-status' : 'inactive-status';
                         
-                        card.innerHTML = `
-                            <div class="valid-mark">✔</div>
-                            <h1>${data.student.fullName}</h1>
-                            <p>${data.student.phone}</p>
-                            <hr style="border-color: #333;">
-                            <h3>المواد المصرح بالدخول لها:</h3>
-                            <div class="subject-list">${subjectsHtml}</div>
-                        `;
+                        statusMessageDiv.textContent = statusText;
+                        statusMessageDiv.className = statusClass;
+                        toggleButton.textContent = result.newStatus ? 'تسجيل الخروج' : 'تسجيل الدخول';
                     } else {
-                        card.innerHTML = `
-                            <div class="error-mark">⚠</div>
-                            <h1>${data.student.fullName}</h1>
-                            <p style="color: #f39c12;">الطالب مسجل لكن لا توجد مواد مقبولة حالياً.</p>
-                        `;
+                        errorMessage.textContent = result.message || 'فشل في تحديث حالة الطالب.';
+                        errorMessage.style.display = 'block';
                     }
-                } else {
-                    card.innerHTML = `<div class="error-mark">✖</div><h3>طالب غير موجود</h3>`;
+                } catch (error) {
+                    console.error('Error in status toggle:', error);
+                    errorMessage.textContent = 'حدث خطأ في الاتصال بالخادم.';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    toggleButton.disabled = false;
+                    toggleButton.style.display = 'block'; // Show the button after initial check/attempt
                 }
-            } catch (e) {
-                card.innerHTML = `<div class="error-mark">!</div><h3>خطأ في الاتصال</h3>`;
             }
-        }
 
-        checkStudent();
+            toggleButton.addEventListener('click', toggleStatus);
+
+            // Initial check/load to display current status
+            toggleStatus();
+        });
     </script>
 </body>
-  </html>
-      
+</html>
