@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 // تحميل متغيرات البيئة من ملف .env
 require('dotenv').config();
@@ -38,7 +39,7 @@ try {
     });
     console.log("Firebase Admin SDK initialized successfully.");
 } catch (error) {
-    console.error("Failed to initialize Firebase Admin SDK. Please check your .env file format (SERVICE_ACCOUNT_KEY must be a valid, single-line JSON string):", error.message);
+    console.error("Failed to initialize Firebase Admin SDK. Please check your .env file format:", error.message);
     process.exit(1);
 }
 
@@ -60,12 +61,21 @@ app.get('/status.html', (req, res) => {
 });
 
 // ---------------------------
-// --- مسارات API لـ CRUD ---
+// --- مسارات API لـ الإدارة ---
 // ---------------------------
 
-// 1. نقطة نهاية تسجيل طالب جديد
+/**
+ * دالة مساعدة لتوحيد تنسيق بيانات المادة
+ * @param {object} subjectInfo - يحتوي على level, year, stream, subject
+ * @returns {string} - مفتاح موحد للمادة
+ */
+function getSubjectKey({ level, year, stream, subject }) {
+    return `${level}|${year}|${stream || 'NO_STREAM'}|${subject}`;
+}
+
+// 1. نقطة نهاية تسجيل طالب جديد (مُحدّثة لدعم هيكل المواد الجديد)
 app.post('/register', async (req, res) => {
-    const { name, subjects } = req.body;
+    const { name, subjects } = req.body; // subjects هنا هي مصفوفة من كائنات { level, year, stream, subject }
 
     if (!name || !subjects || subjects.length === 0) {
         return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمواد المختارة.' });
@@ -75,17 +85,30 @@ app.post('/register', async (req, res) => {
         const newStudentRef = studentsRef.push();
         const studentId = newStudentRef.key;
 
+        const subjectsObject = {};
+        const subjectNames = [];
+
+        subjects.forEach(sub => {
+            const subjectKey = getSubjectKey(sub);
+            subjectsObject[subjectKey] = {
+                name: sub.fullInfo, // الاسم الكامل الذي تم إنشاؤه في الفرونت
+                status: 'نشط', // الحالة الافتراضية عند التسجيل
+                registeredAt: admin.database.ServerValue.TIMESTAMP
+            };
+            subjectNames.push(sub.fullInfo); // للاستخدام في عرض البطاقات
+        });
+
         const studentData = {
             id: studentId,
             name: name,
-            subjects: subjects,
-            isActive: true, // افتراضياً، نشط عند التسجيل
+            subjects: subjectsObject,
+            isActive: true, // الحالة الإجمالية للطالب (للحضور/الانصراف العام)
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
         await newStudentRef.set(studentData);
 
-        // بيانات QR Code تشير إلى المسار الجديد لـ status.html
+        // بيانات QR Code
         const qrData = `/status.html?id=${studentId}`; 
         const qrCodeUrl = await QRCode.toDataURL(qrData);
 
@@ -113,7 +136,7 @@ app.get('/students', async (req, res) => {
     }
 });
 
-// 3. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code)
+// 3. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code) - تُحدث isActive فقط
 app.post('/check-status/:id', async (req, res) => {
     const studentId = req.params.id;
 
@@ -125,14 +148,14 @@ app.post('/check-status/:id', async (req, res) => {
             return res.status(404).json({ message: 'الطالب غير موجود.' });
         }
 
-        // تبديل حالة النشاط
+        // تبديل حالة النشاط الإجمالية
         const newStatus = !student.isActive;
         await studentsRef.child(studentId).update({ isActive: newStatus });
 
         // تسجيل حدث الحضور/الانصراف
         const attendanceRef = db.ref(`attendance/${studentId}`).push();
         await attendanceRef.set({
-            action: newStatus ? 'Check-in' : 'Check-out',
+            action: newStatus ? 'Check-in' : 'Check-out (General)' : 'Check-out (General)',
             timestamp: admin.database.ServerValue.TIMESTAMP
         });
 
@@ -148,9 +171,84 @@ app.post('/check-status/:id', async (req, res) => {
     }
 });
 
+// 4. نقطة نهاية حذف الطالب (DELETE)
+app.delete('/students/:id', async (req, res) => {
+    const studentId = req.params.id;
+    try {
+        await studentsRef.child(studentId).remove();
+        res.json({ message: 'تم حذف الطالب بنجاح.' });
+    } catch (error) {
+        console.error('Error deleting student:', error);
+        res.status(500).json({ message: 'فشل في حذف الطالب.' });
+    }
+});
+
+// 5. نقطة نهاية إضافة مادة للطالب (POST)
+app.post('/students/:id/add-subject', async (req, res) => {
+    const studentId = req.params.id;
+    const { subjectInfo } = req.body; // subjectInfo هو كائن { level, year, stream, subject, fullInfo }
+
+    if (!subjectInfo || !subjectInfo.fullInfo) {
+        return res.status(400).json({ message: 'بيانات المادة غير كاملة.' });
+    }
+
+    try {
+        const subjectKey = getSubjectKey(subjectInfo);
+        const subjectRef = studentsRef.child(studentId).child('subjects').child(subjectKey);
+
+        const snapshot = await subjectRef.once('value');
+        if (snapshot.exists()) {
+             return res.status(409).json({ message: 'المادة مضافة بالفعل لهذا الطالب.' });
+        }
+
+        const newSubjectData = {
+            name: subjectInfo.fullInfo,
+            status: 'نشط',
+            registeredAt: admin.database.ServerValue.TIMESTAMP
+        };
+        
+        await subjectRef.set(newSubjectData);
+
+        res.json({ message: 'تمت إضافة المادة بنجاح', newSubject: newSubjectData });
+    } catch (error) {
+        console.error('Error adding subject:', error);
+        res.status(500).json({ message: 'فشل داخلي في إضافة المادة.' });
+    }
+});
+
+// 6. نقطة نهاية تحديث حالة مادة معينة للطالب (PATCH)
+app.patch('/students/:id/subject-status', async (req, res) => {
+    const studentId = req.params.id;
+    const { subjectKey, newStatus } = req.body; // subjectKey هو المفتاح الموحد للمادة
+
+    if (!subjectKey || !newStatus) {
+        return res.status(400).json({ message: 'بيانات التحديث غير كاملة (مفتاح المادة والحالة الجديدة).' });
+    }
+
+    const validStatuses = ['نشط', 'غير نشط'];
+    if (!validStatuses.includes(newStatus)) {
+        return res.status(400).json({ message: 'الحالة الجديدة غير صالحة.' });
+    }
+
+    try {
+        const subjectPath = `subjects/${subjectKey}`;
+        const studentRef = studentsRef.child(studentId);
+
+        const updateData = {};
+        updateData[subjectPath + '/status'] = newStatus;
+
+        await studentRef.update(updateData);
+        
+        res.json({ message: `تم تحديث حالة المادة بنجاح إلى: ${newStatus}` });
+    } catch (error) {
+        console.error('Error updating subject status:', error);
+        res.status(500).json({ message: 'فشل داخلي في تحديث حالة المادة.' });
+    }
+});
+
 
 // بدء تشغيل الخادم
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`(Make sure 'index.html' and 'status.html' are inside the 'views' folder)`);
+    console.log(`(تأكد من أن 'index.html' و 'status.html' موجودان في مجلد 'views')`);
 });
