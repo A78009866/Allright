@@ -52,12 +52,14 @@ const studentsRef = db.ref('students');
 
 // عرض index.html كصفحة رئيسية
 app.get('/', (req, res) => {
-    res.sendFile(path.join(VIEWS_PATH, 'index.html'));
+    // تم الافتراض بوجود مجلد views لتشغيل التطبيق، وإلا يجب تغيير المسار
+    res.sendFile(path.join(__dirname, 'index.html')); 
 });
 
 // عرض status.html عند مسح QR code
 app.get('/status.html', (req, res) => {
-    res.sendFile(path.join(VIEWS_PATH, 'status.html'));
+    // تم الافتراض بوجود مجلد views لتشغيل التطبيق، وإلا يجب تغيير المسار
+    res.sendFile(path.join(__dirname, 'status.html'));
 });
 
 // ---------------------------
@@ -70,12 +72,14 @@ app.get('/status.html', (req, res) => {
  * @returns {string} - مفتاح موحد للمادة
  */
 function getSubjectKey({ level, year, stream, subject }) {
-    return `${level}|${year}|${stream || 'NO_STREAM'}|${subject}`;
+    // استخدام fullInfo إذا كان متاحًا لإنشاء مفتاح
+    const streamKey = stream ? stream.trim() : 'NO_STREAM';
+    return `${level.trim()}|${year.trim()}|${streamKey}|${subject.trim()}`;
 }
 
 // 1. نقطة نهاية تسجيل طالب جديد (مُحدّثة لدعم هيكل المواد الجديد)
 app.post('/register', async (req, res) => {
-    const { name, subjects } = req.body; // subjects هنا هي مصفوفة من كائنات { level, year, stream, subject }
+    const { name, subjects } = req.body; // subjects هنا هي مصفوفة من كائنات { level, year, stream, subject, fullInfo }
 
     if (!name || !subjects || subjects.length === 0) {
         return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمواد المختارة.' });
@@ -95,13 +99,14 @@ app.post('/register', async (req, res) => {
                 status: 'نشط', // الحالة الافتراضية عند التسجيل
                 registeredAt: admin.database.ServerValue.TIMESTAMP
             };
-            subjectNames.push(sub.fullInfo); // للاستخدام في عرض البطاقات
+            subjectNames.push(sub.fullInfo); // للاستخدام في العرض المختصر
         });
 
         const studentData = {
             id: studentId,
             name: name,
-            subjects: subjectsObject,
+            subjects: subjectsObject, // هذا هو كائن المواد المفصل
+            subjectsNames: subjectNames, // قائمة بأسماء المواد للعرض المختصر (للتوافق مع الواجهة)
             isActive: true, // الحالة الإجمالية للطالب (للحضور/الانصراف العام)
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
@@ -109,26 +114,36 @@ app.post('/register', async (req, res) => {
         await newStudentRef.set(studentData);
 
         // بيانات QR Code
-        const qrData = `/status.html?id=${studentId}`; 
+        const qrData = `/status.html?id=${studentId}`;
         const qrCodeUrl = await QRCode.toDataURL(qrData);
 
-        res.status(201).json({
-            message: 'تم تسجيل الطالب بنجاح',
-            studentId: studentId,
-            qrCodeUrl: qrCodeUrl
-        });
-
+        res.status(201).json({ message: 'تم تسجيل الطالب بنجاح', studentId: studentId, qrCodeUrl: qrCodeUrl });
     } catch (error) {
         console.error('Error registering student:', error);
         res.status(500).json({ message: 'فشل التسجيل الداخلي.' });
     }
 });
 
-// 2. نقطة نهاية جلب جميع الطلاب
+// 2. نقطة نهاية جلب جميع الطلاب (مُعدّلة لدعم هيكل المواد الجديد)
 app.get('/students', async (req, res) => {
     try {
         const snapshot = await studentsRef.once('value');
-        const students = snapshot.val() || {};
+        const studentsData = snapshot.val() || {};
+        
+        // تحويل البيانات لتهيئة العرض في الفرونت إند
+        const students = {};
+        for (const [id, student] of Object.entries(studentsData)) {
+            // للتأكد من وجود subjectsNames في حالة الطلاب القدامى
+            if (!student.subjectsNames && student.subjects) {
+                student.subjectsNames = Object.values(student.subjects).map(sub => sub.name);
+            }
+            
+            students[id] = {
+                ...student,
+                id: id,
+            };
+        }
+
         res.json(students);
     } catch (error) {
         console.error('Error fetching students:', error);
@@ -136,78 +151,95 @@ app.get('/students', async (req, res) => {
     }
 });
 
-// 3. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code) - تُحدث isActive فقط
-app.post('/check-status/:id', async (req, res) => {
-    const studentId = req.params.id;
+// 3. نقطة نهاية فحص وتحديث حالة QR Code (الحضور/الانصراف العام)
+app.post('/check-in-out', async (req, res) => {
+    const { studentId } = req.body;
+
+    if (!studentId) {
+        return res.status(400).json({ message: 'الرجاء توفير معرف الطالب.' });
+    }
 
     try {
-        const studentSnapshot = await studentsRef.child(studentId).once('value');
-        const student = studentSnapshot.val();
+        const studentRef = studentsRef.child(studentId);
+        const snapshot = await studentRef.once('value');
+        const student = snapshot.val();
 
         if (!student) {
-            return res.status(404).json({ message: 'الطالب غير موجود.' });
+            return res.status(404).json({ message: 'الطالب غير مسجل.' });
         }
 
-        // تبديل حالة النشاط الإجمالية
-        const newStatus = !student.isActive;
-        await studentsRef.child(studentId).update({ isActive: newStatus });
+        const newStatus = !student.isActive; // عكس الحالة الحالية
+        const statusText = newStatus ? 'حضور' : 'انصراف';
 
-        // تسجيل حدث الحضور/الانصراف
-        const attendanceRef = db.ref(`attendance/${studentId}`).push();
-        await attendanceRef.set({
-            action: newStatus ? 'Check-in' : 'Check-out (General)' : 'Check-out (General)',
-            timestamp: admin.database.ServerValue.TIMESTAMP
+        await studentRef.update({
+            isActive: newStatus,
+            lastStatusChange: admin.database.ServerValue.TIMESTAMP
         });
 
-        res.json({
-            message: `تم تحديث حالة الطالب بنجاح إلى: ${newStatus ? 'نشط' : 'غير نشط'}`,
-            name: student.name,
-            newStatus: newStatus
+        res.json({ 
+            message: `تم تسجيل ${statusText} الطالب ${student.name} بنجاح.`,
+            newStatus: newStatus,
+            studentName: student.name
         });
 
     } catch (error) {
-        console.error('Error checking/toggling status:', error);
-        res.status(500).json({ message: 'فشل داخلي في تحديث الحالة.' });
+        console.error('Error checking in/out student:', error);
+        res.status(500).json({ message: 'فشل داخلي في تحديث حالة الطالب.' });
     }
 });
 
-// 4. نقطة نهاية حذف الطالب (DELETE)
+// 4. نقطة نهاية حذف طالب (DELETE)
 app.delete('/students/:id', async (req, res) => {
     const studentId = req.params.id;
+
     try {
         await studentsRef.child(studentId).remove();
         res.json({ message: 'تم حذف الطالب بنجاح.' });
     } catch (error) {
         console.error('Error deleting student:', error);
-        res.status(500).json({ message: 'فشل في حذف الطالب.' });
+        res.status(500).json({ message: 'فشل داخلي في حذف الطالب.' });
     }
 });
 
-// 5. نقطة نهاية إضافة مادة للطالب (POST)
-app.post('/students/:id/add-subject', async (req, res) => {
+// 5. نقطة نهاية إضافة مادة جديدة للطالب (POST)
+app.post('/students/:id/subject', async (req, res) => {
     const studentId = req.params.id;
-    const { subjectInfo } = req.body; // subjectInfo هو كائن { level, year, stream, subject, fullInfo }
+    const { subjectInfo } = req.body; // subjectInfo هو الكائن الناتج من getSubjectInfo
 
     if (!subjectInfo || !subjectInfo.fullInfo) {
         return res.status(400).json({ message: 'بيانات المادة غير كاملة.' });
     }
 
     try {
-        const subjectKey = getSubjectKey(subjectInfo);
-        const subjectRef = studentsRef.child(studentId).child('subjects').child(subjectKey);
+        const studentRef = studentsRef.child(studentId);
+        const studentSnapshot = await studentRef.once('value');
+        const student = studentSnapshot.val();
 
-        const snapshot = await subjectRef.once('value');
-        if (snapshot.exists()) {
-             return res.status(409).json({ message: 'المادة مضافة بالفعل لهذا الطالب.' });
+        if (!student) {
+            return res.status(404).json({ message: 'الطالب غير موجود.' });
         }
+        
+        const subjectKey = getSubjectKey(subjectInfo);
+        
+        if (student.subjects && student.subjects[subjectKey]) {
+             return res.status(400).json({ message: 'المادة مضافة بالفعل لهذا الطالب.' });
+        }
+        
+        const subjectRef = studentRef.child('subjects').child(subjectKey);
 
         const newSubjectData = {
             name: subjectInfo.fullInfo,
-            status: 'نشط',
+            status: 'نشط', // الحالة الافتراضية عند الإضافة
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
-        
+
         await subjectRef.set(newSubjectData);
+
+        // تحديث قائمة أسماء المواد للعرض المختصر
+        const currentSubjectsNames = student.subjectsNames || [];
+        const newSubjectsNames = [...currentSubjectsNames, subjectInfo.fullInfo];
+        
+        await studentRef.update({ subjectsNames: newSubjectsNames });
 
         res.json({ message: 'تمت إضافة المادة بنجاح', newSubject: newSubjectData });
     } catch (error) {
@@ -231,8 +263,8 @@ app.patch('/students/:id/subject-status', async (req, res) => {
     }
 
     try {
-        const subjectPath = `subjects/${subjectKey}`;
         const studentRef = studentsRef.child(studentId);
+        const subjectPath = `subjects/${subjectKey}`;
 
         const updateData = {};
         updateData[subjectPath + '/status'] = newStatus;
@@ -247,8 +279,7 @@ app.patch('/students/:id/subject-status', async (req, res) => {
 });
 
 
-// بدء تشغيل الخادم
+// ابدأ تشغيل الخادم
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`(تأكد من أن 'index.html' و 'status.html' موجودان في مجلد 'views')`);
+    console.log(`Server running on port ${PORT}`);
 });
