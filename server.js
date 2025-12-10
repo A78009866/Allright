@@ -1,125 +1,156 @@
 // server.js
 
-// 1. استيراد المكتبات الضرورية
 const express = require('express');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
-const crypto = require('crypto'); // لتوليد معرفات فريدة
 
-// 2. تحميل متغيرات البيئة من ملف .env
-dotenv.config();
+// تحميل متغيرات البيئة من ملف .env
+require('dotenv').config();
 
-// 3. تهيئة Express
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const VIEWS_PATH = path.join(__dirname, 'views'); // تحديد مسار مجلد views
 
-// 4. إعداد Firebase Admin
-// نستخدم JSON.parse لتحويل متغير البيئة SERVICE_ACCOUNT_KEY إلى كائن JSON
+// Middleware
+app.use(bodyParser.json());
+
+// --- تهيئة Firebase Admin SDK ---
+let serviceAccount;
 try {
-  const serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
-  
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountKey),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
-  });
-  
-  console.log("Firebase Admin SDK initialized successfully.");
-  
-  const db = admin.database();
-
-  // 5. إعداد Middlewares
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
-  // لخدمة الملفات الثابتة (مثل الصور أو CSS/JS الخارجية في مجلد public)
-  app.use(express.static(path.join(__dirname, 'public'))); 
-  
-  // **********************************************
-  // ************ مسارات الخادم (Routes) *************
-  // **********************************************
-
-  // 1. المسار الرئيسي - يعرض الصفحة الرئيسية (index.html) من مجلد views
-  app.get('/', (req, res) => {
-    // يخدم ملف index.html من مجلد views/
-    res.sendFile(path.join(__dirname, 'views', 'index.html')); 
-  });
-
-  // 2. مسار تسجيل مادة
-  app.post('/api/register', async (req, res) => {
-    const { name, year, subject, fullName } = req.body;
-
-    if (!name || !year || !subject || !fullName) {
-      return res.status(400).json({ success: false, message: 'الرجاء ملء جميع الحقول المطلوبة.' });
+    // جلب المفتاح كـ JSON String من متغير البيئة
+    const serviceAccountJson = process.env.SERVICE_ACCOUNT_KEY;
+    
+    if (serviceAccountJson) {
+        // تنظيف وازالة أي علامات اقتباس محيطة قد تضيفها البيئة
+        const cleanJsonString = serviceAccountJson.replace(/^["]+|["]+$/g, '');
+        // تحليل سلسلة JSON إلى كائن
+        serviceAccount = JSON.parse(cleanJsonString);
+    } else {
+        throw new Error("SERVICE_ACCOUNT_KEY environment variable is missing in .env.");
     }
 
-    try {
-      // توليد معرف فريد للتسجيل (Registration ID)
-      const registrationId = crypto.randomBytes(8).toString('hex');
-      const status = 'مسجل - قيد المراجعة';
-      const timestamp = admin.database.ServerValue.TIMESTAMP;
-      
-      const registrationData = {
-        name: name, // الاسم المستخدم في الرئيسية
-        fullName: fullName, // الاسم واللقب الكامل
-        year: year, // المستوى التعليمي
-        subject: subject, // المادة
-        status: status,
-        createdAt: timestamp,
-        registrationId: registrationId // حفظ المعرف داخل البيانات
-      };
-
-      // حفظ بيانات التسجيل في قاعدة البيانات
-      await db.ref(`registrations/${registrationId}`).set(registrationData);
-
-      // إنشاء محتوى الـ QR Code (المعرف هو الأهم هنا)
-      const qrData = JSON.stringify({ id: registrationId, name: fullName, subject: subject });
-
-      // توليد QR Code كـ Data URL
-      const qrCodeDataURL = await QRCode.toDataURL(qrData, { type: 'image/png', errorCorrectionLevel: 'H' });
-
-      // إرسال البيانات إلى العميل
-      res.json({ 
-        success: true, 
-        message: 'تم التسجيل بنجاح!',
-        registrationId: registrationId,
-        qrCodeDataURL: qrCodeDataURL,
-        userData: { name: name, status: status, registrationId: registrationId }
-      });
-
-    } catch (error) {
-      console.error("خطأ في معالجة التسجيل:", error);
-      res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم.' });
-    }
-  });
-
-  // 3. مسار جلب تفاصيل تسجيل المستخدم
-  app.get('/api/user/:registrationId', async (req, res) => {
-    const { registrationId } = req.params;
-
-    try {
-      const snapshot = await db.ref(`registrations/${registrationId}`).once('value');
-      const userData = snapshot.val();
-
-      if (userData) {
-        res.json({ success: true, userData: userData });
-      } else {
-        res.status(404).json({ success: false, message: 'لم يتم العثور على بيانات التسجيل.' });
-      }
-    } catch (error) {
-      console.error("خطأ في جلب بيانات المستخدم:", error);
-      res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم.' });
-    }
-  });
-
-  // 6. بدء تشغيل الخادم
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-  
+    // تهيئة Firebase
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: process.env.FIREBASE_DATABASE_URL
+    });
+    console.log("Firebase Admin SDK initialized successfully.");
 } catch (error) {
-    console.error("Critical Error: Failed to initialize Firebase or load config.", error.message);
-    console.log("Please ensure .env and serviceAccountKey.json are correctly configured.");
+    console.error("Failed to initialize Firebase Admin SDK. Please check your .env file format (SERVICE_ACCOUNT_KEY must be a valid, single-line JSON string):", error.message);
+    process.exit(1);
 }
+
+const db = admin.database();
+const studentsRef = db.ref('students');
+
+// ---------------------------
+// --- مسارات عرض الملفات ---
+// ---------------------------
+
+// عرض index.html كصفحة رئيسية
+app.get('/', (req, res) => {
+    res.sendFile(path.join(VIEWS_PATH, 'index.html'));
+});
+
+// عرض status.html عند مسح QR code
+app.get('/status.html', (req, res) => {
+    res.sendFile(path.join(VIEWS_PATH, 'status.html'));
+});
+
+// ---------------------------
+// --- مسارات API لـ CRUD ---
+// ---------------------------
+
+// 1. نقطة نهاية تسجيل طالب جديد
+app.post('/register', async (req, res) => {
+    const { name, subjects } = req.body;
+
+    if (!name || !subjects || subjects.length === 0) {
+        return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمواد المختارة.' });
+    }
+
+    try {
+        const newStudentRef = studentsRef.push();
+        const studentId = newStudentRef.key;
+
+        const studentData = {
+            id: studentId,
+            name: name,
+            subjects: subjects,
+            isActive: true, // افتراضياً، نشط عند التسجيل
+            registeredAt: admin.database.ServerValue.TIMESTAMP
+        };
+
+        await newStudentRef.set(studentData);
+
+        // بيانات QR Code تشير إلى المسار الجديد لـ status.html
+        const qrData = `/status.html?id=${studentId}`; 
+        const qrCodeUrl = await QRCode.toDataURL(qrData);
+
+        res.status(201).json({
+            message: 'تم تسجيل الطالب بنجاح',
+            studentId: studentId,
+            qrCodeUrl: qrCodeUrl
+        });
+
+    } catch (error) {
+        console.error('Error registering student:', error);
+        res.status(500).json({ message: 'فشل التسجيل الداخلي.' });
+    }
+});
+
+// 2. نقطة نهاية جلب جميع الطلاب
+app.get('/students', async (req, res) => {
+    try {
+        const snapshot = await studentsRef.once('value');
+        const students = snapshot.val() || {};
+        res.json(students);
+    } catch (error) {
+        console.error('Error fetching students:', error);
+        res.status(500).json({ message: 'فشل في جلب بيانات الطلاب.' });
+    }
+});
+
+// 3. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code)
+app.post('/check-status/:id', async (req, res) => {
+    const studentId = req.params.id;
+
+    try {
+        const studentSnapshot = await studentsRef.child(studentId).once('value');
+        const student = studentSnapshot.val();
+
+        if (!student) {
+            return res.status(404).json({ message: 'الطالب غير موجود.' });
+        }
+
+        // تبديل حالة النشاط
+        const newStatus = !student.isActive;
+        await studentsRef.child(studentId).update({ isActive: newStatus });
+
+        // تسجيل حدث الحضور/الانصراف
+        const attendanceRef = db.ref(`attendance/${studentId}`).push();
+        await attendanceRef.set({
+            action: newStatus ? 'Check-in' : 'Check-out',
+            timestamp: admin.database.ServerValue.TIMESTAMP
+        });
+
+        res.json({
+            message: `تم تحديث حالة الطالب بنجاح إلى: ${newStatus ? 'نشط' : 'غير نشط'}`,
+            name: student.name,
+            newStatus: newStatus
+        });
+
+    } catch (error) {
+        console.error('Error checking/toggling status:', error);
+        res.status(500).json({ message: 'فشل داخلي في تحديث الحالة.' });
+    }
+});
+
+
+// بدء تشغيل الخادم
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`(Make sure 'index.html' and 'status.html' are inside the 'views' folder)`);
+});
