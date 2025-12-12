@@ -4,18 +4,23 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
-const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid'); // تضمين UUID لإنشاء معرفات فريدة
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const VIEWS_PATH = path.join(__dirname, 'views'); // تحديد مسار مجلد views
 
 // Middleware
 app.use(bodyParser.json());
 
+// --- FIX: استخدام express.static لخدمة الملفات الثابتة من مجلد views ---
+app.use(express.static(VIEWS_PATH)); 
+
 // --- تهيئة Firebase Admin SDK ---
 let db;
 let studentsRef;
-let isFirebaseReady = false;
+let isFirebaseReady = false; 
 
 try {
     if (!admin.apps.length) { 
@@ -23,65 +28,66 @@ try {
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
-            throw new Error("Missing Firebase environment variables (SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL).");
+            console.error("Missing Firebase environment variables. API calls will fail.");
+        } else {
+            // تنظيف وازالة أي علامات اقتباس محيطة
+            const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
+            const serviceAccount = JSON.parse(cleanJsonString);
+
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+                databaseURL: databaseURL
+            });
+            console.log("Firebase Admin SDK initialized successfully.");
+            
+            db = admin.database();
+            studentsRef = db.ref('students');
+            isFirebaseReady = true;
         }
-
-        // إزالة علامات الاقتباس الخارجية وتحليل JSON
-        const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
-        const serviceAccount = JSON.parse(cleanJsonString);
-
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            databaseURL: databaseURL
-        });
-        console.log("Firebase Admin SDK initialized successfully.");
     }
-    
-    db = admin.database();
-    studentsRef = db.ref('students');
-    isFirebaseReady = true;
-
 } catch (error) {
-    console.error('Firebase Initialization Error (CRITICAL):', error.message);
+    console.error("Failed to initialize Firebase Admin SDK (CRITICAL):", error.message);
 }
 
-// بيانات المواد الشاملة (ثابتة)
+// بيانات المواد الشاملة (لجميع المراحل والسنوات والشعب) - مكتوبة بالكامل
 const courses = {
-    "الثانوية": [
-        { subject: "الرياضيات", level: "ثانوي", year: "أولى", stream: "علمي" },
-        { subject: "الفيزياء", level: "ثانوي", year: "أولى", stream: "علمي" },
-        { subject: "الكيمياء", level: "ثانوي", year: "أولى", stream: "علمي" },
-        { subject: "الأحياء", level: "ثانوي", year: "أولى", stream: "علمي" },
-        { subject: "اللغة العربية", level: "ثانوي", year: "أولى", stream: "أدبي" },
-        { subject: "التاريخ", level: "ثانوي", year: "أولى", stream: "أدبي" },
-        { subject: "الجغرافيا", level: "ثانوي", year: "أولى", stream: "أدبي" },
+    "المرحلة الثانوية": [
+        { subject: "الرياضيات المتقدمة", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
+        { subject: "الفيزياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
+        { subject: "الكيمياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
+        { subject: "الأحياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
         
-        { subject: "اللغة الإنجليزية", level: "ثانوي", year: "ثانية", stream: "علمي" },
-        { subject: "الحاسوب", level: "ثانوي", year: "ثانية", stream: "علمي" },
-        { subject: "الرياضيات المتقدمة", level: "ثانوي", year: "ثانية", stream: "علمي" },
-        { subject: "الفلسفة", level: "ثانوي", year: "ثانية", stream: "أدبي" },
-        { subject: "الاقتصاد", level: "ثانوي", year: "ثانية", stream: "أدبي" },
+        { subject: "اللغة العربية", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
+        { subject: "التاريخ", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
+        { subject: "الجغرافيا", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
         
-        { subject: "الرياضيات العليا", level: "ثانوي", year: "ثالثة", stream: "علمي" },
-        { subject: "الفيزياء المتقدمة", level: "ثانوي", year: "ثالثة", stream: "علمي" },
-        { subject: "علم الاجتماع", level: "ثانوي", year: "ثالثة", stream: "أدبي" }
+        { subject: "اللغة الإنجليزية", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
+        { subject: "الحاسوب وتكنولوجيا المعلومات", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
+        { subject: "الرياضيات التحليلية", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
+        
+        { subject: "الفلسفة والمنطق", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة الأدبية" },
+        { subject: "الاقتصاد", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة الأدبية" },
+        
+        { subject: "الرياضيات العليا والتفاضل", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة العلمية" },
+        { subject: "الفيزياء الحديثة", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة العلمية" },
+        { subject: "علم الاجتماع والنفس", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة الأدبية" }
     ],
-    "الإعدادية": [
-        { subject: "العلوم", level: "إعدادي", year: "أولى", stream: "" },
-        { subject: "الرياضيات", level: "إعدادي", year: "أولى", stream: "" },
-        { subject: "اللغة العربية", level: "إعدادي", year: "ثانية", stream: "" },
-        { subject: "اللغة الفرنسية", level: "إعدادي", year: "ثانية", stream: "" },
-        { subject: "الفيزياء", level: "إعدادي", year: "ثالثة", stream: "" },
-        { subject: "التاريخ والجغرافيا", level: "إعدادي", year: "ثالثة", stream: "" }
+    "المرحلة الإعدادية": [
+        { subject: "العلوم العامة", level: "إعدادي", year: "السنة الأولى", stream: "عامة" },
+        { subject: "الرياضيات الأساسية", level: "إعدادي", year: "السنة الأولى", stream: "عامة" },
+        { subject: "اللغة العربية والقواعد", level: "إعدادي", year: "السنة الثانية", stream: "عامة" },
+        { subject: "اللغة الفرنسية", level: "إعدادي", year: "السنة الثانية", stream: "عامة" },
+        { subject: "الفيزياء والكيمياء", level: "إعدادي", year: "السنة الثالثة", stream: "عامة" },
+        { subject: "التاريخ والجغرافيا", level: "إعدادي", year: "السنة الثالثة", stream: "عامة" }
     ],
-    "الابتدائية": [
-        { subject: "القراءة والكتابة", level: "ابتدائي", year: "أولى", stream: "" },
-        { subject: "الحساب", level: "ابتدائي", year: "ثانية", stream: "" },
-        { subject: "التربية الإسلامية", level: "ابتدائي", year: "ثالثة", stream: "" }
+    "المرحلة الابتدائية": [
+        { subject: "القراءة والكتابة والخط", level: "ابتدائي", year: "السنة الأولى", stream: "عامة" },
+        { subject: "الحساب والأرقام", level: "ابتدائي", year: "السنة الثانية", stream: "عامة" },
+        { subject: "التربية الإسلامية", level: "ابتدائي", year: "السنة الثالثة", stream: "عامة" }
     ]
 };
 
-// وظيفة مساعدة للتحقق من جاهزية Firebase قبل تنفيذ أي عملية قاعدة بيانات
+// وظيفة مساعدة للتحقق من جاهزية Firebase
 function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
         return res.status(500).json({ 
@@ -91,166 +97,126 @@ function checkFirebaseReadiness(res) {
     }
 }
 
-// -----------------------------------------------------
-// ملاحظة: تم إزالة app.get('/') و app.get('/profile.html')
-// لأن ملف vercel.json سيتولى خدمة هذه الملفات الثابتة.
-// -----------------------------------------------------
 
-// نقطة نهاية لجلب قائمة المواد (لـ index.html)
+// ---------------------------
+// --- مسارات عرض الملفات ---
+// ---------------------------
+
+// عرض index.html كصفحة رئيسية
+app.get('/', (req, res) => {
+    res.sendFile(path.join(VIEWS_PATH, 'index.html'));
+});
+
+// ---------------------------
+// --- مسارات API لـ CRUD ---
+// ---------------------------
+
+// 1. نقطة نهاية جلب قائمة المواد (البيانات المطلوبة)
 app.get('/courses', (req, res) => {
     res.json(courses);
 });
 
-// نقطة نهاية لجلب قائمة الطلاب
-app.get('/students', async (req, res) => {
-    if (checkFirebaseReadiness(res)) return;
 
-    try {
-        const snapshot = await studentsRef.once('value');
-        res.json(snapshot.val() || {});
-    } catch (error) {
-        console.error('Error fetching students:', error);
-        res.status(500).json({ message: 'فشل داخلي في جلب البيانات.' });
-    }
-});
+// 2. نقطة نهاية تسجيل طالب جديد
+app.post('/register', async (req, res) => {
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
-// 2. نقطة نهاية لإضافة طالب جديد
-app.post('/add-student', async (req, res) => {
-    if (checkFirebaseReadiness(res)) return;
+    const studentId = uuidv4(); // استخدام uuidv4 لتوليد ID
+    const { name, subjects } = req.body;
 
-    const studentId = uuidv4();
-    const { name, selectedSubjects } = req.body; 
-
-    if (!name || !selectedSubjects || !Array.isArray(selectedSubjects) || selectedSubjects.length === 0) {
-        return res.status(400).json({ message: 'الاسم والمواد المختارة مطلوبة (يجب اختيار مادة واحدة على الأقل).' });
+    if (!name || !subjects || subjects.length === 0) {
+        return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمواد المختارة.' });
     }
 
     try {
-        const validSubjects = selectedSubjects.map(sub => {
-            const sessionsCount = parseInt(sub.sessionsCount) || 1; 
-            return {
-                subject: sub.subject,
-                level: sub.level,
-                year: sub.year,
-                stream: sub.stream || '',
-                sessionsCount: sessionsCount 
-            };
-        });
-
         const studentData = {
+            id: studentId,
             name: name,
+            subjects: subjects, // يفترض أن subjects هي مصفوفة من أسماء المواد
             isActive: true, 
-            registrationDate: Date.now(),
-            subjects: validSubjects, 
+            registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
-        await studentsRef.child(studentId).set(studentData);
+        await studentsRef.child(studentId).set(studentData); // استخدام studentId المولد
 
-        const attendanceData = {};
-        await db.ref(`attendance/${studentId}`).set(attendanceData);
+        // إنشاء سجل حضور فارغ
+        await db.ref(`attendance/${studentId}`).set({}); 
 
-        const qrCodeData = `https://qr.example.com/student/${studentId}`; 
-        const qrCodeImage = await QRCode.toDataURL(qrCodeData);
+        const qrData = `/profile.html?id=${studentId}`; // تغيير المسار ليتناسب مع ملفك
+        const qrCodeUrl = await QRCode.toDataURL(qrData);
 
-        res.status(201).json({ 
-            message: `تم تسجيل الطالب ${name} بنجاح.`,
-            id: studentId,
-            qrCode: qrCodeImage,
-            studentData: studentData
+        res.status(201).json({
+            message: 'تم تسجيل الطالب بنجاح',
+            studentId: studentId,
+            qrCodeUrl: qrCodeUrl
         });
 
     } catch (error) {
-        console.error('Error adding student:', error);
-        res.status(500).json({ message: 'فشل داخلي في التسجيل.' });
+        console.error('Error registering student:', error);
+        res.status(500).json({ message: 'فشل التسجيل الداخلي.' });
     }
 });
 
 
-// 3. نقطة نهاية لتفحص حالة الحضور (Check-in)
+// 3. نقطة نهاية جلب جميع الطلاب
+app.get('/students', async (req, res) => {
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+    
+    try {
+        const snapshot = await studentsRef.once('value');
+        const students = snapshot.val() || {};
+        res.json(students);
+    } catch (error) {
+        console.error('Error fetching students:', error);
+        res.status(500).json({ message: 'فشل في جلب بيانات الطلاب.' });
+    }
+});
+
+// 4. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code) - تم تعديلها لتكون أكثر مرونة
 app.post('/check-in', async (req, res) => {
-    if (checkFirebaseReadiness(res)) return;
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
     const { qrData } = req.body;
     
-    const studentIdMatch = qrData.match(/\/student\/([^/]+)$/);
+    // استخراج studentId من بيانات QR (إذا كانت على شكل /profile.html?id=...)
+    const studentIdMatch = qrData.match(/id=([^&]+)/);
     const studentId = studentIdMatch ? studentIdMatch[1] : null;
 
     if (!studentId) {
         return res.status(400).json({ message: 'رمز QR غير صالح أو غير معرّف.' });
     }
-
+    
     try {
         const studentSnapshot = await studentsRef.child(studentId).once('value');
         const student = studentSnapshot.val();
 
         if (!student) {
-            return res.status(404).json({ message: 'الطالب غير مسجل في النظام.' });
+            return res.status(404).json({ message: 'الطالب غير موجود.' });
         }
 
-        if (!student.isActive) {
-            return res.status(403).json({ 
-                message: `حساب الطالب ${student.name} غير نشط أو انتهت صلاحيته.`, 
-                status: 'inactive',
-                name: student.name
-            });
-        }
-        
-        const attendanceSnapshot = await db.ref(`attendance/${studentId}`).once('value');
-        const attendance = attendanceSnapshot.val() || {};
-        
-        const subjectAttendanceCounts = {};
-        Object.values(attendance).forEach(entry => {
-            const key = `${entry.subject}-${entry.level}-${entry.stream || ''}`;
-            subjectAttendanceCounts[key] = (subjectAttendanceCounts[key] || 0) + 1;
+        // تسجيل الحضور
+        const attendanceRef = db.ref(`attendance/${studentId}`).push();
+        await attendanceRef.set({
+            subject: 'غير محدد (تم تسجيل حضور عام)', 
+            action: 'Check-in',
+            timestamp: admin.database.ServerValue.TIMESTAMP
         });
-
-        const uncompletedSubject = student.subjects.find(sub => {
-            const key = `${sub.subject}-${sub.level}-${sub.stream || ''}`;
-            const attendedSessions = subjectAttendanceCounts[key] || 0;
-            return attendedSessions < sub.sessionsCount; 
-        });
-
-        if (!uncompletedSubject) {
-            await studentsRef.child(studentId).update({ isActive: false });
-            return res.status(403).json({ 
-                message: `تم إنهاء جميع الحصص للطالب ${student.name}، وتم تعطيل حسابه. (انتهت صلاحية QR)`, 
-                status: 'expired',
-                name: student.name
-            });
-        }
-        
-        const timestamp = Date.now().toString();
-        const currentSubject = uncompletedSubject;
-
-        const attendanceEntry = {
-            subject: currentSubject.subject,
-            level: currentSubject.level,
-            stream: currentSubject.stream || '',
-            status: 'present', 
-            date: new Date().toISOString()
-        };
-
-        await db.ref(`attendance/${studentId}/${timestamp}`).set(attendanceEntry);
 
         res.json({
-            message: `تم تسجيل حضور ${student.name} بنجاح في مادة ${currentSubject.subject}.`,
+            message: `تم تسجيل حضور ${student.name} بنجاح.`,
             name: student.name,
-            status: 'present',
-            subject: currentSubject.subject,
-            attended: (subjectAttendanceCounts[`${currentSubject.subject}-${currentSubject.level}-${currentSubject.stream || ''}`] || 0) + 1,
-            total: currentSubject.sessionsCount
+            isActive: student.isActive // إرجاع الحالة الحالية
         });
 
     } catch (error) {
-        console.error('Error processing check-in:', error);
+        console.error('Error checking in:', error);
         res.status(500).json({ message: 'فشل داخلي في تسجيل الحضور.' });
     }
 });
 
-
-// 4. نقطة نهاية لجلب بيانات طالب واحد مع سجل الحضور
+// 5. نقطة نهاية لجلب بيانات طالب واحد مع سجل الحضور
 app.get('/student-details/:id', async (req, res) => {
-    if (checkFirebaseReadiness(res)) return;
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
     const studentId = req.params.id;
 
@@ -266,21 +232,9 @@ app.get('/student-details/:id', async (req, res) => {
         const attendanceSnapshot = await attendanceRef.once('value');
         const attendanceData = attendanceSnapshot.val() || {};
 
-        const subjectAttendanceCounts = {};
-        Object.values(attendanceData).forEach(entry => {
-            const key = `${entry.subject}-${entry.level}-${entry.stream || ''}`;
-            subjectAttendanceCounts[key] = (subjectAttendanceCounts[key] || 0) + 1;
-        });
-
-        const qrCodeData = `https://qr.example.com/student/${studentId}`;
-        const qrCodeImage = await QRCode.toDataURL(qrCodeData);
-
-
         res.json({
             student: studentData,
-            attendance: attendanceData,
-            attendanceCounts: subjectAttendanceCounts,
-            qrCode: qrCodeImage 
+            attendance: attendanceData
         });
 
     } catch (error) {
@@ -289,7 +243,7 @@ app.get('/student-details/:id', async (req, res) => {
     }
 });
 
-// بدء تشغيل الخادم
+// تشغيل الخادم
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
