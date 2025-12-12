@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ملف الطالب - أكاديمية المعالي</title>
+<title id="pageTitle">ملف الطالب - أكاديمية المعالي</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
@@ -78,31 +78,57 @@ html,body{
   font-weight: 400;
   margin-top: 2px;
 }
+/* زر العودة الرمادي والمرن (محدّث ليتطابق مع index.html) */
 .back-btn {
-    background: var(--accent-color);
-    border: none;
-    color: #fff;
-    padding: 10px 15px;
+    background: rgba(161, 161, 170, 0.15); /* Gray/Glassy background */
+    border: 1px solid rgba(161, 161, 170, 0.1);
+    color: var(--text-secondary);
+    padding: 8px 12px; /* Small padding */
     border-radius: 8px;
     cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background 0.2s;
+    font-size: 14px; /* Small font size */
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px; 
+    flex-shrink: 0;
 }
 .back-btn:hover {
-    background: #2563eb;
+    background: rgba(161, 161, 170, 0.25);
+    color: var(--text-primary);
+}
+.back-btn:active {
+    transform: scale(0.98);
+}
+.back-btn svg {
+    width: 16px; /* تصغير حجم الأيقونة */
+    height: 16px;
+    margin-top: -2px;
 }
 
 /* --- PROFILE SPECIFIC STYLES --- */
 .profile-container {
     padding: 20px;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 20px auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
 }
+@media (min-width: 768px) {
+    .profile-container {
+        grid-template-columns: 3fr 1fr; 
+    }
+    .main-content {
+        grid-column: 1 / 2;
+    }
+    .qr-side {
+        grid-column: 2 / 3;
+    }
+}
+
 .profile-header {
     background: var(--drawer-bg);
     border: 1px solid var(--border-color);
@@ -137,7 +163,7 @@ html,body{
   background: rgba(67, 207, 102, 0.2);
   color: #43cf66;
 }
-.status-inactive {
+.status-inactive, .status-expired {
   background: rgba(255, 99, 71, 0.2);
   color: #ff6347;
 }
@@ -180,16 +206,29 @@ html,body{
 }
 .subjects-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-direction: column;
+    gap: 15px;
 }
-.subject-tag {
-    background: rgba(59, 130, 246, 0.15); /* light blue */
+.subject-card {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+}
+.subject-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
     color: var(--accent-color);
-    padding: 8px 12px;
-    border-radius: 6px;
+}
+.session-info {
     font-size: 14px;
-    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    display: block;
+}
+.session-info strong {
+    color: #fff;
+    font-weight: 700;
 }
 
 /* Attendance table styles */
@@ -223,11 +262,54 @@ html,body{
 .attendance-table .status-present {
     color: #43cf66;
     font-weight: 600;
+    position: relative;
+}
+.attendance-table .status-present::after {
+    content: '✓';
+    margin-right: 5px;
 }
 .attendance-table .status-absent {
     color: #ff6347;
     font-weight: 600;
+    position: relative;
 }
+.attendance-table .status-absent::after {
+    content: '✗';
+    margin-right: 5px;
+}
+.attendance-table .status-marked {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+/* QR Code Display */
+.qr-side {
+    padding-top: 20px;
+}
+.qr-box {
+    background: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    position: sticky; 
+    top: 20px;
+}
+.qr-box img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+    margin: 15px auto;
+    display: block;
+}
+.qr-box p {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
 </style>
 </head>
 <body>
@@ -246,66 +328,78 @@ html,body{
                 <div class="tag">ملف الطالب</div>
             </div>
         </div>
-        <div style="width: 100px;"></div> 
+        <div style="width: 80px;"></div> 
     </header>
 
     <main class="profile-container">
-        <div id="loading" style="text-align: center; color: var(--text-secondary); padding: 50px;">
+        <div id="loading" style="text-align: center; color: var(--text-secondary); padding: 50px; grid-column: 1 / -1;">
             جارٍ تحميل بيانات الطالب...
         </div>
         
         <div id="profileContent" style="display: none;">
-            <div class="profile-header">
-                <h1 id="studentName"></h1>
-                <p>الرقم التعريفي: <span id="studentId"></span></p>
-                <p>حالة التسجيل: <span id="studentStatus" class="profile-status"></span></p>
-            </div>
-
-            <div class="profile-section">
-                <h2>المعلومات الأكاديمية</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="label">المستوى التعليمي</span>
-                        <span class="value" id="studentLevel"></span>
-                    </div>
-                    <div class="info-item">
-                        <span class="label">السنة الدراسية</span>
-                        <span class="value" id="studentYear"></span>
-                    </div>
-                    <div class="info-item" id="streamContainer" style="display:none;">
-                        <span class="label">الشعبة/الجذع</span>
-                        <span class="value" id="studentStream"></span>
+            <div class="main-content">
+                <div class="profile-header">
+                    <h1 id="studentName"></h1>
+                    <p>الرقم التعريفي: <span id="studentId"></span></p>
+                    <p>حالة التسجيل: <span id="studentStatus" class="profile-status"></span></p>
+                </div>
+    
+                <div class="profile-section">
+                    <h2>المعلومات الأكاديمية</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">المستوى التعليمي (أعلى مستوى)</span>
+                            <span class="value" id="studentLevel"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">السنة الدراسية (أعلى سنة)</span>
+                            <span class="value" id="studentYear"></span>
+                        </div>
+                        <div class="info-item" id="streamContainer" style="display:none;">
+                            <span class="label">الشعبة/الجذع (أعلى شعبة)</span>
+                            <span class="value" id="studentStream"></span>
+                        </div>
                     </div>
                 </div>
-                
-                <h2 style="margin-top: 30px;">المواد المسجل بها</h2>
-                <div class="subjects-list" id="studentSubjects">
-                    <p style="color: var(--text-secondary);">جارٍ تحميل المواد...</p>
+
+                 <div class="profile-section">
+                    <h2>المواد المسجل بها وعدد الحصص</h2>
+                    <div class="subjects-list" id="studentSubjects">
+                        <p style="color: var(--text-secondary);">جارٍ تحميل المواد...</p>
+                    </div>
+                </div>
+    
+                <div class="profile-section">
+                    <h2>سجل الحضور</h2>
+                    <div class="attendance-table-container">
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ والوقت</th>
+                                    <th>المادة</th>
+                                    <th>المستوى</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceBody">
+                                <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل سجل الحضور...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-            <div class="profile-section">
-                <h2>سجل الحضور</h2>
-                <div class="attendance-table-container">
-                    <table class="attendance-table">
-                        <thead>
-                            <tr>
-                                <th>التاريخ والوقت</th>
-                                <th>المادة</th>
-                                <th>المستوى</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendanceBody">
-                            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل سجل الحضور...</td></tr>
-                        </tbody>
-                    </table>
+            
+            <div class="qr-side">
+                <div class="qr-box">
+                    <h2>رمز دخول الطالب</h2>
+                    <img id="qrCodeImage" src="" alt="QR Code">
+                    <p>استخدم هذا الرمز للتسجيل في كل حصة.</p>
                 </div>
             </div>
 
         </div>
         
-        <div id="error" style="text-align: center; color: #ff6347; padding: 50px; display: none;">
+        <div id="error" style="text-align: center; color: #ff6347; padding: 50px; display: none; grid-column: 1 / -1;">
             فشل في تحميل بيانات الطالب. تأكد من صحة الرقم التعريفي.
         </div>
     </main>
@@ -323,6 +417,8 @@ html,body{
         const loadingDiv = document.getElementById('loading');
         const profileContentDiv = document.getElementById('profileContent');
         const errorDiv = document.getElementById('error');
+        const pageTitle = document.getElementById('pageTitle');
+
 
         if (!studentId) {
             loadingDiv.style.display = 'none';
@@ -333,7 +429,7 @@ html,body{
 
         async function fetchStudentProfile() {
             try {
-                // جلب بيانات الطالب وسجل الحضور من API الجديدة
+                // جلب البيانات من API المحدثة
                 const response = await fetch(`/student-details/${studentId}`); 
                 
                 if (!response.ok) {
@@ -343,6 +439,9 @@ html,body{
                 const data = await response.json();
                 const student = data.student;
                 const attendance = data.attendance;
+                const attendanceCounts = data.attendanceCounts || {}; // عدد الحضور لكل مادة
+                
+                pageTitle.textContent = `${student.name} - ملف الطالب`;
 
                 // 1. عرض المعلومات الأساسية
                 document.getElementById('studentName').textContent = student.name;
@@ -350,16 +449,20 @@ html,body{
 
                 const statusSpan = document.getElementById('studentStatus');
                 const isActive = student.isActive === true || student.isActive === 'true';
-                statusSpan.textContent = isActive ? 'نشط (مفعل)' : 'غير نشط (معلق)';
-                statusSpan.className = isActive ? 'profile-status status-active' : 'profile-status status-inactive';
+                statusSpan.textContent = isActive ? 'نشط (مفعل)' : 'منتهي الصلاحية/غير نشط';
+                statusSpan.className = isActive ? 'profile-status status-active' : 'profile-status status-inactive status-expired';
 
-                // 2. عرض المعلومات الأكاديمية (نستخدم معلومات أول مادة مسجلة لتمثيل المستوى)
-                const firstSubject = student.subjects[0];
-                document.getElementById('studentLevel').textContent = firstSubject?.level || 'غير محدد';
-                document.getElementById('studentYear').textContent = firstSubject?.year || 'غير محدد';
+                // عرض QR Code
+                document.getElementById('qrCodeImage').src = data.qrCode;
+
+                // 2. عرض المعلومات الأكاديمية (نستخدم معلومات أول مادة مسجلة لتمثيل المستوى الرئيسي للطالب)
+                const mainSubject = student.subjects[0]; 
+
+                document.getElementById('studentLevel').textContent = mainSubject?.level || 'غير محدد';
+                document.getElementById('studentYear').textContent = mainSubject?.year || 'غير محدد';
                 
                 const streamContainer = document.getElementById('streamContainer');
-                const studentStream = firstSubject?.stream;
+                const studentStream = mainSubject?.stream;
                 if (studentStream) {
                     document.getElementById('studentStream').textContent = studentStream;
                     streamContainer.style.display = 'block';
@@ -367,15 +470,29 @@ html,body{
                     streamContainer.style.display = 'none';
                 }
 
-                // 3. عرض المواد المسجل بها
+                // 3. عرض المواد المسجل بها وعدد الحصص
                 const subjectsListDiv = document.getElementById('studentSubjects');
                 subjectsListDiv.innerHTML = '';
+                
                 if (student.subjects && student.subjects.length > 0) {
                     student.subjects.forEach(sub => {
-                        const tag = document.createElement('span');
-                        tag.className = 'subject-tag';
-                        tag.textContent = sub.subject + (sub.stream ? ` (${sub.stream})` : ''); // عرض المادة مع الشعبة إن وجدت
-                        subjectsListDiv.appendChild(tag);
+                        const card = document.createElement('div');
+                        card.className = 'subject-card';
+
+                        // المفتاح المستخدم لحساب الحضور
+                        const key = `${sub.subject}-${sub.level}-${sub.stream || ''}`;
+                        const attended = attendanceCounts[key] || 0;
+                        const total = sub.sessionsCount;
+
+                        card.innerHTML = `
+                            <h3>${sub.subject} ${sub.stream ? ' (' + sub.stream + ')' : ''}</h3>
+                            <span class="session-info">
+                                المستوى: <strong>${sub.level}</strong> | 
+                                الحصص المكتملة: <strong>${attended}</strong> من <strong>${total}</strong>
+                            </span>
+                            ${attended >= total ? '<p style="color: #ff6347; font-weight: 700; margin: 0;">(تم إكمال جميع الحصص - انتهت صلاحية المادة)</p>' : ''}
+                        `;
+                        subjectsListDiv.appendChild(card);
                     });
                 } else {
                      subjectsListDiv.innerHTML = '<p style="color: var(--text-secondary);">لم يتم تسجيل الطالب في أي مادة.</p>';
@@ -398,6 +515,7 @@ html,body{
                              hour: '2-digit', minute: '2-digit', hour12: true
                         });
                         
+                        // يمكن إضافة منطق لشطب الحصة في المستقبل
                         const statusClass = entry.status === 'present' ? 'status-present' : 'status-absent';
                         const statusText = entry.status === 'present' ? 'حاضر' : 'غائب';
 
@@ -415,7 +533,7 @@ html,body{
 
                 // إظهار المحتوى وإخفاء التحميل
                 loadingDiv.style.display = 'none';
-                profileContentDiv.style.display = 'block';
+                profileContentDiv.style.display = 'grid'; // عرض المحتوى كـ grid
 
             } catch (err) {
                 console.error('Fetch error:', err);
