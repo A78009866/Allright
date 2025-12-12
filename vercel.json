@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { 
+      "src": "/", 
+      "dest": "/views/index.html"  // توجيه الطلب للجذر إلى الملف داخل views
+    },
+    { 
+      "src": "/profile.html", 
+      "dest": "/views/profile.html" // توجيه طلب البروفايل إلى الملف داخل views
+    },
+    {
+      // توجيه جميع طلبات API إلى الدالة server.js
+      "src": "/(courses|students|add-student|check-in|student-details/.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
