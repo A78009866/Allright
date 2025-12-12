@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ملف الطالب - أكاديمية المعالي</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* --- STYLES COPIED FROM INDEX.HTML FOR profile.html --- */
+:root{
+  --bg: #0b0b0c;
+  --drawer-bg: #151517;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-color: rgba(255,255,255,0.08);
+  --accent-color: #3b82f6; 
+  --nav-height: 72px;
+  --radius: 12px;
+}
+*{box-sizing:border-box;}
+html,body{
+  height:100%;
+  margin:0;
+  font-family: "Tajawal", sans-serif;
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+  color: var(--text-primary);
+  -webkit-font-smoothing:antialiased;
+  direction: rtl;
+}
+.page{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+.navbar{
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin: 16px;
+  border-radius: var(--radius);
+  background: rgba(26, 26, 29, 0.85); 
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1000;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-shrink: 0; 
+  max-width: 80%;
+}
+.brand img{
+  width:48px;
+  height:48px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.brand .title .name{
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2;
+}
+.brand .title .tag{
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.back-btn {
+    background: var(--accent-color);
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.back-btn:hover {
+    background: #2563eb;
+}
+
+/* --- PROFILE SPECIFIC STYLES --- */
+.profile-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+}
+.profile-header {
+    background: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 25px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+.profile-header h1 {
+    font-size: 2.2rem;
+    color: var(--accent-color);
+    margin: 0;
+    line-height: 1.2;
+}
+.profile-header p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+.profile-status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-block;
+  margin-top: 5px;
+}
+.status-active {
+  background: rgba(67, 207, 102, 0.2);
+  color: #43cf66;
+}
+.status-inactive {
+  background: rgba(255, 99, 71, 0.2);
+  color: #ff6347;
+}
+
+.profile-section {
+    background: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.profile-section h2 {
+    font-size: 1.4rem;
+    color: #fff;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+.info-item {
+    padding: 10px 0;
+    border-right: 3px solid rgba(255,255,255,0.1);
+    padding-right: 15px;
+}
+.info-item .label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 3px;
+}
+.info-item .value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+.subjects-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.subject-tag {
+    background: rgba(59, 130, 246, 0.15); /* light blue */
+    color: var(--accent-color);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Attendance table styles */
+.attendance-table-container {
+    overflow-x: auto;
+}
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;
+}
+.attendance-table th, .attendance-table td {
+    padding: 12px 15px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-color);
+}
+.attendance-table th {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.attendance-table td {
+    color: #e4e4e7;
+    white-space: nowrap;
+}
+.attendance-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+}
+.attendance-table .status-present {
+    color: #43cf66;
+    font-weight: 600;
+}
+.attendance-table .status-absent {
+    color: #ff6347;
+    font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+    <header class="navbar">
+        <a href="/" class="back-btn">
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            العودة للرئيسية
+        </a>
+
+        <div class="brand">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">
+            <div class="title">
+                <div class="name">أكاديمية المعالي</div>
+                <div class="tag">ملف الطالب</div>
+            </div>
+        </div>
+        <div style="width: 100px;"></div> 
+    </header>
+
+    <main class="profile-container">
+        <div id="loading" style="text-align: center; color: var(--text-secondary); padding: 50px;">
+            جارٍ تحميل بيانات الطالب...
+        </div>
+        
+        <div id="profileContent" style="display: none;">
+            <div class="profile-header">
+                <h1 id="studentName"></h1>
+                <p>الرقم التعريفي: <span id="studentId"></span></p>
+                <p>حالة التسجيل: <span id="studentStatus" class="profile-status"></span></p>
+            </div>
+
+            <div class="profile-section">
+                <h2>المعلومات الأكاديمية</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="label">المستوى التعليمي</span>
+                        <span class="value" id="studentLevel"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">السنة الدراسية</span>
+                        <span class="value" id="studentYear"></span>
+                    </div>
+                    <div class="info-item" id="streamContainer" style="display:none;">
+                        <span class="label">الشعبة/الجذع</span>
+                        <span class="value" id="studentStream"></span>
+                    </div>
+                </div>
+                
+                <h2 style="margin-top: 30px;">المواد المسجل بها</h2>
+                <div class="subjects-list" id="studentSubjects">
+                    <p style="color: var(--text-secondary);">جارٍ تحميل المواد...</p>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2>سجل الحضور</h2>
+                <div class="attendance-table-container">
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ والوقت</th>
+                                <th>المادة</th>
+                                <th>المستوى</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceBody">
+                            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل سجل الحضور...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        
+        <div id="error" style="text-align: center; color: #ff6347; padding: 50px; display: none;">
+            فشل في تحميل بيانات الطالب. تأكد من صحة الرقم التعريفي.
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 أكاديمية المعالي. جميع الحقوق محفوظة.</p>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        const loadingDiv = document.getElementById('loading');
+        const profileContentDiv = document.getElementById('profileContent');
+        const errorDiv = document.getElementById('error');
+
+        if (!studentId) {
+            loadingDiv.style.display = 'none';
+            errorDiv.textContent = 'لم يتم تحديد رقم تعريفي للطالب.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        async function fetchStudentProfile() {
+            try {
+                // جلب بيانات الطالب وسجل الحضور من API الجديدة
+                const response = await fetch(`/student-details/${studentId}`); 
+                
+                if (!response.ok) {
+                    throw new Error('Student not found or server error');
+                }
+
+                const data = await response.json();
+                const student = data.student;
+                const attendance = data.attendance;
+
+                // 1. عرض المعلومات الأساسية
+                document.getElementById('studentName').textContent = student.name;
+                document.getElementById('studentId').textContent = studentId;
+
+                const statusSpan = document.getElementById('studentStatus');
+                const isActive = student.isActive === true || student.isActive === 'true';
+                statusSpan.textContent = isActive ? 'نشط (مفعل)' : 'غير نشط (معلق)';
+                statusSpan.className = isActive ? 'profile-status status-active' : 'profile-status status-inactive';
+
+                // 2. عرض المعلومات الأكاديمية (نستخدم معلومات أول مادة مسجلة لتمثيل المستوى)
+                const firstSubject = student.subjects[0];
+                document.getElementById('studentLevel').textContent = firstSubject?.level || 'غير محدد';
+                document.getElementById('studentYear').textContent = firstSubject?.year || 'غير محدد';
+                
+                const streamContainer = document.getElementById('streamContainer');
+                const studentStream = firstSubject?.stream;
+                if (studentStream) {
+                    document.getElementById('studentStream').textContent = studentStream;
+                    streamContainer.style.display = 'block';
+                } else {
+                    streamContainer.style.display = 'none';
+                }
+
+                // 3. عرض المواد المسجل بها
+                const subjectsListDiv = document.getElementById('studentSubjects');
+                subjectsListDiv.innerHTML = '';
+                if (student.subjects && student.subjects.length > 0) {
+                    student.subjects.forEach(sub => {
+                        const tag = document.createElement('span');
+                        tag.className = 'subject-tag';
+                        tag.textContent = sub.subject + (sub.stream ? ` (${sub.stream})` : ''); // عرض المادة مع الشعبة إن وجدت
+                        subjectsListDiv.appendChild(tag);
+                    });
+                } else {
+                     subjectsListDiv.innerHTML = '<p style="color: var(--text-secondary);">لم يتم تسجيل الطالب في أي مادة.</p>';
+                }
+
+                // 4. عرض سجل الحضور
+                const attendanceBody = document.getElementById('attendanceBody');
+                attendanceBody.innerHTML = '';
+                
+                const attendanceEntries = Object.entries(attendance || {}).map(([timestamp, entry]) => ({
+                    ...entry,
+                    timestamp: timestamp
+                })).sort((a, b) => b.timestamp - a.timestamp); // ترتيب تنازلي حسب التاريخ (الأحدث أولاً)
+
+                if (attendanceEntries.length > 0) {
+                    attendanceEntries.forEach(entry => {
+                        const row = document.createElement('tr');
+                        const date = new Date(parseInt(entry.timestamp)).toLocaleString('ar-EG', {
+                             year: 'numeric', month: 'short', day: 'numeric',
+                             hour: '2-digit', minute: '2-digit', hour12: true
+                        });
+                        
+                        const statusClass = entry.status === 'present' ? 'status-present' : 'status-absent';
+                        const statusText = entry.status === 'present' ? 'حاضر' : 'غائب';
+
+                        row.innerHTML = `
+                            <td>${date}</td>
+                            <td>${entry.subject || 'غير محدد'}</td>
+                            <td>${entry.level || 'غير محدد'}</td>
+                            <td><span class="${statusClass}">${statusText}</span></td>
+                        `;
+                        attendanceBody.appendChild(row);
+                    });
+                } else {
+                     attendanceBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا يوجد سجل حضور بعد.</td></tr>';
+                }
+
+                // إظهار المحتوى وإخفاء التحميل
+                loadingDiv.style.display = 'none';
+                profileContentDiv.style.display = 'block';
+
+            } catch (err) {
+                console.error('Fetch error:', err);
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        fetchStudentProfile();
+    });
+</script>
+
+</body>
+</html>
