@@ -4,18 +4,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
-const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// لم نعد نحتاج VIEW_PATH، يمكن إبقاؤه أو إزالته
-// const VIEWS_PATH = path.join(__dirname, 'views'); 
 
 // Middleware
 app.use(bodyParser.json());
 
-// --- تهيئة Firebase Admin SDK (المنطق المصحح سابقاً) ---
+// --- تهيئة Firebase Admin SDK ---
 let db;
 let studentsRef;
 let isFirebaseReady = false;
@@ -26,10 +23,10 @@ try {
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
-             // إطلاق الخطأ هنا لا يسبب التعطل بالضرورة في Serverless Function لكنه يوقف التهيئة
             throw new Error("Missing Firebase environment variables (SERVICE_ACCOUNT_KEY or FIREBASE_DATABASE_URL).");
         }
 
+        // إزالة علامات الاقتباس الخارجية وتحليل JSON
         const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
         const serviceAccount = JSON.parse(cleanJsonString);
 
@@ -87,8 +84,7 @@ const courses = {
 // وظيفة مساعدة للتحقق من جاهزية Firebase قبل تنفيذ أي عملية قاعدة بيانات
 function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
-        // نستخدم رمز 400 بدلاً من 500 في هذه الحالة
-        return res.status(400).json({ 
+        return res.status(500).json({ 
             message: 'خطأ في تهيئة الخادم. الرجاء التأكد من ضبط متغيرات بيئة Firebase (SERVICE_ACCOUNT_KEY و FIREBASE_DATABASE_URL).',
             error: 'FirebaseNotInitialized'
         });
@@ -96,10 +92,9 @@ function checkFirebaseReadiness(res) {
 }
 
 // -----------------------------------------------------
-// تم حذف المسارات التالية (app.get('/') و app.get('/profile.html'))
-// لأن Vercel سيخدم هذه الملفات كملفات ثابتة الآن.
+// ملاحظة: تم إزالة app.get('/') و app.get('/profile.html')
+// لأن ملف vercel.json سيتولى خدمة هذه الملفات الثابتة.
 // -----------------------------------------------------
-
 
 // نقطة نهاية لجلب قائمة المواد (لـ index.html)
 app.get('/courses', (req, res) => {
