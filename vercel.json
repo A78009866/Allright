@@ -9,14 +9,13 @@
   "routes": [
     { 
       "src": "/", 
-      "dest": "/views/index.html"  // توجيه الطلب للجذر إلى الملف داخل views
+      "dest": "/views/index.html"  
     },
     { 
       "src": "/profile.html", 
-      "dest": "/views/profile.html" // توجيه طلب البروفايل إلى الملف داخل views
+      "dest": "/views/profile.html" 
     },
     {
-      // توجيه جميع طلبات API إلى الدالة server.js
       "src": "/(courses|students|add-student|check-in|student-details/.*)",
       "dest": "/server.js"
     },
