@@ -1248,22 +1248,31 @@ footer{
           }
           
           for (const [id, student] of Object.entries(students)) {
-              const card = document.createElement('div');
-              card.className = 'student-card';
-              
-              const statusClass = student.isActive ? 'status-active' : 'status-inactive';
-              const statusText = student.isActive ? 'نشط' : 'غير نشط';
-              
-              card.innerHTML = `
-                  <div class="name">${student.name}</div>
-                  <div class="details">
-                      <span>ID: ${id.substring(0, 8)}...</span>
-                      <span class="status-indicator ${statusClass}">${statusText}</span>
-                  </div>
-                  <div class="subjects"><strong>المواد:</strong> ${student.subjects.join(' | ')}</div>
-              `;
-              studentCardsContainer.appendChild(card);
-          }
+            const card = document.createElement('div');
+            card.className = 'student-card';
+            // جعل البطاقة قابلة للنقر والانتقال لصفحة البروفايل
+            card.style.cursor = 'pointer'; 
+            card.addEventListener('click', () => {
+                // الانتقال إلى صفحة profile.html مع تمرير رقم ID الطالب كمعامل في الرابط
+                window.location.href = `/profile.html?id=${id}`;
+            });
+
+            const statusClass = student.isActive ? 'status-active' : 'status-inactive';
+            const statusText = student.isActive ? 'نشط' : 'غير نشط';
+            
+            // تهيئة أسماء المواد (نفترض أنها قد تكون كائنات أو نصوص)
+            const subjectNames = student.subjects.map(s => s.subject || s).join(' | ');
+
+            card.innerHTML = `
+                <div class="name">${student.name}</div>
+                <div class="details">
+                    <span>ID: ${id.substring(0, 8)}...</span>
+                    <span class="status-indicator ${statusClass}">${statusText}</span>
+                </div>
+                <div class="subjects"><strong>المواد:</strong> ${subjectNames}</div>
+            `;
+            studentCardsContainer.appendChild(card);
+        }
           
       } catch (error) {
           console.error('Error fetching student cards:', error);
