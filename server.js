@@ -6,6 +6,8 @@ const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+// 1. استخدام dotenv لقراءة متغيرات البيئة محلياً
+require('dotenv').config(); 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,16 +26,17 @@ let isFirebaseReady = false;
 
 try {
     if (!admin.apps.length) { 
-        // استخدام متغيرات البيئة مباشرةً كما يجب في بيئات الإنتاج (مثل Vercel)
+        // قراءة متغيرات البيئة
         const serviceAccountJson = process.env.SERVICE_ACCOUNT_KEY;
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
-            console.error("Missing Firebase environment variables. API calls will fail. Check SERVICE_ACCOUNT_KEY and FIREBASE_DATABASE_URL.");
+            // رسالة خطأ أكثر تحديدًا للبيئة
+            console.error("Critical: Missing Firebase environment variables. Please ensure SERVICE_ACCOUNT_KEY and FIREBASE_DATABASE_URL are set in your environment or a .env file.");
         } else {
             // معالجة سلسلة JSON وتجربة التحليل
             try {
-                // تنظيف وازالة أي علامات اقتباس محيطة
+                // تنظيف وإزالة أي علامات اقتباس محيطة قد تضيفها البيئة
                 const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
                 const serviceAccount = JSON.parse(cleanJsonString);
 
@@ -47,7 +50,7 @@ try {
                 studentsRef = db.ref('students');
                 isFirebaseReady = true;
             } catch (jsonError) {
-                 console.error("Failed to parse SERVICE_ACCOUNT_KEY JSON. Ensure it is a valid, unescaped JSON string in the environment variable.", jsonError.message);
+                 console.error("Critical: Failed to parse SERVICE_ACCOUNT_KEY JSON. Ensure it is a valid, unescaped JSON string in the environment variable.", jsonError.message);
             }
         }
     }
@@ -57,7 +60,7 @@ try {
 
 
 // =======================================================
-// بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - مفصلة وكاملة
+// بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - كاملة
 // =======================================================
 const courses = {
     "المرحلة الابتدائية": {
@@ -120,7 +123,7 @@ function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
         return res.status(500).json({ 
             // رسالة أوضح للطالب في حال فشل الخادم
-            message: 'خطأ في تهيئة الخادم. الرجاء التأكد من ضبط متغيرات بيئة Firebase (SERVICE_ACCOUNT_KEY و FIREBASE_DATABASE_URL).',
+            message: 'خطأ في تهيئة الخادم. يرجى التأكد من أن متغيرات بيئة Firebase مضبوطة بشكل صحيح في ملف .env أو إعدادات النشر.',
             error: 'FirebaseNotInitialized'
         });
     }
