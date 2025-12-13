@@ -6,7 +6,7 @@
 <title>أكاديمية المعالي</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
-  
+
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -211,27 +211,23 @@ html,body{
   line-height: 1.6;
 }
 
-/* QR Scanner Modal/Overlay */
+/* QR Scanner Modal/Overlay **الأنماط المعدلة لملء الشاشة** */
 .qr-scanner-overlay {
-    position: fixed; /* لتثبيته في موقعه بغض النظر عن التمرير */
-    top: 0;
-    left: 0;
-    width: 100%; /* تغطية كامل العرض */
-    height: 100%; /* تغطية كامل الارتفاع */
-    background-color: var(--bg); /* خلفية معتمة */
-    z-index: 1000; /* لضمان ظهوره فوق جميع العناصر */
-    display: none; /* يتم إظهاره عبر الجافاسكريبت */
-    padding: 20px; /* لإضافة بعض الهوامش الداخلية */
-    display: flex; /* لترتيب العناصر داخله */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 5000;
+    display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* بدء المحتوى من الأعلى */
+    justify-content: flex-start; /* التعديل: لبدء المحتوى من الأعلى */
+    padding: 40px 10px; /* التعديل: لزيادة التباعد */
 }
 .qr-scanner-overlay.active {
     display: flex;
 }
 .qr-scanner-overlay button {
-    margin-top: 15px;
+    margin-top: 25px; /* التعديل: لزيادة المسافة عن الماسح */
     padding: 10px 20px;
     background: #ff6347;
     color: white;
@@ -242,27 +238,32 @@ html,body{
     z-index: 5001;
 }
 #reader {
-    width: 100%; /* تأكد من أنه يملأ عرض الـ overlay */
-    max-width: 600px; /* لتقييد العرض قليلاً على الشاشات الكبيرة جدًا */
-    aspect-ratio: 1 / 1; /* للحفاظ على نسبة عرض إلى ارتفاع مربعة للكاميرا */
-    margin: 20px 0; /* لإضافة مسافة بين الرسالة وزر الإلغاء */
-}
-
-/* نمط إضافي لضمان أن عنصر الفيديو داخل #reader يملأه */
-#reader video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover; /* لضمان تغطية منطقة العرض */
+    width: 100%; /* التعديل: لملء العرض */
+    max-width: 700px; /* التعديل: لزيادة الحد الأقصى للعرض على الشاشات الكبيرة */
+    flex-grow: 1; /* التعديل: للسماح له بالتمدد عمودياً */
+    
+    border: 3px solid var(--accent-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
 }
 /* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
 #reader div { 
     border: none !important;
+    width: 100% !important; /* التعديل: لملء الحاوية الداخلية */
+    height: 100% !important; /* التعديل: لملء الحاوية الداخلية */
+}
+/* إضافة نمط لضمان أن الفيديو يملأ الـ #reader */
+#reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
 }
 
 .scan-message {
-    margin-bottom: 15px;
+    margin-bottom: 25px; /* التعديل: لزيادة المسافة */
     color: #fff;
-    font-size: 16px;
+    font-size: 18px; /* التعديل: لتكبير الخط قليلاً */
 }
 
 /* باقي الأنماط... (الطلاب، النماذج، إلخ) */
@@ -586,12 +587,13 @@ footer{
     qrScannerOverlay.classList.add('active');
     
     if (!html5QrCode) {
+        // استخدام Html5Qrcode بدون مكتبة فرعية
         html5QrCode = new Html5Qrcode("reader");
     }
 
     const config = { 
         fps: 10, 
-        qrbox: {width: 250, height: 250},
+        qrbox: {width: 250, height: 250}, // يتم تجاهل هذا بواسطة CSS الواسع
         facingMode: "environment" // استخدام الكاميرا الخلفية (للهواتف)
     };
 
@@ -936,5 +938,3 @@ footer{
 </body>
 
 </html>
-
-
