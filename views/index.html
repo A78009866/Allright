@@ -41,16 +41,16 @@ html,body{
   flex-direction:column;
 }
 
-/* --- NAVBAR --- */
+/* --- NAVBAR - Glassy Effect --- */
 .navbar{
   height: var(--nav-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 30px; /* Adjust padding after removing menu */
   margin: 16px;
   border-radius: var(--radius);
-  background: rgba(26, 26, 29, 0.85); 
+  background: rgba(26, 26, 29, 0.85); /* Dark background with transparency */
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -64,6 +64,7 @@ html,body{
   gap:14px;
   flex-shrink: 0; 
   max-width: 80%;
+  order: 2; /* Position Brand on the right (RTL) */
 }
 
 .brand img{
@@ -88,62 +89,48 @@ html,body{
   margin-top: 2px;
 }
 
-.menu-toggle{
-  background: transparent;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: background 0.2s;
-  flex-shrink: 0;
-}
-.menu-toggle:hover{
-  background: rgba(255,255,255,0.1);
-}
-.menu-toggle svg{
-  width: 30px;
-  height: 30px;
-}
-
 /* --- Navbar Buttons Group --- */
 .nav-buttons {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    order: 1; /* Position buttons on the left (RTL) */
 }
 
 .nav-buttons .btn {
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-weight: 700;
+    padding: 8px 12px; /* Smaller size */
+    border-radius: 10px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 6px;
+    font-size: 13px; 
+    min-width: 120px;
+    justify-content: center;
 }
 
+/* Glassy Gray Scan Button */
 .nav-buttons .btn-scan {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.08); /* Lighter gray/glassy */
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 .nav-buttons .btn-scan:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
+/* Glassy Accent Register Button */
 .nav-buttons .btn-register {
-    /* Glassy Effect */
-    background: rgba(59, 130, 246, 0.7); /* Accent Color */
+    background: rgba(59, 130, 246, 0.6); /* Accent Color - More transparent */
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
     backdrop-filter: blur(10px);
 }
 .nav-buttons .btn-register:hover {
@@ -152,195 +139,16 @@ html,body{
 }
 
 .nav-buttons svg {
-    width: 20px;
-    height: 20px;
+    width: 18px; 
+    height: 18px;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
 }
 
-/* --- SIDE DRAWER (Remaining for viewing all courses) --- */
-.side-drawer-overlay{
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-.side-drawer-overlay.open{
-  opacity: 1;
-  visibility: visible;
-}
-
-.side-drawer{
-  position:fixed;
-  top:0;
-  right: -100%;
-  width: 85%;
-  max-width: 380px;
-  height:100%;
-  background: var(--drawer-bg);
-  box-shadow: -5px 0 25px rgba(0,0,0,0.8);
-  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 2001;
-  display: flex;
-  flex-direction: column;
-}
-
-.side-drawer.open{
-  right: 0;
-}
-
-/* ... (Drawer styles unchanged) ... */
-.drawer-header{
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-color);
-  background: rgba(255,255,255,0.02);
-}
-.drawer-header h3{
-  margin: 0;
-  font-size: 18px;
-  color: #fff;
-  font-weight: 700;
-}
-.close-btn{
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.drawer-content{
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 40px;
-}
-
-.accordion-item {
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-
-.accordion-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  user-select: none;
-}
-.accordion-header:active {
-  background: rgba(255,255,255,0.05);
-}
-
-.accordion-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  background: rgba(0,0,0,0.2);
-}
-.accordion-item.active > .accordion-body {
-  max-height: 3000px;
-}
-
-.chevron-icon {
-  width: 18px;
-  height: 18px;
-  fill: var(--text-secondary);
-  transition: transform 0.3s ease;
-}
-.accordion-item.active > .accordion-header .chevron-icon {
-  transform: rotate(-90deg);
-  fill: #fff;
-}
-
-.level-header {
-  padding: 18px 20px;
-}
-.level-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.year-header {
-  padding: 14px 20px 14px 10px;
-  padding-right: 20px;
-  color: #e4e4e7;
-  font-size: 15px;
-  border-top: 1px solid rgba(255,255,255,0.02);
-}
-.year-header .title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.file-icon {
-  width: 18px;
-  height: 18px;
-  fill: var(--text-secondary);
-}
-.accordion-item.active > .year-header {
-  color: var(--accent-color);
-}
-.accordion-item.active > .year-header .file-icon {
-  fill: var(--accent-color);
-}
-
-.stream-item {
-  border-top: 1px solid rgba(255,255,255,0.02);
-}
-.stream-header {
-  padding: 12px 20px 12px 10px;
-  padding-right: 35px;
-  color: #d1d5db;
-  font-size: 14px;
-  background: rgba(255,255,255,0.015);
-}
-.stream-header:hover {
-  background: rgba(255,255,255,0.04);
-  color: #fff;
-}
-.stream-title {
-  font-weight: 500;
-}
-
-.subject-list {
-  display: flex;
-  flex-direction: column;
-  padding: 5px 0;
-  background: rgba(0,0,0,0.3);
-}
-.sub-btn {
-  text-align: right;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  padding: 12px 20px;
-  padding-right: 35px; 
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  display: block;
-  font-family: inherit;
-  border-right: 2px solid transparent;
-}
-
-.stream-body .sub-btn {
-  padding-right: 50px;
-}
-
-.sub-btn:hover {
-  color: #fff;
-  background: rgba(255,255,255,0.04);
-  border-right-color: var(--accent-color);
+/* --- Side Drawer (Hidden as requested) --- */
+.side-drawer-overlay, .side-drawer {
+    display: none !important;
 }
 
 /* HERO SECTION */
@@ -362,7 +170,7 @@ html,body{
   line-height: 1.6;
 }
 
-/* STUDENT CARDS SECTION */
+/* STUDENT CARDS SECTION (Unchanged) */
 .student-cards-section {
   padding: 0 16px 20px 16px;
   max-width: 1200px;
@@ -426,7 +234,7 @@ html,body{
 }
 
 
-/* MODAL STYLES */
+/* MODAL STYLES - Glassy */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -441,8 +249,8 @@ html,body{
     display: flex;
 }
 .modal-content {
-    background: var(--drawer-bg);
-    border: 1px solid var(--border-color);
+    background: rgba(21, 21, 23, 0.95); /* Darker base for glassy look */
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: var(--radius);
     padding: 30px;
     width: 90%;
@@ -453,6 +261,7 @@ html,body{
     position: relative;
     text-align: right;
     animation: fadeInScale 0.3s ease-out;
+    backdrop-filter: blur(15px); /* Stronger blur for modal */
 }
 @keyframes fadeInScale {
     from { opacity: 0; transform: scale(0.9); }
@@ -478,13 +287,13 @@ html,body{
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     background: rgba(0,0,0,0.3);
     color: var(--text-primary);
     font-size: 16px;
     font-family: inherit;
-    appearance: none; /* لإزالة السهم الافتراضي في المتصفحات */
+    appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: left 10px center;
@@ -518,20 +327,57 @@ html,body{
     margin-top: 10px;
 }
 
+.subject-checkboxes input[type="checkbox"] {
+    /* Hide default checkbox */
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
 .subject-checkboxes label {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 400;
     margin-bottom: 0;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
+    user-select: none;
 }
 .subject-checkboxes label:hover {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.subject-checkboxes label::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 4px;
+    background: transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-left: 5px; /* Adjust spacing for RTL checkmark */
+}
+.subject-checkboxes input[type="checkbox"]:checked + label {
+    border-color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.15); 
+    color: #fff;
+}
+.subject-checkboxes input[type="checkbox"]:checked + label::before {
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+    content: '✓'; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
 }
 
 .modal-content button {
@@ -625,10 +471,7 @@ footer{
   <header class="navbar">
     
     <div class="nav-buttons">
-      <button class="menu-toggle" id="menuBtn">
-        <svg viewBox="0 0 24 24" ><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      </button>
-
+      
       <button class="btn btn-scan" id="scanBtn">
         <svg viewBox="0 0 24 24"><path d="M21 12.79A9.15 9.15 0 0112.79 21c-4.47 0-8.11-3.64-8.11-8.11A9.15 9.15 0 0112 3.9c1.9 0 3.66.6 5.11 1.63L21 9v3.79zM15 15l-3-3m0 0l-3 3m3-3v8m-3-11v-3m6 0v3M9 6h6"></path></svg>
         مسح QR
@@ -648,7 +491,6 @@ footer{
         <div class="tag">للتعليم والتطوير</div>
       </div>
     </div>
-    <div style="width: 30px;"></div> 
   </header>
 
   <div class="student-cards-section">
@@ -658,25 +500,10 @@ footer{
       </div>
   </div>
   
-  <div class="side-drawer-overlay" id="drawerOverlay"></div>
-
-  <aside class="side-drawer" id="sideDrawer">
-    <div class="drawer-header">
-      <h3>المستويات التعليمية</h3>
-      <button class="close-btn" id="closeBtn">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-
-    <div class="drawer-content" id="drawerContent">
-        <p style="text-align: center; color: var(--text-secondary); padding-top: 20px;">جارٍ تحميل المستويات التعليمية...</p>
-        </div>
-  </aside> 
-
   <main class="hero">
     <div class="hero-content">
       <h1>مرحباً بك في أكاديمية المعالي</h1>
-      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل طالب جديد" لتسجيل طالب أو "مسح QR" لتسجيل الحضور.</p>
+      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل طالب جديد" لتبدأ.</p>
     </div>
   </main> 
 
@@ -742,7 +569,7 @@ footer{
           </p>
       </div>
       
-      <button onclick="alert('لم يتم دمج مكتبة قارئ QR بعد. الرجاء إدخال البيانات يدوياً في `/check-in` API إذا لزم الأمر.')">محاكاة المسح</button>
+      <button onclick="alert('لم يتم دمج مكتبة قارئ QR بعد.')">محاكاة المسح</button>
     </div>
   </div>
 
@@ -753,11 +580,6 @@ footer{
 
 <script>
   // --- DOM Elements ---
-  const menuBtn = document.getElementById('menuBtn');
-  const closeBtn = document.getElementById('closeBtn');
-  const sideDrawer = document.getElementById('sideDrawer');
-  const drawerOverlay = document.getElementById('drawerOverlay');
-  const drawerContent = document.getElementById('drawerContent');
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
   
@@ -778,25 +600,9 @@ footer{
 
   let COURSES_DATA = {}; // تخزين هيكل البيانات
   
-  // --- Drawer Toggles ---
-  function openDrawer() {
-    sideDrawer.classList.add('open');
-    drawerOverlay.classList.add('open');
-  }
-
-  function closeDrawer() {
-    sideDrawer.classList.remove('open');
-    drawerOverlay.classList.remove('open');
-  }
-
-  menuBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  drawerOverlay.addEventListener('click', closeDrawer);
-
-  // --- Registration Modal Toggles ---
+  // --- Modal Toggles ---
   openRegisterModalBtn.addEventListener('click', () => {
     openRegistrationModal();
-    // تأكد من تهيئة القوائم المنسدلة عند الفتح
     populatePhases(); 
   });
   
@@ -819,7 +625,6 @@ footer{
     subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
   }
   
-  // --- Scan Modal Toggles ---
   document.getElementById('scanBtn').addEventListener('click', () => {
     scanModal.classList.add('open');
   });
@@ -827,11 +632,6 @@ footer{
   function closeScanModal() {
     scanModal.classList.remove('open');
   }
-
-  // --- Dynamic Drawer Building Logic (Left for viewing all courses) ---
-  // (هذا الجزء يترك كما هو لعرض الهيكل الكامل في القائمة الجانبية)
-  // ... (Functions createChevronIcon, createIcon, createDrawerItem, fetchCoursesAndBuildDrawer, toggleAccordion) ...
-  // *لتقليل حجم الملف المكرر، نفترض أن هذه الدوال موجودة من النسخة السابقة وتعمل بشكل صحيح*
 
   // --- Dynamic Registration Form Logic ---
   
@@ -880,13 +680,13 @@ footer{
     
     streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
     streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+    subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
     
     if (selectedPhase && selectedYear && COURSES_DATA[selectedPhase][selectedYear]) {
         const streams = COURSES_DATA[selectedPhase][selectedYear];
         const streamNames = Object.keys(streams);
 
-        if (streamNames.length > 1 || streamNames[0] !== 'عامة') {
+        if (streamNames.length > 1 || (streamNames.length === 1 && streamNames[0] !== 'عامة')) {
             // High school level: Requires stream selection
             for (const streamName of streamNames) {
                 const option = document.createElement('option');
@@ -895,8 +695,7 @@ footer{
                 streamSelect.appendChild(option);
             }
             streamSelect.disabled = false;
-            // Subjects will be populated when stream is selected
-        } else {
+        } else if (streamNames.includes('عامة')) {
             // Primary/Middle school (General Stream): Populate subjects directly
             streamSelect.value = 'عامة';
             streamSelect.disabled = true;
@@ -915,7 +714,7 @@ footer{
         const subjects = COURSES_DATA[selectedPhase][selectedYear][selectedStream];
         populateSubjects(subjects);
     } else {
-        subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+        subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
     }
   });
 
@@ -928,14 +727,22 @@ footer{
     }
 
     subjectsArray.forEach(subject => {
-        const label = document.createElement('label');
+        const checkboxWrapper = document.createElement('div');
+        checkboxWrapper.className = 'subject-item-wrapper';
+        
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
+        checkbox.id = `sub-${subject.replace(/\s/g, '-')}`;
         checkbox.name = 'subject';
         checkbox.value = subject;
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(subject));
-        subjectCheckboxes.appendChild(label);
+        
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = subject;
+
+        checkboxWrapper.appendChild(checkbox);
+        checkboxWrapper.appendChild(label);
+        subjectCheckboxes.appendChild(checkboxWrapper);
     });
   }
 
@@ -946,7 +753,7 @@ footer{
     const lastName = document.getElementById('studentLastName').value.trim();
     const phase = phaseSelect.value;
     const year = yearSelect.value;
-    const stream = streamSelect.value === 'عامة' ? 'عامة' : streamSelect.value;
+    const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
     const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject"]:checked'))
                                 .map(checkbox => checkbox.value);
@@ -959,6 +766,7 @@ footer{
     // إخفاء النموذج وعرض رسالة التحميل
     registrationForm.style.display = 'none';
     resultMessage.textContent = 'جارٍ تسجيل الطالب...';
+    resultMessage.style.color = '#fff';
     modalResult.style.display = 'block';
     qrCodeImage.style.display = 'none';
 
@@ -982,10 +790,12 @@ footer{
 
         if (response.ok) {
             resultMessage.textContent = `تم تسجيل الطالب ${name} ${lastName} بنجاح!`;
+            resultMessage.style.color = '#43cf66';
             qrCodeImage.src = result.qrCodeUrl;
             qrCodeImage.style.display = 'block';
             fetchStudentCards(); // تحديث قائمة الطلاب
         } else {
+            // عرض رسالة الخطأ الواضحة من الخادم
             resultMessage.textContent = `فشل التسجيل: ${result.message}`;
             resultMessage.style.color = '#ff6347';
         }
@@ -1022,12 +832,15 @@ footer{
               const statusText = student.isActive ? 'نشط' : 'غير نشط';
               
               // عرض المرحلة والسنة والشعبة في البطاقة
-              const detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'} | ${student.stream && student.stream !== 'عامة' ? student.stream : ''}`;
+              let detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'}`;
+              if (student.stream && student.stream !== 'عامة') {
+                  detailsText += ` | ${student.stream}`;
+              }
 
               card.innerHTML = `
                   <div class="name">${student.name}</div>
                   <div class="details">
-                      <span>${detailsText.trim().replace(/\|/g, '').replace(/\s+/g, ' | ').trim()}</span>
+                      <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
                       <span class="status-indicator ${statusClass}">${statusText}</span>
                   </div>
                   <div class="subjects"><strong>المواد:</strong> ${student.subjects.join(' | ')}</div>
@@ -1052,15 +865,9 @@ footer{
         const response = await fetch('/courses');
         COURSES_DATA = await response.json();
         
-        // Build the non-essential side drawer (kept for viewing full structure)
-        // Note: You need to ensure the helper functions (createChevronIcon, etc.) are available or included here.
-        // For brevity in the final response, we assume they are included in the full index.html file.
-        // fetchCoursesAndBuildDrawer(); // Calling the function that builds the left menu
-
         fetchStudentCards();
     } catch (error) {
         console.error('Initial load failed:', error);
-        // Handle error globally if needed
     }
   }
 
