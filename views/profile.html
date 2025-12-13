@@ -3,23 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title id="pageTitle">ملف الطالب - أكاديمية المعالي</title>
+<title>أكاديمية المعالي | ملف الطالب</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* --- STYLES COPIED FROM INDEX.HTML FOR profile.html --- */
+/* CSS styles */
 :root{
   --bg: #0b0b0c;
-  --drawer-bg: #151517;
+  --card-bg: #151517;
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
   --accent-color: #3b82f6; 
-  --nav-height: 72px;
+  --danger-color: #ef4444;
+  --success-color: #43cf66;
   --radius: 12px;
 }
+
 *{box-sizing:border-box;}
+
 html,body{
   height:100%;
   margin:0;
@@ -32,519 +35,504 @@ html,body{
   -webkit-font-smoothing:antialiased;
   direction: rtl;
 }
-.page{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
+
+.container{
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px 40px;
 }
-.navbar{
-  height: var(--nav-height);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  margin: 16px;
-  border-radius: var(--radius);
-  background: rgba(26, 26, 29, 0.85); 
-  backdrop-filter: blur(12px);
+
+/* Glassy Card Style */
+.card{
+  background: rgba(21, 21, 23, 0.95); 
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  position: relative;
-  z-index: 1000;
+  border-radius: var(--radius);
+  padding: 30px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex-shrink: 0; 
-  max-width: 80%;
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
 }
-.brand img{
-  width:48px;
-  height:48px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.1);
+.header h1{
+  font-size: 26px;
+  color: var(--accent-color);
+  margin: 0;
 }
-.brand .title .name{
-  font-weight: 800;
-  font-size: 18px;
+.back-btn{
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  line-height: 1.2;
-}
-.brand .title .tag{
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-weight: 400;
-  margin-top: 2px;
-}
-/* زر العودة الرمادي والمرن (محدّث ليتطابق مع index.html) */
-.back-btn {
-    background: rgba(161, 161, 170, 0.15); /* Gray/Glassy background */
-    border: 1px solid rgba(161, 161, 170, 0.1);
-    color: var(--text-secondary);
-    padding: 8px 12px; /* Small padding */
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px; /* Small font size */
-    font-weight: 500;
-    transition: background 0.2s, color 0.2s, transform 0.1s;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px; 
-    flex-shrink: 0;
-}
-.back-btn:hover {
-    background: rgba(161, 161, 170, 0.25);
-    color: var(--text-primary);
-}
-.back-btn:active {
-    transform: scale(0.98);
-}
-.back-btn svg {
-    width: 16px; /* تصغير حجم الأيقونة */
-    height: 16px;
-    margin-top: -2px;
-}
-
-/* --- PROFILE SPECIFIC STYLES --- */
-.profile-container {
-    padding: 20px;
-    max-width: 1000px;
-    margin: 20px auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
-@media (min-width: 768px) {
-    .profile-container {
-        grid-template-columns: 3fr 1fr; 
-    }
-    .main-content {
-        grid-column: 1 / 2;
-    }
-    .qr-side {
-        grid-column: 2 / 3;
-    }
-}
-
-.profile-header {
-    background: var(--drawer-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 25px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-}
-.profile-header h1 {
-    font-size: 2.2rem;
-    color: var(--accent-color);
-    margin: 0;
-    line-height: 1.2;
-}
-.profile-header p {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin: 0;
-}
-.profile-status {
-  padding: 6px 12px;
+  padding: 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
   font-size: 14px;
-  font-weight: 700;
-  display: inline-block;
-  margin-top: 5px;
 }
-.status-active {
-  background: rgba(67, 207, 102, 0.2);
-  color: #43cf66;
-}
-.status-inactive, .status-expired {
-  background: rgba(255, 99, 71, 0.2);
-  color: #ff6347;
+.back-btn:hover{
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.profile-section {
-    background: var(--drawer-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-.profile-section h2 {
-    font-size: 1.4rem;
+/* Student Info Section */
+.student-info h2, .section-header h2{
+    font-size: 20px;
     color: #fff;
-    border-bottom: 2px solid var(--accent-color);
-    padding-bottom: 10px;
+    border-right: 4px solid var(--accent-color);
+    padding-right: 10px;
     margin-top: 0;
     margin-bottom: 20px;
 }
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-.info-item {
-    padding: 10px 0;
-    border-right: 3px solid rgba(255,255,255,0.1);
-    padding-right: 15px;
-}
-.info-item .label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 3px;
-}
-.info-item .value {
-    font-size: 16px;
-    font-weight: 500;
-    color: #fff;
-}
-.subjects-list {
+
+.detail-row{
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border-color);
 }
-.subject-card {
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    padding: 15px;
-    border-radius: 8px;
+.detail-row:last-child{
+    border-bottom: none;
 }
-.subject-card h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.1rem;
-    color: var(--accent-color);
-}
-.session-info {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-    display: block;
-}
-.session-info strong {
-    color: #fff;
-    font-weight: 700;
-}
-
-/* Attendance table styles */
-.attendance-table-container {
-    overflow-x: auto;
-}
-.attendance-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 14px;
-}
-.attendance-table th, .attendance-table td {
-    padding: 12px 15px;
-    text-align: right;
-    border-bottom: 1px solid var(--border-color);
-}
-.attendance-table th {
-    background: rgba(255,255,255,0.05);
-    color: #fff;
-    font-weight: 700;
-    white-space: nowrap;
-}
-.attendance-table td {
+.detail-row strong{
     color: #e4e4e7;
-    white-space: nowrap;
+    font-weight: 500;
 }
-.attendance-table tr:hover td {
-    background: rgba(255,255,255,0.02);
-}
-.attendance-table .status-present {
-    color: #43cf66;
-    font-weight: 600;
-    position: relative;
-}
-.attendance-table .status-present::after {
-    content: '✓';
-    margin-right: 5px;
-}
-.attendance-table .status-absent {
-    color: #ff6347;
-    font-weight: 600;
-    position: relative;
-}
-.attendance-table .status-absent::after {
-    content: '✗';
-    margin-right: 5px;
-}
-.attendance-table .status-marked {
-    text-decoration: line-through;
+.detail-row span{
     color: var(--text-secondary);
 }
-
-/* QR Code Display */
-.qr-side {
-    padding-top: 20px;
+.status-active {
+    color: var(--success-color);
+    font-weight: 700;
 }
-.qr-box {
-    background: var(--drawer-bg);
+.status-inactive {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+/* Subject Management Section */
+.subject-list-management {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+.subject-list-management .subject-card {
+    padding: 15px;
+    margin-bottom: 0 !important; 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+    border: none;
+}
+.mark-attended-btn {
+    background: var(--accent-color);
+    color: #fff;
+}
+.mark-attended-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+.undo-attended-btn {
+    background: var(--danger-color);
+    color: #fff;
+}
+.undo-attended-btn:hover:not(:disabled) {
+    background: #c30000;
+}
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Progress Bar */
+.progress-bar {
+    height: 8px; 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 4px; 
+    margin-bottom: 15px;
+}
+.progress-bar-fill {
+    height: 100%; 
+    background: var(--accent-color);
+    border-radius: 4px; 
+    transition: width 0.5s;
+}
+
+/* QR Code Section */
+.qr-section{
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    position: sticky; 
-    top: 20px;
 }
-.qr-box img {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    border-radius: 8px;
-    padding: 10px;
+.qr-section img{
+    width: 150px;
+    height: 150px;
+    border: 5px solid #fff;
+    border-radius: 10px;
+    margin-top: 15px;
     background: #fff;
-    margin: 15px auto;
-    display: block;
 }
-.qr-box p {
-    font-size: 14px;
+.qr-section p{
     color: var(--text-secondary);
+    font-size: 14px;
 }
 
+/* Attendance Table */
+.attendance-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: right;
+    font-size: 14px;
+}
+.attendance-table th, .attendance-table td{
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.attendance-table th{
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-color);
+    font-weight: 600;
+}
+.attendance-table tbody tr:hover{
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.delete-btn{
+    background: var(--danger-color);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.delete-btn:hover{
+    background: #c30000;
+}
+
+.no-records {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+}
 </style>
 </head>
 <body>
 
-<div class="page">
-    <header class="navbar">
-        <a href="/" class="back-btn">
-             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            العودة للرئيسية
-        </a>
+<div class="container">
+    <div class="header">
+        <h1>ملف الطالب</h1>
+        <a href="/" class="back-btn">العودة للرئيسية</a>
+    </div>
 
-        <div class="brand">
-            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">
-            <div class="title">
-                <div class="name">أكاديمية المعالي</div>
-                <div class="tag">ملف الطالب</div>
-            </div>
+    <div class="card student-info">
+        <h2 id="studentNameHeader">جاري التحميل...</h2>
+        
+        <div class="detail-row">
+            <strong>الرقم التعريفي:</strong>
+            <span id="studentIdDisplay">...</span>
         </div>
-        <div style="width: 80px;"></div> 
-    </header>
-
-    <main class="profile-container">
-        <div id="loading" style="text-align: center; color: var(--text-secondary); padding: 50px; grid-column: 1 / -1;">
-            جارٍ تحميل بيانات الطالب...
+        <div class="detail-row">
+            <strong>حالة التسجيل:</strong>
+            <span id="registrationStatus">...</span>
         </div>
         
-        <div id="profileContent" style="display: none;">
-            <div class="main-content">
-                <div class="profile-header">
-                    <h1 id="studentName"></h1>
-                    <p>الرقم التعريفي: <span id="studentId"></span></p>
-                    <p>حالة التسجيل: <span id="studentStatus" class="profile-status"></span></p>
-                </div>
-    
-                <div class="profile-section">
-                    <h2>المعلومات الأكاديمية</h2>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="label">المستوى التعليمي (أعلى مستوى)</span>
-                            <span class="value" id="studentLevel"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="label">السنة الدراسية (أعلى سنة)</span>
-                            <span class="value" id="studentYear"></span>
-                        </div>
-                        <div class="info-item" id="streamContainer" style="display:none;">
-                            <span class="label">الشعبة/الجذع (أعلى شعبة)</span>
-                            <span class="value" id="studentStream"></span>
-                        </div>
-                    </div>
-                </div>
+        <h2 style="margin-top: 30px;">المعلومات الأكاديمية</h2>
 
-                 <div class="profile-section">
-                    <h2>المواد المسجل بها وعدد الحصص</h2>
-                    <div class="subjects-list" id="studentSubjects">
-                        <p style="color: var(--text-secondary);">جارٍ تحميل المواد...</p>
-                    </div>
-                </div>
-    
-                <div class="profile-section">
-                    <h2>سجل الحضور</h2>
-                    <div class="attendance-table-container">
-                        <table class="attendance-table">
-                            <thead>
-                                <tr>
-                                    <th>التاريخ والوقت</th>
-                                    <th>المادة</th>
-                                    <th>المستوى</th>
-                                    <th>الحالة</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attendanceBody">
-                                <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل سجل الحضور...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="qr-side">
-                <div class="qr-box">
-                    <h2>رمز دخول الطالب</h2>
-                    <img id="qrCodeImage" src="" alt="QR Code">
-                    <p>استخدم هذا الرمز للتسجيل في كل حصة.</p>
-                </div>
-            </div>
-
+        <div class="detail-row">
+            <strong>المرحلة التعليمية:</strong>
+            <span id="studentPhase">غير محدد</span>
         </div>
+        <div class="detail-row">
+            <strong>السنة الدراسية:</strong>
+            <span id="studentYear">غير محدد</span>
+        </div>
+        <div class="detail-row">
+            <strong>الشعبة/التخصص:</strong>
+            <span id="studentStream">غير محدد</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>المواد المسجل بها وعدد الحصص</h2>
+        <div id="subjectManagementContainer" class="subject-list-management">
+            <span style="color: var(--text-secondary);">جاري تحميل المواد...</span>
+        </div>
+    </div>
+    
+    <div class="card qr-section">
+        <h2>رمز دخول الطالب</h2>
+        <p>استخدم هذا الرمز لتسجيل الحضور في كل حصة.</p>
+        <img id="qrCodeImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="رمز QR للطالب">
+    </div>
+
+    <div class="card attendance-log-card">
+        <h2>سجل الحضور (Check-in/Check-out)</h2>
         
-        <div id="error" style="text-align: center; color: #ff6347; padding: 50px; display: none; grid-column: 1 / -1;">
-            فشل في تحميل بيانات الطالب. تأكد من صحة الرقم التعريفي.
-        </div>
-    </main>
-
-    <footer>
-        <p>© 2025 أكاديمية المعالي. جميع الحقوق محفوظة.</p>
-    </footer>
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>التاريخ والوقت</th>
+                    <th>المرحلة</th>
+                    <th>السنة/الشعبة</th>
+                    <th>الإجراء</th>
+                    <th>إدارة</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceRecordsBody">
+                <tr><td colspan="5" class="no-records">جاري تحميل سجل الحضور...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const studentId = urlParams.get('id');
+    // الحصول على رقم الطالب من الـ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const studentId = urlParams.get('id');
 
-        const loadingDiv = document.getElementById('loading');
-        const profileContentDiv = document.getElementById('profileContent');
-        const errorDiv = document.getElementById('error');
-        const pageTitle = document.getElementById('pageTitle');
+    if (!studentId) {
+        document.querySelector('.container').innerHTML = '<h1 style="text-align:center; color:#ef4444; margin-top:50px;">خطأ: لم يتم تحديد رقم الطالب في الرابط.</h1>';
+    } else {
+        fetchStudentDetails(studentId);
+        fetchQRCode(studentId);
+    }
+    
+    // دالة جلب بيانات الطالب
+    async function fetchStudentDetails(id) {
+        try {
+            const response = await fetch(`/student-details/${id}`);
+            if (!response.ok) {
+                const error = await response.json();
+                document.getElementById('studentNameHeader').textContent = 'خطأ في جلب البيانات';
+                alert(error.message);
+                return;
+            }
 
+            const data = await response.json();
+            const student = data.student;
+            const attendance = data.attendance;
+            
+            // تحديث بيانات الطالب
+            document.getElementById('studentNameHeader').textContent = `${student.name || 'طالب غير معروف'}`;
+            document.getElementById('studentIdDisplay').textContent = student.id;
+            document.getElementById('registrationStatus').innerHTML = student.isActive 
+                ? `<span class="status-active">نشط (مفعل)</span>` 
+                : `<span class="status-inactive">غير نشط</span>`;
+            
+            document.getElementById('studentPhase').textContent = student.phase || 'غير محدد';
+            document.getElementById('studentYear').textContent = student.year || 'غير محدد';
+            document.getElementById('studentStream').textContent = student.stream === 'عامة' 
+                ? 'عامة' : student.stream || 'غير محدد';
+            
+            // عرض وإدارة المواد
+            renderSubjectManagement(id, student.subjects);
 
-        if (!studentId) {
-            loadingDiv.style.display = 'none';
-            errorDiv.textContent = 'لم يتم تحديد رقم تعريفي للطالب.';
-            errorDiv.style.display = 'block';
+            // عرض سجل الحضور
+            renderAttendanceLog(id, attendance);
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('studentNameHeader').textContent = 'خطأ في الاتصال بالخادم';
+        }
+    }
+
+    // دالة جلب رمز QR
+    async function fetchQRCode(id) {
+        try {
+            const response = await fetch(`/qr-code/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('qrCodeImage').src = data.qrCodeUrl;
+            } else {
+                document.getElementById('qrCodeImage').alt = 'فشل توليد رمز QR';
+            }
+        } catch (error) {
+            console.error('QR Code error:', error);
+        }
+    }
+    
+    // دالة عرض وإدارة المواد والحصص (الميزة الجديدة)
+    function renderSubjectManagement(studentId, subjects) {
+        const container = document.getElementById('subjectManagementContainer');
+        container.innerHTML = '';
+        
+        if (!subjects || subjects.length === 0) {
+            container.innerHTML = '<p class="no-records">لم يتم تسجيل أي مواد للطالب.</p>';
             return;
         }
 
-        async function fetchStudentProfile() {
-            try {
-                // جلب البيانات من API المحدثة
-                const response = await fetch(`/student-details/${studentId}`); 
+        subjects.forEach(subject => {
+            const progress = subject.totalSessions > 0 ? subject.completedSessions / subject.totalSessions : 0;
+            const progressPercent = (progress * 100).toFixed(0);
+            const isCompleted = subject.completedSessions >= subject.totalSessions;
+            
+            const subjectDiv = document.createElement('div');
+            subjectDiv.className = 'subject-card card';
+            subjectDiv.id = `subject-${subject.name.replace(/\s/g, '-')}`;
+            
+            subjectDiv.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <strong style="font-size: 16px; color: #fff;">${subject.name}</strong>
+                    <span style="font-size: 14px; color: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'}; font-weight:700;">
+                        الحصص المكتملة: ${subject.completedSessions} من ${subject.totalSessions}
+                    </span>
+                </div>
                 
-                if (!response.ok) {
-                    throw new Error('Student not found or server error');
-                }
-
-                const data = await response.json();
-                const student = data.student;
-                const attendance = data.attendance;
-                const attendanceCounts = data.attendanceCounts || {}; // عدد الحضور لكل مادة
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: ${progressPercent}%; background: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'};"></div>
+                </div>
                 
-                pageTitle.textContent = `${student.name} - ملف الطالب`;
+                <div style="display: flex; gap: 10px; justify-content: flex-start;">
+                    <button class="action-btn mark-attended-btn" data-subject="${subject.name}" 
+                        ${isCompleted ? 'disabled' : ''}>
+                        تسجيل حصة مكتملة
+                    </button>
+                    <button class="action-btn undo-attended-btn" data-subject="${subject.name}" 
+                        ${subject.completedSessions === 0 ? 'disabled' : ''}>
+                        شطب/تراجع عن حصة
+                    </button>
+                </div>
+            `;
+            container.appendChild(subjectDiv);
+        });
+        
+        // ربط أزرار الإجراءات بالدوال
+        container.querySelectorAll('.mark-attended-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const subjectName = button.getAttribute('data-subject');
+                updateSessionCount(studentId, subjectName, 'add');
+            });
+        });
 
-                // 1. عرض المعلومات الأساسية
-                document.getElementById('studentName').textContent = student.name;
-                document.getElementById('studentId').textContent = studentId;
+        container.querySelectorAll('.undo-attended-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const subjectName = button.getAttribute('data-subject');
+                updateSessionCount(studentId, subjectName, 'subtract');
+            });
+        });
+    }
 
-                const statusSpan = document.getElementById('studentStatus');
-                const isActive = student.isActive === true || student.isActive === 'true';
-                statusSpan.textContent = isActive ? 'نشط (مفعل)' : 'منتهي الصلاحية/غير نشط';
-                statusSpan.className = isActive ? 'profile-status status-active' : 'profile-status status-inactive status-expired';
+    // دالة الإدارة لتسجيل/شطب الحصص
+    async function updateSessionCount(studentId, subjectName, action) {
+        if (!confirm(`هل أنت متأكد من ${action === 'add' ? 'تسجيل حصة مكتملة' : 'التراجع عن حصة'} لمادة ${subjectName}؟`)) {
+            return;
+        }
+        
+        const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subjectName: subjectName })
+            });
 
-                // عرض QR Code
-                document.getElementById('qrCodeImage').src = data.qrCode;
+            const result = await response.json();
 
-                // 2. عرض المعلومات الأكاديمية (نستخدم معلومات أول مادة مسجلة لتمثيل المستوى الرئيسي للطالب)
-                const mainSubject = student.subjects[0]; 
-
-                document.getElementById('studentLevel').textContent = mainSubject?.level || 'غير محدد';
-                document.getElementById('studentYear').textContent = mainSubject?.year || 'غير محدد';
-                
-                const streamContainer = document.getElementById('streamContainer');
-                const studentStream = mainSubject?.stream;
-                if (studentStream) {
-                    document.getElementById('studentStream').textContent = studentStream;
-                    streamContainer.style.display = 'block';
-                } else {
-                    streamContainer.style.display = 'none';
-                }
-
-                // 3. عرض المواد المسجل بها وعدد الحصص
-                const subjectsListDiv = document.getElementById('studentSubjects');
-                subjectsListDiv.innerHTML = '';
-                
-                if (student.subjects && student.subjects.length > 0) {
-                    student.subjects.forEach(sub => {
-                        const card = document.createElement('div');
-                        card.className = 'subject-card';
-
-                        // المفتاح المستخدم لحساب الحضور
-                        const key = `${sub.subject}-${sub.level}-${sub.stream || ''}`;
-                        const attended = attendanceCounts[key] || 0;
-                        const total = sub.sessionsCount;
-
-                        card.innerHTML = `
-                            <h3>${sub.subject} ${sub.stream ? ' (' + sub.stream + ')' : ''}</h3>
-                            <span class="session-info">
-                                المستوى: <strong>${sub.level}</strong> | 
-                                الحصص المكتملة: <strong>${attended}</strong> من <strong>${total}</strong>
-                            </span>
-                            ${attended >= total ? '<p style="color: #ff6347; font-weight: 700; margin: 0;">(تم إكمال جميع الحصص - انتهت صلاحية المادة)</p>' : ''}
-                        `;
-                        subjectsListDiv.appendChild(card);
-                    });
-                } else {
-                     subjectsListDiv.innerHTML = '<p style="color: var(--text-secondary);">لم يتم تسجيل الطالب في أي مادة.</p>';
-                }
-
-                // 4. عرض سجل الحضور
-                const attendanceBody = document.getElementById('attendanceBody');
-                attendanceBody.innerHTML = '';
-                
-                const attendanceEntries = Object.entries(attendance || {}).map(([timestamp, entry]) => ({
-                    ...entry,
-                    timestamp: timestamp
-                })).sort((a, b) => b.timestamp - a.timestamp); // ترتيب تنازلي حسب التاريخ (الأحدث أولاً)
-
-                if (attendanceEntries.length > 0) {
-                    attendanceEntries.forEach(entry => {
-                        const row = document.createElement('tr');
-                        const date = new Date(parseInt(entry.timestamp)).toLocaleString('ar-EG', {
-                             year: 'numeric', month: 'short', day: 'numeric',
-                             hour: '2-digit', minute: '2-digit', hour12: true
-                        });
-                        
-                        // يمكن إضافة منطق لشطب الحصة في المستقبل
-                        const statusClass = entry.status === 'present' ? 'status-present' : 'status-absent';
-                        const statusText = entry.status === 'present' ? 'حاضر' : 'غائب';
-
-                        row.innerHTML = `
-                            <td>${date}</td>
-                            <td>${entry.subject || 'غير محدد'}</td>
-                            <td>${entry.level || 'غير محدد'}</td>
-                            <td><span class="${statusClass}">${statusText}</span></td>
-                        `;
-                        attendanceBody.appendChild(row);
-                    });
-                } else {
-                     attendanceBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا يوجد سجل حضور بعد.</td></tr>';
-                }
-
-                // إظهار المحتوى وإخفاء التحميل
-                loadingDiv.style.display = 'none';
-                profileContentDiv.style.display = 'grid'; // عرض المحتوى كـ grid
-
-            } catch (err) {
-                console.error('Fetch error:', err);
-                loadingDiv.style.display = 'none';
-                errorDiv.style.display = 'block';
+            if (response.ok) {
+                alert(result.message);
+                // إعادة جلب البيانات لتحديث العرض
+                fetchStudentDetails(studentId); 
+            } else {
+                alert(`فشل الإجراء: ${result.message}`);
             }
+
+        } catch (error) {
+            alert('خطأ في الاتصال بالخادم.');
+        }
+    }
+
+
+    // دالة عرض سجل الحضور (Check-in/Check-out)
+    function renderAttendanceLog(studentId, attendance) {
+        const tbody = document.getElementById('attendanceRecordsBody');
+        tbody.innerHTML = '';
+        
+        const records = Object.entries(attendance).map(([id, record]) => ({
+            id: id,
+            ...record
+        }));
+        
+        // فرز السجلات حسب التاريخ تنازلياً
+        records.sort((a, b) => b.timestamp - a.timestamp);
+
+        if (records.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="no-records">لا يوجد سجل حضور بعد.</td></tr>`;
+            return;
         }
 
-        fetchStudentProfile();
-    });
-</script>
+        records.forEach(record => {
+            const date = new Date(record.timestamp).toLocaleString('ar-EG', {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+            
+            const row = document.createElement('tr');
+            row.id = `attendance-row-${record.id}`;
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${record.phase || 'N/A'}</td>
+                <td>${record.year} - ${record.stream === 'عامة' ? '' : record.stream || 'N/A'}</td>
+                <td>${record.action || 'حضور'}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteAttendanceRecord('${studentId}', '${record.id}')">حذف</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
 
+    // دالة حذف سجل الحضور (Check-in/Check-out)
+    async function deleteAttendanceRecord(studentId, attendanceId) {
+        if (!confirm('هل أنت متأكد من حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/attendance/${studentId}/${attendanceId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                const row = document.getElementById(`attendance-row-${attendanceId}`);
+                if (row) {
+                    row.remove();
+                    alert('تم حذف السجل بنجاح.');
+                    // لا نحتاج لإعادة جلب كل شيء هنا، فقط حذف الصف كافٍ
+                }
+            } else {
+                const error = await response.json();
+                alert(`فشل الحذف: ${error.message}`);
+            }
+        } catch (error) {
+            alert('خطأ في الاتصال بالخادم عند محاولة الحذف.');
+        }
+    }
+
+</script>
 </body>
 </html>
