@@ -5,11 +5,11 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid'); // تضمين UUID لإنشاء معرفات فريدة
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const VIEWS_PATH = path.join(__dirname, 'views'); // تحديد مسار مجلد views
+const VIEWS_PATH = path.join(__dirname, 'views'); 
 
 // Middleware
 app.use(bodyParser.json());
@@ -49,43 +49,47 @@ try {
     console.error("Failed to initialize Firebase Admin SDK (CRITICAL):", error.message);
 }
 
-// بيانات المواد الشاملة (لجميع المراحل والسنوات والشعب) - مكتوبة بالكامل
+// =======================================================
+// بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - مكتوبة بالكامل
+// =======================================================
 const courses = {
-    "المرحلة الثانوية": [
-        { subject: "الرياضيات المتقدمة", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
-        { subject: "الفيزياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
-        { subject: "الكيمياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
-        { subject: "الأحياء", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة العلمية" },
-        
-        { subject: "اللغة العربية", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
-        { subject: "التاريخ", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
-        { subject: "الجغرافيا", level: "ثانوي", year: "السنة الأولى", stream: "الشعبة الأدبية" },
-        
-        { subject: "اللغة الإنجليزية", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
-        { subject: "الحاسوب وتكنولوجيا المعلومات", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
-        { subject: "الرياضيات التحليلية", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة العلمية" },
-        
-        { subject: "الفلسفة والمنطق", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة الأدبية" },
-        { subject: "الاقتصاد", level: "ثانوي", year: "السنة الثانية", stream: "الشعبة الأدبية" },
-        
-        { subject: "الرياضيات العليا والتفاضل", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة العلمية" },
-        { subject: "الفيزياء الحديثة", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة العلمية" },
-        { subject: "علم الاجتماع والنفس", level: "ثانوي", year: "السنة الثالثة", stream: "الشعبة الأدبية" }
-    ],
-    "المرحلة الإعدادية": [
-        { subject: "العلوم العامة", level: "إعدادي", year: "السنة الأولى", stream: "عامة" },
-        { subject: "الرياضيات الأساسية", level: "إعدادي", year: "السنة الأولى", stream: "عامة" },
-        { subject: "اللغة العربية والقواعد", level: "إعدادي", year: "السنة الثانية", stream: "عامة" },
-        { subject: "اللغة الفرنسية", level: "إعدادي", year: "السنة الثانية", stream: "عامة" },
-        { subject: "الفيزياء والكيمياء", level: "إعدادي", year: "السنة الثالثة", stream: "عامة" },
-        { subject: "التاريخ والجغرافيا", level: "إعدادي", year: "السنة الثالثة", stream: "عامة" }
-    ],
     "المرحلة الابتدائية": [
-        { subject: "القراءة والكتابة والخط", level: "ابتدائي", year: "السنة الأولى", stream: "عامة" },
-        { subject: "الحساب والأرقام", level: "ابتدائي", year: "السنة الثانية", stream: "عامة" },
-        { subject: "التربية الإسلامية", level: "ابتدائي", year: "السنة الثالثة", stream: "عامة" }
+        { subject: "التعليم الأساسي", level: "ابتدائية", year: "السنة الأولى ابتدائي", stream: "عامة" },
+        { subject: "التعليم الأساسي", level: "ابتدائية", year: "السنة الثانية ابتدائي", stream: "عامة" },
+        { subject: "التعليم الأساسي", level: "ابتدائية", year: "السنة الثالثة ابتدائي", stream: "عامة" },
+        { subject: "التعليم الأساسي", level: "ابتدائية", year: "السنة الرابعة ابتدائي", stream: "عامة" },
+        { subject: "التعليم الأساسي", level: "ابتدائية", year: "السنة الخامسة ابتدائي", stream: "عامة" }
+    ],
+    "المرحلة المتوسطة": [
+        { subject: "التعليم العام", level: "متوسطة", year: "السنة الأولى متوسط", stream: "عامة" },
+        { subject: "التعليم العام", level: "متوسطة", year: "السنة الثانية متوسط", stream: "عامة" },
+        { subject: "التعليم العام", level: "متوسطة", year: "السنة الثالثة متوسط", stream: "عامة" },
+        { subject: "التعليم العام", level: "متوسطة", year: "السنة الرابعة متوسط", stream: "عامة" }
+    ],
+    "المرحلة الثانوية": [
+        // السنة الأولى ثانوي (الجذع المشترك)
+        { subject: "جذع مشترك", level: "ثانوية", year: "السنة الأولى ثانوي", stream: "جذع مشترك علوم وتكنولوجيا" },
+        { subject: "جذع مشترك", level: "ثانوية", year: "السنة الأولى ثانوي", stream: "جذع مشترك آداب" },
+
+        // السنة الثانية ثانوي (التخصصات المتاحة)
+        { subject: "تخصص علمي", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة علوم تجريبية" },
+        { subject: "تخصص علمي", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة رياضيات" },
+        { subject: "تخصص علمي", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة تقني رياضي" },
+        { subject: "تخصص إداري", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة تسيير واقتصاد" },
+        { subject: "تخصص أدبي", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة آداب وفلسفة" },
+        { subject: "تخصص لغات", level: "ثانوية", year: "السنة الثانية ثانوي", stream: "شعبة لغات أجنبية" },
+        
+        // السنة الثالثة ثانوي (البكالوريا - التخصصات المتاحة)
+        { subject: "بكالوريا علمي", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة علوم تجريبية" },
+        { subject: "بكالوريا علمي", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة رياضيات" },
+        { subject: "بكالوريا علمي", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة تقني رياضي" },
+        { subject: "بكالوريا إداري", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة تسيير واقتصاد" },
+        { subject: "بكالوريا أدبي", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة آداب وفلسفة" },
+        { subject: "بكالوريا لغات", level: "ثانوية", year: "السنة الثالثة ثانوي", stream: "شعبة لغات أجنبية" }
     ]
 };
+// =======================================================
+
 
 // وظيفة مساعدة للتحقق من جاهزية Firebase
 function checkFirebaseReadiness(res) {
@@ -118,31 +122,36 @@ app.get('/courses', (req, res) => {
 
 
 // 2. نقطة نهاية تسجيل طالب جديد
+// تم تحديثها لاستقبال البيانات التفصيلية (على افتراض أن الواجهة الأمامية سترسل المرحلة والسنة والشعبة)
 app.post('/register', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
-    const studentId = uuidv4(); // استخدام uuidv4 لتوليد ID
-    const { name, subjects } = req.body;
+    const studentId = uuidv4(); 
+    // يفترض أن الواجهة الأمامية سترسل كائنًا يحتوي على التفاصيل الكاملة
+    const { name, phase, year, stream, subjects } = req.body; 
 
-    if (!name || !subjects || subjects.length === 0) {
-        return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمواد المختارة.' });
+    if (!name || !phase || !year || !stream || !subjects || subjects.length === 0) {
+        return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمرحلة والسنة والشعبة والمواد المختارة.' });
     }
 
     try {
         const studentData = {
             id: studentId,
             name: name,
-            subjects: subjects, // يفترض أن subjects هي مصفوفة من أسماء المواد
+            phase: phase,      // مثال: "المرحلة الثانوية"
+            year: year,        // مثال: "السنة الثالثة ثانوي"
+            stream: stream,    // مثال: "شعبة علوم تجريبية"
+            subjects: subjects, 
             isActive: true, 
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
-        await studentsRef.child(studentId).set(studentData); // استخدام studentId المولد
+        await studentsRef.child(studentId).set(studentData); 
 
         // إنشاء سجل حضور فارغ
         await db.ref(`attendance/${studentId}`).set({}); 
 
-        const qrData = `/profile.html?id=${studentId}`; // تغيير المسار ليتناسب مع ملفك
+        const qrData = `/profile.html?id=${studentId}`; 
         const qrCodeUrl = await QRCode.toDataURL(qrData);
 
         res.status(201).json({
@@ -172,13 +181,12 @@ app.get('/students', async (req, res) => {
     }
 });
 
-// 4. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code) - تم تعديلها لتكون أكثر مرونة
+// 4. نقطة نهاية فحص وتحديث حالة الطالب (مسح QR code) 
 app.post('/check-in', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
     const { qrData } = req.body;
     
-    // استخراج studentId من بيانات QR (إذا كانت على شكل /profile.html?id=...)
     const studentIdMatch = qrData.match(/id=([^&]+)/);
     const studentId = studentIdMatch ? studentIdMatch[1] : null;
 
@@ -197,7 +205,9 @@ app.post('/check-in', async (req, res) => {
         // تسجيل الحضور
         const attendanceRef = db.ref(`attendance/${studentId}`).push();
         await attendanceRef.set({
-            subject: 'غير محدد (تم تسجيل حضور عام)', 
+            phase: student.phase,
+            year: student.year,
+            stream: student.stream,
             action: 'Check-in',
             timestamp: admin.database.ServerValue.TIMESTAMP
         });
@@ -205,7 +215,7 @@ app.post('/check-in', async (req, res) => {
         res.json({
             message: `تم تسجيل حضور ${student.name} بنجاح.`,
             name: student.name,
-            isActive: student.isActive // إرجاع الحالة الحالية
+            isActive: student.isActive 
         });
 
     } catch (error) {
