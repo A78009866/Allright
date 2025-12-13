@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أكاديمية المعالي</title>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* CSS styles (unchanged from the last revision, but included for completeness) */
+:root{
+  --bg: #0b0b0c;
+  --drawer-bg: #151517;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-color: rgba(255,255,255,0.08);
+  --accent-color: #3b82f6; 
+  --nav-height: 72px;
+  --radius: 12px;
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  height:100%;
+  margin:0;
+  font-family: "Tajawal", sans-serif;
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+  color: var(--text-primary);
+  max-width: 100vw; 
+  overflow-x: hidden; 
+  -webkit-font-smoothing:antialiased;
+  direction: rtl;
+}
+
+.page{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* --- NAVBAR - Glassy Effect --- */
+.navbar{
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px; 
+  margin: 10px; 
+  border-radius: var(--radius);
+  background: rgba(26, 26, 29, 0.85); 
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1000;
+}
+
+.brand-group{
+  display:flex;
+  align-items:center;
+  gap:10px; 
+  flex-shrink: 0; 
+  order: 1; /* أقصى اليمين في نمط RTL */
+}
+
+.brand-group img{
+  width:40px; 
+  height:40px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.brand-group .title .name{
+  font-weight: 800;
+  font-size: 16px; 
+  color: #fff;
+  line-height: 1.2;
+}
+
+.brand-group .title .tag{
+  font-size: 12px; 
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* --- Navbar Buttons Group --- */
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    order: 2; /* أقصى اليسار في نمط RTL */
+    flex-shrink: 0;
+}
+
+.nav-buttons .btn {
+    padding: 8px 10px; 
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px; 
+    justify-content: center;
+    white-space: nowrap; 
+}
+
+/* زر المسح (QR) */
+.nav-buttons .btn-scan {
+    background: rgba(255, 255, 255, 0.08); 
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.nav-buttons .btn-scan:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* زر التسجيل (+) */
+.nav-buttons .btn-register {
+    background: rgba(59, 130, 246, 0.6); 
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
+    backdrop-filter: blur(10px);
+    width: 40px; 
+    height: 40px; 
+    padding: 0; 
+    border-radius: 50%; 
+}
+.nav-buttons .btn-register span {
+    display: none; 
+}
+.nav-buttons .btn-register svg {
+    width: 20px; 
+    height: 20px;
+}
+
+.nav-buttons svg {
+    width: 16px; 
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+
+/* Adjustments for smaller screens */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 10px;
+        margin: 8px;
+    }
+    .brand-group {
+        gap: 8px;
+    }
+    .brand-group img {
+        width: 35px;
+        height: 35px;
+    }
+    .brand-group .title .name {
+        font-size: 14px;
+    }
+    .brand-group .title .tag {
+        display: none; 
+    }
+    .nav-buttons .btn-scan {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+    .nav-buttons .btn-register {
+        width: 35px; 
+        height: 35px;
+    }
+    .nav-buttons .btn-register svg {
+        width: 18px; 
+        height: 18px;
+    }
+}
+
+
+/* HERO SECTION */
+.hero{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align: center;
+}
+.hero-content h1{
+  font-size: 1.8rem; 
+  margin-bottom: 10px;
+  color: #fff;
+}
+.hero-content p{
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* QR Scanner Modal/Overlay */
+.qr-scanner-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 5000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.qr-scanner-overlay.active {
+    display: flex;
+}
+.qr-scanner-overlay button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 5001;
+}
+#reader {
+    width: 90%; 
+    max-width: 400px; 
+    border: 3px solid var(--accent-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+}
+/* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
+#reader div { 
+    border: none !important;
+}
+
+.scan-message {
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* باقي الأنماط... (الطلاب، النماذج، إلخ) */
+.student-cards-section {
+  padding: 0 16px 20px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.student-cards-section h2 {
+    font-size: 1.4rem; 
+    color: #fff;
+    margin-bottom: 15px;
+    padding-right: 5px;
+    border-right: 4px solid var(--accent-color);
+}
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+.student-card {
+  background: var(--drawer-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+.student-card .name {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--accent-color);
+  border-bottom: 1px dashed rgba(255,255,255,0.1);
+  padding-bottom: 5px;
+}
+.student-card .details {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 1.4;
+}
+.status-indicator {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.status-active {
+  background: rgba(67, 207, 102, 0.2);
+  color: #43cf66;
+}
+.status-inactive {
+  background: rgba(255, 99, 71, 0.2);
+  color: #ff6347;
+}
+.student-card .subjects {
+  font-size: 12px;
+  color: #e4e4e7;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.modal-overlay.open {
+    display: flex;
+}
+.modal-content {
+    background: rgba(21, 21, 23, 0.95); 
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 20px; 
+    width: 95%; 
+    max-width: 500px; 
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    position: relative;
+    text-align: right;
+    backdrop-filter: blur(15px); 
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px; 
+}
+.modal-content label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #e4e4e7;
+    font-size: 14px;
+}
+
+.modal-content input[type="text"], .modal-content select, .session-count-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    cursor: pointer;
+}
+
+.name-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.name-fields div {
+    margin-bottom: 12px;
+}
+.name-fields input {
+    margin-bottom: 0;
+}
+
+.subject-selection-area {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+}
+
+.subject-checkboxes {
+    gap: 8px;
+}
+
+.subject-item-wrapper {
+    padding: 6px;
+}
+
+.subject-item-wrapper .session-count-input {
+    width: 100px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.modal-content button {
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+footer{
+  text-align:center;
+  padding:15px;
+  color:var(--text-secondary);
+  font-size:12px;
+  border-top: 1px solid var(--border-color);
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="navbar">
+    
+    <div class="brand-group">
+      <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">
+      <div class="title">
+        <div class="name">أكاديمية المعالي</div>
+        <div class="tag">للتعليم والتطوير</div>
+      </div>
+    </div>
+
+
+    <div class="nav-buttons">
+      
+      <button class="btn btn-scan" id="scanBtn">
+        <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"></path></svg>
+        مسح QR
+      </button>
+      
+      <button class="btn btn-register" id="openRegisterModalBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        <span>تسجيل جديد</span>
+      </button>
+    </div>
+
+  </header>
+
+  <div class="student-cards-section">
+      <h2>الطلاب المسجلون حاليًا</h2>
+      <div class="cards-container" id="studentCardsContainer">
+          <p id="loadingMessage" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل بيانات الطلاب...</p>
+      </div>
+  </div>
+  
+  <main class="hero">
+    <div class="hero-content">
+      <h1>مرحباً بك في أكاديمية المعالي</h1>
+      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل جديد" لتبدأ.</p>
+    </div>
+  </main> 
+
+  <div class="modal-overlay" id="registrationModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
+      <h3>تسجيل طالب جديد</h3>
+      <div id="registrationForm">
+        <div class="name-fields">
+            <div>
+                <label for="studentName">الاسم:</label>
+                <input type="text" id="studentName" placeholder="الاسم" required>
+            </div>
+            <div>
+                <label for="studentLastName">اللقب:</label>
+                <input type="text" id="studentLastName" placeholder="اللقب" required>
+            </div>
+        </div>
+        <label for="phaseSelect">المرحلة الدراسية:</label>
+        <select id="phaseSelect" required>
+            <option value="" disabled selected>اختر المرحلة</option>
+        </select>
+        <label for="yearSelect">السنة الدراسية:</label>
+        <select id="yearSelect" required disabled>
+            <option value="" disabled selected>اختر السنة</option>
+        </select>
+        <label for="streamSelect">الشعبة (التخصص):</label>
+        <select id="streamSelect" required disabled>
+            <option value="" disabled selected>اختر الشعبة</option>
+        </select>
+        <div class="subject-selection-area">
+          <label>اختيار المواد وتحديد عدد الحصص الكلي:</label>
+          <div id="subjectCheckboxes" class="subject-checkboxes">
+            الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
+          </div>
+        </div>
+        <button id="registerButton">تسجيل الطالب</button>
+      </div>
+      
+      <div class="modal-result" id="modalResult" style="display:none;">
+        <h4 id="resultMessage"></h4>
+        <img id="qrCodeImage" src="" alt="QR Code">
+        <button class="print-btn" onclick="window.print()">طباعة رمز QR</button>
+        <button onclick="closeRegistrationModal()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="qr-scanner-overlay" id="qrScannerOverlay">
+    <p class="scan-message">امسح رمز QR الخاص بالطالب لتسجيل الدخول.</p>
+    <div id="reader"></div> 
+    <button onclick="stopScannerAndClose()">إلغاء المسح</button>
+  </div>
+
+  <footer>
+    &copy; 2024 أكاديمية المعالي. جميع الحقوق محفوظة.
+  </footer>
+</div>
+
+<script>
+  // --- DOM Elements ---
+  const studentCardsContainer = document.getElementById('studentCardsContainer');
+  const loadingMessage = document.getElementById('loadingMessage');
+  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
+  const registrationModal = document.getElementById('registrationModal');
+  const scanBtn = document.getElementById('scanBtn'); 
+  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); // الماسح
+
+  const phaseSelect = document.getElementById('phaseSelect');
+  const yearSelect = document.getElementById('yearSelect');
+  const streamSelect = document.getElementById('streamSelect');
+  const subjectCheckboxes = document.getElementById('subjectCheckboxes');
+  const registerButton = document.getElementById('registerButton');
+  
+  const registrationForm = document.getElementById('registrationForm');
+  const modalResult = document.getElementById('modalResult');
+  const qrCodeImage = document.getElementById('qrCodeImage');
+  const resultMessage = document.getElementById('resultMessage');
+
+  let COURSES_DATA = {}; 
+  let html5QrCode = null; // متغير لتخزين مثيل الماسح
+
+
+  // --- QR Scanner Functions ---
+
+  // وظيفة يتم تنفيذها عند المسح الناجح
+  async function onScanSuccess(decodedText, decodedResult) {
+    await stopScannerAndClose(); // إغلاق الكاميرا والـ Overlay
+    
+    // افتراض أن الكود الممسوح هو معرف الطالب (ID)
+    const studentId = decodedText.trim(); 
+    
+    if (studentId) {
+        // توجيه المستخدم لصفحة الملف الشخصي
+        window.location.href = `/profile.html?id=${studentId}`;
+    } else {
+        alert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.');
+    }
+  }
+
+  // وظيفة فتح الكاميرا
+  async function startScanner() {
+    qrScannerOverlay.classList.add('active');
+    
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+
+    const config = { 
+        fps: 10, 
+        qrbox: {width: 250, height: 250},
+        facingMode: "environment" // استخدام الكاميرا الخلفية (للهواتف)
+    };
+
+    try {
+        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+    } catch (err) {
+        console.error("Failed to start QR scanner:", err);
+        alert('فشل في تشغيل الكاميرا. تأكد من إعطاء إذن الوصول وأنك تستخدم HTTPS أو localhost.');
+        stopScannerAndClose();
+    }
+  }
+
+  // وظيفة إغلاق الكاميرا والـ Overlay
+  async function stopScannerAndClose() {
+    qrScannerOverlay.classList.remove('active');
+    if (html5QrCode && html5QrCode.isScanning) {
+        try {
+            await html5QrCode.stop();
+        } catch (err) {
+            console.warn("Error stopping the scanner:", err);
+        }
+    }
+  }
+
+  // ربط زر المسح بالدالة الجديدة
+  scanBtn.addEventListener('click', startScanner);
+
+
+  // --- Modal Toggles (unchanged) ---
+  openRegisterModalBtn.addEventListener('click', () => {
+    openRegistrationModal();
+    populatePhases(); 
+  });
+  
+  function openRegistrationModal() {
+    registrationModal.classList.add('open');
+    registrationForm.style.display = 'block';
+    modalResult.style.display = 'none';
+  }
+
+  function closeRegistrationModal() {
+    registrationModal.classList.remove('open');
+    // إعادة تعيين النموذج
+    document.getElementById('studentName').value = '';
+    document.getElementById('studentLastName').value = '';
+    phaseSelect.value = '';
+    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
+    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
+    yearSelect.disabled = true;
+    streamSelect.disabled = true;
+    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+  }
+  
+
+  // --- Dynamic Registration Form Logic (unchanged) ---
+  
+  // 1. Populate Phases
+  function populatePhases() {
+    phaseSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة</option>';
+    for (const phaseName in COURSES_DATA) {
+        const option = document.createElement('option');
+        option.value = phaseName;
+        option.textContent = phaseName;
+        phaseSelect.appendChild(option);
+    }
+    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
+    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
+    yearSelect.disabled = true;
+    streamSelect.disabled = true;
+    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+  }
+
+  // 2. Populate Years based on Phase
+  phaseSelect.addEventListener('change', () => {
+    const selectedPhase = phaseSelect.value;
+    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
+    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
+    
+    if (selectedPhase && COURSES_DATA[selectedPhase]) {
+        for (const yearName in COURSES_DATA[selectedPhase]) {
+            const option = document.createElement('option');
+            option.value = yearName;
+            option.textContent = yearName;
+            yearSelect.appendChild(option);
+        }
+        yearSelect.disabled = false;
+    } else {
+        yearSelect.disabled = true;
+    }
+    streamSelect.disabled = true;
+    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+  });
+
+  // 3. Populate Streams and Subjects based on Year
+  yearSelect.addEventListener('change', () => {
+    const selectedPhase = phaseSelect.value;
+    const selectedYear = yearSelect.value;
+    
+    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
+    streamSelect.disabled = true;
+    subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
+    
+    if (selectedPhase && selectedYear && COURSES_DATA[selectedPhase][selectedYear]) {
+        const streams = COURSES_DATA[selectedPhase][selectedYear];
+        const streamNames = Object.keys(streams);
+
+        if (streamNames.length > 1 || (streamNames.length === 1 && streamNames[0] !== 'عامة')) {
+            // High school level: Requires stream selection
+            for (const streamName of streamNames) {
+                const option = document.createElement('option');
+                option.value = streamName;
+                option.textContent = streamName;
+                streamSelect.appendChild(option);
+            }
+            streamSelect.disabled = false;
+        } else if (streamNames.includes('عامة')) {
+            // Primary/Middle school (General Stream): Populate subjects directly
+            streamSelect.value = 'عامة';
+            streamSelect.disabled = true;
+            populateSubjects(streams['عامة']);
+        }
+    }
+  });
+
+  // 4. Populate Subjects based on Stream (For High School)
+  streamSelect.addEventListener('change', () => {
+    const selectedPhase = phaseSelect.value;
+    const selectedYear = yearSelect.value;
+    const selectedStream = streamSelect.value;
+
+    if (selectedPhase && selectedYear && selectedStream && COURSES_DATA[selectedPhase][selectedYear][selectedStream]) {
+        const subjects = COURSES_DATA[selectedPhase][selectedYear][selectedStream];
+        populateSubjects(subjects);
+    } else {
+        subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
+    }
+  });
+
+  // 5. Render Subjects Checkboxes 
+  function populateSubjects(subjectsArray) {
+    subjectCheckboxes.innerHTML = '';
+    if (subjectsArray.length === 0) {
+        subjectCheckboxes.innerHTML = 'لا توجد مواد متاحة لهذه الشعبة.';
+        return;
+    }
+
+    subjectsArray.forEach(subject => {
+        const checkboxWrapper = document.createElement('div');
+        checkboxWrapper.className = 'subject-item-wrapper';
+        
+        const uniqueId = `sub-${subject.replace(/\s|\/|\(|\)/g, '-')}`;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = uniqueId;
+        checkbox.name = 'subject-checkbox'; 
+        checkbox.value = subject;
+        
+        const label = document.createElement('label');
+        label.htmlFor = uniqueId;
+        label.textContent = subject;
+
+        const sessionInput = document.createElement('input');
+        sessionInput.type = 'number';
+        sessionInput.min = '1';
+        sessionInput.placeholder = 'عدد الحصص الكلي';
+        sessionInput.className = 'session-count-input';
+        sessionInput.id = `count-${uniqueId}`;
+        sessionInput.disabled = true; 
+        
+        // تفعيل/تعطيل حقل العدد بناءً على تحديد المربع
+        checkbox.addEventListener('change', (e) => {
+            sessionInput.disabled = !e.target.checked;
+            if (e.target.checked) {
+                sessionInput.value = 1; 
+                sessionInput.focus();
+            } else {
+                sessionInput.value = '';
+            }
+        });
+        
+        checkboxWrapper.appendChild(checkbox);
+        checkboxWrapper.appendChild(label);
+        checkboxWrapper.appendChild(sessionInput); 
+        subjectCheckboxes.appendChild(checkboxWrapper);
+    });
+  }
+
+
+  // --- Registration logic (unchanged) ---
+  registerButton.addEventListener('click', async () => {
+    const name = document.getElementById('studentName').value.trim();
+    const lastName = document.getElementById('studentLastName').value.trim();
+    const phase = phaseSelect.value;
+    const year = yearSelect.value;
+    const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
+    
+    // جمع المواد المختارة وعدد الحصص
+    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
+                                .map(checkbox => {
+                                    const subjectName = checkbox.value;
+                                    const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
+                                    const countInput = document.getElementById(`count-${uniqueId}`);
+                                    const sessionCount = parseInt(countInput.value, 10);
+                                    
+                                    if (!sessionCount || sessionCount < 1) {
+                                        alert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`);
+                                        throw new Error('Missing session count'); 
+                                    }
+                                    
+                                    return {
+                                        name: subjectName,
+                                        sessionCount: sessionCount
+                                    };
+                                });
+
+    if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
+        alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.');
+        return;
+    }
+    
+    // إخفاء النموذج وعرض رسالة التحميل
+    registrationForm.style.display = 'none';
+    resultMessage.textContent = 'جارٍ تسجيل الطالب...';
+    resultMessage.style.color = '#fff';
+    modalResult.style.display = 'block';
+    qrCodeImage.style.display = 'none';
+
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                lastName: lastName,
+                phase: phase,
+                year: year,
+                stream: stream,
+                subjects: selectedSubjects 
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            resultMessage.textContent = `تم تسجيل الطالب ${name} ${lastName} بنجاح!`;
+            resultMessage.style.color = '#43cf66';
+            qrCodeImage.src = result.qrCodeUrl;
+            qrCodeImage.style.display = 'block';
+            fetchStudentCards(); 
+        } else {
+            resultMessage.textContent = `فشل التسجيل: ${result.message}`;
+            resultMessage.style.color = '#ff6347';
+        }
+
+    } catch (error) {
+        if (error.message !== 'Missing session count') {
+            console.error('Network or internal registration error:', error);
+            resultMessage.textContent = 'خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.';
+            resultMessage.style.color = '#ff6347';
+        }
+        // في حالة وجود خطأ في الحصص، نعيد عرض النموذج
+        registrationForm.style.display = 'block';
+        modalResult.style.display = 'none';
+    }
+  });
+
+
+  // --- Student Cards Display Logic (unchanged) ---
+  async function fetchStudentCards() {
+      loadingMessage.style.display = 'block';
+      studentCardsContainer.innerHTML = ''; 
+
+      try {
+          const response = await fetch('/students');
+          const students = await response.json();
+
+          loadingMessage.style.display = 'none';
+
+          if (Object.keys(students).length === 0) {
+              studentCardsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">لم يتم تسجيل أي طالب بعد.</p>';
+              return;
+          }
+          
+          for (const [id, student] of Object.entries(students)) {
+              const card = document.createElement('div');
+              card.className = 'student-card';
+              
+              const statusClass = student.isActive ? 'status-active' : 'status-inactive';
+              const statusText = student.isActive ? 'نشط' : 'غير نشط';
+              
+              let detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'}`;
+              if (student.stream && student.stream !== 'عامة') {
+                  detailsText += ` | ${student.stream}`;
+              }
+              
+              // ملخص المواد
+              const subjectSummary = student.subjects 
+                                        ? student.subjects.map(s => `${s.name} (${s.completedSessions}/${s.totalSessions})`).join(' | ') 
+                                        : 'لا توجد مواد';
+
+
+              card.innerHTML = `
+                  <div class="name">${student.name}</div>
+                  <div class="details">
+                      <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
+                      <span class="status-indicator ${statusClass}">${statusText}</span>
+                  </div>
+                  <div class="subjects"><strong>ملخص الحصص:</strong> ${subjectSummary}</div>
+              `;
+              
+              card.addEventListener('click', () => {
+                  window.location.href = `/profile.html?id=${id}`;
+              });
+              
+              studentCardsContainer.appendChild(card);
+          }
+          
+      } catch (error) {
+          console.error('Error fetching student cards:', error);
+          loadingMessage.textContent = 'فشل في تحميل بيانات الطلاب.';
+      }
+  }
+
+  // --- Initial Load ---
+  async function initialLoad() {
+    try {
+        const response = await fetch('/courses');
+        COURSES_DATA = await response.json();
+        
+        fetchStudentCards();
+    } catch (error) {
+        console.error('Initial load failed:', error);
+    }
+  }
+
+  initialLoad();
+  
+</script>
+</body>
+</html>
