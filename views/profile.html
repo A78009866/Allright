@@ -148,13 +148,6 @@ html,body{
 .mark-attended-btn:hover:not(:disabled) {
     background: #2563eb;
 }
-.undo-attended-btn {
-    background: var(--danger-color);
-    color: #fff;
-}
-.undo-attended-btn:hover:not(:disabled) {
-    background: #c30000;
-}
 .action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -173,6 +166,41 @@ html,body{
     border-radius: 4px; 
     transition: width 0.5s;
 }
+
+/* Sessions List Styling */
+.sessions-list-header {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.sessions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.session-item {
+    background: rgba(59, 130, 246, 0.15); 
+    color: var(--accent-color);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.session-item:hover {
+    background: rgba(59, 130, 246, 0.3);
+}
+.no-completed-sessions {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
+
 
 /* QR Code Section */
 .qr-section{
@@ -238,7 +266,7 @@ html,body{
     padding: 20px;
 }
 
-/* Custom Modal Specific Styles (reused from index.html) */
+/* Custom Modal Specific Styles */
 #customAlertModal {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -278,6 +306,9 @@ html,body{
     background: var(--danger-color); 
     color: #fff;
 }
+.modal-actions .confirm-btn:hover {
+    background: #c30000;
+}
 .modal-actions .cancel-btn {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
@@ -286,6 +317,44 @@ html,body{
 .modal-actions .cancel-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
+}
+
+
+/* --- Mobile Optimization Styles --- */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px auto;
+        padding: 0 10px 20px;
+    }
+    .card {
+        padding: 15px;
+    }
+    .header h1 {
+        font-size: 22px;
+    }
+    .back-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .subject-list-management {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+    .detail-row {
+        font-size: 14px;
+    }
+    .attendance-table th, .attendance-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    /* Stack sessions vertically on very small screens */
+    .sessions-list {
+        gap: 8px; 
+        flex-direction: column; 
+    }
+    .session-item {
+        width: 100%;
+        text-align: right;
+    }
 }
 </style>
 </head>
@@ -424,7 +493,7 @@ html,body{
         fetchQRCode(studentId);
     }
     
-    // دالة جلب بيانات الطالب
+    // دالة جلب بيانات الطالب والتحقق من حالة التعطيل
     async function fetchStudentDetails(id) {
         try {
             const response = await fetch(`/student-details/${id}`);
@@ -456,6 +525,42 @@ html,body{
 
             // عرض سجل الحضور
             renderAttendanceLog(id, attendance);
+            
+            
+            // **المنطق الجديد: التحقق من حالة التعطيل التلقائي**
+            const isActive = student.isActive;
+            // التحقق مما إذا كانت جميع المواد لديها 0 حصص مكتملة
+            const allSessionsZero = student.subjects && student.subjects.every(s => s.completedSessions === 0);
+            
+            if (isActive && allSessionsZero) {
+                showCustomConfirm(
+                    `الطالب **${student.name}** ليس لديه أي حصص مكتملة متبقية في أي مادة. هل تريد تفعيل حالة **غير نشط** له؟`,
+                    async (isConfirmed) => {
+                        if (isConfirmed) {
+                            try {
+                                // افتراض أن هذا هو نقطة الاتصال لتعطيل حالة الطالب
+                                const deactivateResponse = await fetch(`/deactivate-student/${id}`, {
+                                    method: 'POST', 
+                                    headers: { 'Content-Type': 'application/json' }
+                                });
+                                
+                                if (deactivateResponse.ok) {
+                                    showCustomAlert('تم تعطيل حالة الطالب بنجاح.', 'تم التعطيل');
+                                    // إعادة جلب التفاصيل لتحديث عرض الحالة
+                                    fetchStudentDetails(id); 
+                                } else {
+                                    const error = await deactivateResponse.json();
+                                    showCustomAlert(`فشل في تعطيل حالة الطالب: ${error.message}`, 'خطأ في التعطيل');
+                                }
+                            } catch (error) {
+                                showCustomAlert('خطأ في الاتصال بالخادم عند محاولة تعطيل الطالب.', 'خطأ شبكة');
+                            }
+                        }
+                    },
+                    'تعطيل حالة الطالب'
+                );
+            }
+
 
         } catch (error) {
             console.error('Error:', error);
@@ -479,7 +584,7 @@ html,body{
         }
     }
     
-    // دالة عرض وإدارة المواد والحصص
+    // دالة عرض وإدارة المواد والحصص (مُعدلة لعرض الحصص الفردية)
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -498,11 +603,25 @@ html,body{
             subjectDiv.className = 'subject-card card';
             subjectDiv.id = `subject-${subject.name.replace(/\s/g, '-')}`;
             
+            // بناء قائمة الحصص المكتملة
+            let sessionsHtml = '';
+            if (subject.completedSessions > 0) {
+                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (اضغط على حصة لشطبها):</div><ul class="sessions-list">';
+                for (let i = subject.completedSessions; i >= 1; i--) { // الترتيب التنازلي للحصص (الأحدث أولاً)
+                    sessionsHtml += `<li class="session-item" data-subject="${subject.name}" data-session-number="${i}">
+                        الحصة رقم ${i}
+                    </li>`;
+                }
+                sessionsHtml += '</ul>';
+            } else {
+                 sessionsHtml = '<p class="no-completed-sessions">لا توجد حصص مكتملة حتى الآن.</p>';
+            }
+
             subjectDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <strong style="font-size: 16px; color: #fff;">${subject.name}</strong>
-                    <span style="font-size: 14px; color: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'}; font-weight:700;">
-                        الحصص المكتملة: ${subject.completedSessions} من ${subject.totalSessions}
+                    <span id="session-count-${subject.name.replace(/\s/g, '-')}" style="font-size: 14px; color: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'}; font-weight:700;">
+                        ${subject.completedSessions} من ${subject.totalSessions} حصة
                     </span>
                 </div>
                 
@@ -510,21 +629,19 @@ html,body{
                     <div class="progress-bar-fill" style="width: ${progressPercent}%; background: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'};"></div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; justify-content: flex-start;">
+                ${sessionsHtml}
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 15px;">
                     <button class="action-btn mark-attended-btn" data-subject="${subject.name}" 
                         ${isCompleted ? 'disabled' : ''}>
-                        تسجيل حصة مكتملة
-                    </button>
-                    <button class="action-btn undo-attended-btn" data-subject="${subject.name}" 
-                        ${subject.completedSessions === 0 ? 'disabled' : ''}>
-                        شطب/تراجع عن حصة
+                        تسجيل حصة جديدة
                     </button>
                 </div>
             `;
             container.appendChild(subjectDiv);
         });
         
-        // ربط أزرار الإجراءات بالدوال
+        // ربط زر تسجيل حصة جديدة
         container.querySelectorAll('.mark-attended-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const subjectName = button.getAttribute('data-subject');
@@ -532,19 +649,26 @@ html,body{
             });
         });
 
-        container.querySelectorAll('.undo-attended-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const subjectName = button.getAttribute('data-subject');
-                updateSessionCount(studentId, subjectName, 'subtract');
+        // **الربط الجديد: شطب الحصص الفردية**
+        container.querySelectorAll('.session-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const subjectName = item.getAttribute('data-subject');
+                // يتم إعادة استخدام وظيفة 'subtract' لتقليل العدد بواحد
+                updateSessionCount(studentId, subjectName, 'subtract'); 
             });
         });
     }
 
-    // دالة الإدارة لتسجيل/شطب الحصص (تستخدم Custom Modal)
+    // دالة الإدارة لتسجيل/شطب الحصص
     async function updateSessionCount(studentId, subjectName, action) {
         
+        // تحديد رسالة التأكيد بناءً على الإجراء
+        let confirmMsg = action === 'add' 
+            ? `هل أنت متأكد من تسجيل **حصة مكتملة** لمادة **${subjectName}**؟`
+            : `هل أنت متأكد من **شطب/التراجع** عن آخر حصة مكتملة لمادة **${subjectName}**؟`;
+
         showCustomConfirm(
-            `هل أنت متأكد من ${action === 'add' ? 'تسجيل حصة مكتملة' : 'التراجع عن حصة'} لمادة **${subjectName}**؟`,
+            confirmMsg,
             async (isConfirmed) => {
                 if (!isConfirmed) return;
 
@@ -561,7 +685,8 @@ html,body{
         
                     if (response.ok) {
                         showCustomAlert(result.message, 'نجاح');
-                        fetchStudentDetails(studentId); 
+                        // إعادة جلب التفاصيل لتحديث العرض والتحقق من حالة التعطيل
+                        await fetchStudentDetails(studentId); 
                     } else {
                         showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
                     }
@@ -570,12 +695,12 @@ html,body{
                     showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
                 }
             },
-            action === 'add' ? 'تسجيل حضور' : 'تراجع عن حضور'
+            action === 'add' ? 'تسجيل حضور' : 'شطب حصة'
         );
     }
 
 
-    // دالة عرض سجل الحضور (Check-in/Check-out)
+    // دالة عرض سجل الحضور (Check-in/Check-out) (بدون تغيير)
     function renderAttendanceLog(studentId, attendance) {
         const tbody = document.getElementById('attendanceRecordsBody');
         tbody.innerHTML = '';
@@ -613,7 +738,7 @@ html,body{
         });
     }
 
-    // دالة حذف سجل الحضور (Check-in/Check-out) (تستخدم Custom Modal)
+    // دالة حذف سجل الحضور (Check-in/Check-out) (بدون تغيير)
     async function deleteAttendanceRecord(studentId, attendanceId) {
         
         showCustomConfirm(
