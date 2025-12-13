@@ -27,7 +27,6 @@ let isFirebaseReady = false;
 
 try {
     if (!admin.apps.length) { 
-        // قراءة متغيرات البيئة
         const serviceAccountJson = process.env.SERVICE_ACCOUNT_KEY;
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
@@ -35,7 +34,6 @@ try {
             console.error("Critical: Missing Firebase environment variables. Please ensure SERVICE_ACCOUNT_KEY and FIREBASE_DATABASE_URL are set in your environment or a .env file.");
         } else {
             try {
-                // تنظيف وإزالة أي علامات اقتباس محيطة قد تضيفها البيئة
                 const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
                 const serviceAccount = JSON.parse(cleanJsonString);
 
@@ -63,35 +61,17 @@ try {
 // =======================================================
 const courses = {
     "المرحلة الابتدائية": {
-        "السنة الأولى ابتدائي": {
-            "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية فنية", "تربية بدنية"]
-        },
-        "السنة الثانية ابتدائي": { 
-            "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية علمية", "تربية فنية"]
-        },
-        "السنة الثالثة ابتدائي": {
-            "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "تربية فنية"]
-        },
-        "السنة الرابعة ابتدائي": { 
-            "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"]
-        },
-        "السنة الخامسة ابتدائي": {
-            "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"]
-        }
+        "السنة الأولى ابتدائي": { "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية فنية", "تربية بدنية"] },
+        "السنة الثانية ابتدائي": { "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية علمية", "تربية فنية"] },
+        "السنة الثالثة ابتدائي": { "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "تربية فنية"] },
+        "السنة الرابعة ابتدائي": { "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"] },
+        "السنة الخامسة ابتدائي": { "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"] }
     },
     "المرحلة المتوسطة": {
-        "السنة الأولى متوسط": {
-            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"]
-        },
-        "السنة الثانية متوسط": { 
-            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "تربية مدنية"]
-        },
-        "السنة الثالثة متوسط": { 
-            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"]
-        },
-        "السنة الرابعة متوسط": {
-            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "تربية مدنية"]
-        }
+        "السنة الأولى متوسط": { "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"] },
+        "السنة الثانية متوسط": { "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "تربية مدنية"] },
+        "السنة الثالثة متوسط": { "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"] },
+        "السنة الرابعة متوسط": { "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "تربية مدنية"] }
     },
     "المرحلة الثانوية": {
         "السنة الأولى ثانوي": {
@@ -121,7 +101,6 @@ const courses = {
 function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
         return res.status(500).json({ 
-            // رسالة أوضح للطالب في حال فشل الخادم
             message: 'خطأ في تهيئة الخادم. يرجى التأكد من أن متغيرات بيئة Firebase مضبوطة بشكل صحيح في ملف .env أو إعدادات النشر.',
             error: 'FirebaseNotInitialized'
         });
@@ -158,17 +137,15 @@ app.post('/register', async (req, res) => {
     const studentId = uuidv4(); 
     const fullName = `${name} ${lastName}`;
 
-    // التحقق من الهيكل الجديد للمواد
     if (!fullName || !phase || !year || !stream || !subjects || !Array.isArray(subjects) || subjects.length === 0 || 
         !subjects.every(s => s.name && s.sessionCount !== undefined && s.sessionCount > 0)) {
         return res.status(400).json({ message: 'الرجاء توفير جميع بيانات الطالب وتحديد المواد وعدد الحصص الكلي لكل مادة.' });
     }
 
-    // تهيئة هيكل المواد الجديد
     const studentSubjects = subjects.map(s => ({
         name: s.name,
         totalSessions: parseInt(s.sessionCount, 10),
-        completedSessions: 0, // يبدأ بصفر حصص مكتملة
+        completedSessions: 0, 
     }));
 
     try {
@@ -178,14 +155,12 @@ app.post('/register', async (req, res) => {
             phase: phase,      
             year: year,        
             stream: stream,    
-            subjects: studentSubjects, // استخدام الهيكل الجديد
+            subjects: studentSubjects, 
             isActive: true, 
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
         await studentsRef.child(studentId).set(studentData); 
-        
-        // سجل الحضور (Check-in/Check-out)
         await db.ref(`attendance/${studentId}`).set({}); 
 
         const qrData = `/profile.html?id=${studentId}`; 
@@ -313,7 +288,7 @@ app.post('/record-session-attended/:studentId', async (req, res) => {
         const updatedSubjects = student.subjects.map(s => {
             if (s.name === subjectName) {
                 if (s.completedSessions < s.totalSessions) {
-                    s.completedSessions += 1; // زيادة حصة مكتملة واحدة
+                    s.completedSessions += 1; 
                     updated = true;
                 } else {
                     return res.status(400).json({ message: `تم بالفعل إكمال جميع حصص مادة ${subjectName}.` });
@@ -363,7 +338,7 @@ app.post('/undo-session-attended/:studentId', async (req, res) => {
         const updatedSubjects = student.subjects.map(s => {
             if (s.name === subjectName) {
                 if (s.completedSessions > 0) {
-                    s.completedSessions -= 1; // إنقاص حصة مكتملة واحدة
+                    s.completedSessions -= 1; 
                     updated = true;
                 } else {
                     return res.status(400).json({ message: `لا توجد حصص مكتملة يمكن التراجع عنها لمادة ${subjectName}.` });
@@ -418,6 +393,25 @@ app.delete('/attendance/:studentId/:attendanceId', async (req, res) => {
         res.status(500).json({ message: 'فشل داخلي في حذف السجل.' });
     }
 });
+
+// 10. نقطة نهاية لحذف طالب بالكامل (جديد)
+app.delete('/student/:studentId', async (req, res) => {
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+    const studentId = req.params.studentId;
+
+    try {
+        // حذف بيانات الطالب الأساسية
+        await studentsRef.child(studentId).remove();
+        // حذف سجل الحضور المرتبط
+        await db.ref(`attendance/${studentId}`).remove();
+
+        res.status(200).json({ message: 'تم حذف الطالب وسجل حضوره بنجاح.' });
+    } catch (error) {
+        console.error('Error deleting student:', error);
+        res.status(500).json({ message: 'فشل داخلي في حذف الطالب.' });
+    }
+});
+
 
 // تشغيل الخادم
 app.listen(PORT, () => {
