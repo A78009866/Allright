@@ -113,6 +113,7 @@ html,body{
     font-size: 12px; 
     justify-content: center;
     white-space: nowrap; 
+    border: none;
 }
 
 /* زر المسح (QR) */
@@ -211,7 +212,7 @@ html,body{
   line-height: 1.6;
 }
 
-/* QR Scanner Modal/Overlay - الأنماط المعدلة لملء الشاشة وإصلاح الشاشة البيضاء */
+/* QR Scanner Modal/Overlay */
 .qr-scanner-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -226,6 +227,7 @@ html,body{
 .qr-scanner-overlay.active {
     display: flex;
 }
+/* زر الإلغاء في الماسح */
 .qr-scanner-overlay button {
     margin-top: 25px; 
     padding: 10px 20px;
@@ -236,35 +238,32 @@ html,body{
     cursor: pointer;
     font-size: 16px;
     z-index: 5001;
+    transition: background 0.3s;
+}
+.qr-scanner-overlay button:hover {
+    background: #e04e33;
 }
 
-/* **أنماط قوية لإظهار الفيديو** */
 #reader {
     width: 100%; 
     max-width: 700px; 
     flex-grow: 1; 
-    
     border: 3px solid var(--accent-color);
     border-radius: var(--radius);
     overflow: hidden;
     position: relative;
     min-height: 300px; 
-    
     background-color: black; 
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-/* نمط لضمان أن العناصر الداخلية تملأ #reader */
 #reader div { 
     border: none !important;
     width: 100% !important; 
     height: 100% !important; 
     position: relative; 
 }
-
-/* أنماط قوية لتحديد حجم الفيديو/الكانفاس */
 #reader video,
 #reader canvas {
     width: 100% !important;
@@ -281,7 +280,7 @@ html,body{
     font-size: 18px; 
 }
 
-/* باقي الأنماط... (الطلاب، النماذج، إلخ) */
+/* --- STUDENT CARDS SECTION (unchanged) --- */
 .student-cards-section {
   padding: 0 16px 20px 16px;
   max-width: 1200px;
@@ -346,6 +345,8 @@ html,body{
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* --- MODAL OVERLAY & CONTENT (Glassy Update) --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -360,18 +361,19 @@ html,body{
     display: flex;
 }
 .modal-content {
-    background: rgba(21, 21, 23, 0.95); 
-    border: 1px solid rgba(255,255,255,0.1);
+    /* الخلفية الزجاجية الجديدة */
+    background: rgba(21, 21, 23, 0.85); /* أكثر شفافية قليلاً */
+    border: 1px solid rgba(255,255,255,0.15); /* حدود أوضح */
     border-radius: var(--radius);
     padding: 20px; 
     width: 95%; 
     max-width: 500px; 
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7); /* ظل أقوى */
     position: relative;
     text-align: right;
-    backdrop-filter: blur(15px); 
+    backdrop-filter: blur(20px); /* تمويه أقوى للمظهر الزجاجي */
 }
 
 .modal-content h3 {
@@ -392,19 +394,24 @@ html,body{
 
 .modal-content input[type="text"], .modal-content select, .session-count-input {
     width: 100%;
-    padding: 8px;
+    padding: 10px; /* زيادة حجم الحقل */
     margin-bottom: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    background: rgba(0,0,0,0.3);
+    border-radius: 8px; /* حواف أكثر مرونة */
+    background: rgba(0,0,0,0.5); /* خلفية معتمة للحقول */
     color: var(--text-primary);
-    font-size: 14px;
+    font-size: 15px;
     font-family: inherit;
     appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: left 10px center;
     cursor: pointer;
+    transition: border-color 0.3s;
+}
+.modal-content input[type="text"]:focus, .modal-content select:focus {
+    border-color: var(--accent-color);
+    outline: none;
 }
 
 .name-fields {
@@ -433,20 +440,84 @@ html,body{
 
 .subject-item-wrapper {
     padding: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.subject-item-wrapper label {
+    flex-grow: 1;
+    margin: 0;
+    cursor: pointer;
+}
+.subject-item-wrapper input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
 }
 
 .subject-item-wrapper .session-count-input {
     width: 100px;
     padding: 4px 8px;
     font-size: 12px;
+    margin: 0;
 }
 
+/* --- BUTTONS STYLING (Flexible/Fluent Design) --- */
 .modal-content button {
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 14px;
-    margin-top: 12px;
+    padding: 10px 20px;
+    border-radius: 10px; /* حواف أكثر مرونة */
+    font-size: 15px;
+    margin-top: 15px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    border: 1px solid transparent;
 }
+
+.btn-primary {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+.btn-primary:hover {
+    background: #2563eb;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+}
+
+/* أزرار النتيجة والإغلاق */
+.modal-result button {
+    background: var(--drawer-bg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    margin-right: 10px;
+}
+.modal-result button:hover {
+    background: var(--accent-color);
+    color: var(--text-primary);
+}
+
+/* زر إغلاق المودال العلوي */
+.modal-content .modal-close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    font-size: 24px;
+    padding: 0 10px;
+    line-height: 24px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+    margin: 0;
+}
+.modal-content .modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
 
 footer{
   text-align:center;
@@ -533,13 +604,13 @@ footer{
             الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
           </div>
         </div>
-        <button id="registerButton">تسجيل الطالب</button>
+        <button id="registerButton" class="btn-primary">تسجيل الطالب</button>
       </div>
       
       <div class="modal-result" id="modalResult" style="display:none;">
         <h4 id="resultMessage"></h4>
         <img id="qrCodeImage" src="" alt="QR Code">
-        <button class="print-btn" onclick="window.print()">طباعة رمز QR</button>
+        <button class="print-btn btn-primary">طباعة رمز QR</button>
         <button onclick="closeRegistrationModal()">إغلاق</button>
       </div>
     </div>
@@ -580,7 +651,7 @@ footer{
   let html5QrCode = null; 
 
 
-  // --- QR Scanner Functions (تم التعديل لطلب الكاميرا الخلفية وتخفيف FPS) ---
+  // --- QR Scanner Functions (مع تخفيف FPS) ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
@@ -611,23 +682,19 @@ footer{
     }
 
     const config = { 
-        // **التعديل الجديد:** تم خفض قيمة FPS إلى 5 لتحسين الأداء وتقليل الغلتش
-        fps: 5, 
+        fps: 5, // خفض FPS لتقليل الغلتش
         qrbox: {width: 250, height: 250},
         videoConstraints: {
-            facingMode: "environment"
+            facingMode: "environment" // فرض الكاميرا الخلفية
         }
     };
 
     try {
-        // طلب الكاميرا الخلفية بشكل صريح (Environment) 
         await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, (errorMessage) => {
-            // هذا يحدث إذا فشل فك الترميز وليس فشل بدء التشغيل
             console.log("QR decode failed:", errorMessage); 
         });
         
     } catch (err) {
-        // فشل محاولة تشغيل الكاميرا بالكامل (بسبب الإذن أو عدم وجود كاميرا)
         console.error("Failed to start QR scanner:", err);
         
         let message = 'فشل في تشغيل الكاميرا.';
@@ -651,7 +718,6 @@ footer{
     qrScannerOverlay.classList.remove('active');
     if (html5QrCode && html5QrCode.isScanning) {
         try {
-            // يتم إيقاف الكاميرا هنا فقط بعد المسح الناجح أو النقر على "إلغاء المسح"
             await html5QrCode.stop();
         } catch (err) {
             console.warn("Error stopping the scanner:", err);
