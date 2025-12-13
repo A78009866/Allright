@@ -237,6 +237,56 @@ html,body{
     color: var(--text-secondary);
     padding: 20px;
 }
+
+/* Custom Modal Specific Styles (reused from index.html) */
+#customAlertModal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+#customAlertModal.open {
+    display: flex;
+}
+.modal-content.small-modal {
+    background: rgba(21, 21, 23, 0.95); 
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    max-width: 400px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    backdrop-filter: blur(15px); 
+}
+.modal-content.small-modal h3 {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 10px;
+    color: #ffc107; 
+}
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.modal-actions .confirm-btn {
+    background: var(--danger-color); 
+    color: #fff;
+}
+.modal-actions .cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    border: none;
+}
+.modal-actions .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+}
 </style>
 </head>
 <body>
@@ -306,10 +356,63 @@ html,body{
             </tbody>
         </table>
     </div>
-    
+
+</div>
+
+<div class="modal-overlay" id="customAlertModal">
+    <div class="modal-content small-modal">
+        <h3 id="customAlertTitle">تأكيد الإجراء</h3>
+        <p id="customAlertMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
+        <div class="modal-actions" id="customAlertActions">
+            <button class="action-btn confirm-btn" id="customAlertConfirmBtn">نعم، تأكيد</button>
+            <button class="action-btn cancel-btn" id="customAlertCancelBtn">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <script>
+    // --- Global Custom Modal Logic (REPLACES alert() and confirm()) ---
+    let confirmCallback = null;
+
+    function showCustomAlert(message, title = 'إشعار') {
+        const modal = document.getElementById('customAlertModal');
+        document.getElementById('customAlertTitle').textContent = title;
+        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        document.getElementById('customAlertConfirmBtn').textContent = 'حسناً';
+        document.getElementById('customAlertCancelBtn').style.display = 'none'; 
+        document.getElementById('customAlertConfirmBtn').onclick = () => {
+            modal.classList.remove('open');
+        };
+        
+        modal.classList.add('open');
+    }
+
+    function showCustomConfirm(message, callback, title = 'تأكيد الإجراء') {
+        const modal = document.getElementById('customAlertModal');
+        document.getElementById('customAlertTitle').textContent = title;
+        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        document.getElementById('customAlertConfirmBtn').textContent = 'نعم، تأكيد';
+        document.getElementById('customAlertCancelBtn').style.display = 'inline-block';
+        
+        confirmCallback = callback;
+
+        document.getElementById('customAlertConfirmBtn').onclick = () => {
+            modal.classList.remove('open');
+            if (confirmCallback) {
+                confirmCallback(true);
+            }
+        };
+        
+        document.getElementById('customAlertCancelBtn').onclick = () => {
+            modal.classList.remove('open');
+        };
+        
+        modal.classList.add('open');
+    }
+
+
     // الحصول على رقم الطالب من الـ URL
     const urlParams = new URLSearchParams(window.location.search);
     const studentId = urlParams.get('id');
@@ -328,7 +431,7 @@ html,body{
             if (!response.ok) {
                 const error = await response.json();
                 document.getElementById('studentNameHeader').textContent = 'خطأ في جلب البيانات';
-                alert(error.message);
+                showCustomAlert(error.message, 'خطأ في جلب البيانات');
                 return;
             }
 
@@ -357,6 +460,7 @@ html,body{
         } catch (error) {
             console.error('Error:', error);
             document.getElementById('studentNameHeader').textContent = 'خطأ في الاتصال بالخادم';
+            showCustomAlert('فشل في الاتصال بالخادم عند محاولة جلب بيانات الطالب.', 'خطأ شبكة');
         }
     }
 
@@ -375,7 +479,7 @@ html,body{
         }
     }
     
-    // دالة عرض وإدارة المواد والحصص (الميزة الجديدة)
+    // دالة عرض وإدارة المواد والحصص
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -436,34 +540,38 @@ html,body{
         });
     }
 
-    // دالة الإدارة لتسجيل/شطب الحصص
+    // دالة الإدارة لتسجيل/شطب الحصص (تستخدم Custom Modal)
     async function updateSessionCount(studentId, subjectName, action) {
-        if (!confirm(`هل أنت متأكد من ${action === 'add' ? 'تسجيل حصة مكتملة' : 'التراجع عن حصة'} لمادة ${subjectName}؟`)) {
-            return;
-        }
         
-        const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
+        showCustomConfirm(
+            `هل أنت متأكد من ${action === 'add' ? 'تسجيل حصة مكتملة' : 'التراجع عن حصة'} لمادة **${subjectName}**؟`,
+            async (isConfirmed) => {
+                if (!isConfirmed) return;
+
+                const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
         
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ subjectName: subjectName })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert(result.message);
-                // إعادة جلب البيانات لتحديث العرض
-                fetchStudentDetails(studentId); 
-            } else {
-                alert(`فشل الإجراء: ${result.message}`);
-            }
-
-        } catch (error) {
-            alert('خطأ في الاتصال بالخادم.');
-        }
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ subjectName: subjectName })
+                    });
+        
+                    const result = await response.json();
+        
+                    if (response.ok) {
+                        showCustomAlert(result.message, 'نجاح');
+                        fetchStudentDetails(studentId); 
+                    } else {
+                        showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
+                    }
+        
+                } catch (error) {
+                    showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
+                }
+            },
+            action === 'add' ? 'تسجيل حضور' : 'تراجع عن حضور'
+        );
     }
 
 
@@ -477,7 +585,6 @@ html,body{
             ...record
         }));
         
-        // فرز السجلات حسب التاريخ تنازلياً
         records.sort((a, b) => b.timestamp - a.timestamp);
 
         if (records.length === 0) {
@@ -506,31 +613,35 @@ html,body{
         });
     }
 
-    // دالة حذف سجل الحضور (Check-in/Check-out)
+    // دالة حذف سجل الحضور (Check-in/Check-out) (تستخدم Custom Modal)
     async function deleteAttendanceRecord(studentId, attendanceId) {
-        if (!confirm('هل أنت متأكد من حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء.')) {
-            return;
-        }
+        
+        showCustomConfirm(
+            'هل أنت متأكد من حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء.',
+            async (isConfirmed) => {
+                if (!isConfirmed) return;
+                
+                try {
+                    const response = await fetch(`/attendance/${studentId}/${attendanceId}`, {
+                        method: 'DELETE'
+                    });
 
-        try {
-            const response = await fetch(`/attendance/${studentId}/${attendanceId}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
-                const row = document.getElementById(`attendance-row-${attendanceId}`);
-                if (row) {
-                    row.remove();
-                    alert('تم حذف السجل بنجاح.');
-                    // لا نحتاج لإعادة جلب كل شيء هنا، فقط حذف الصف كافٍ
+                    if (response.ok) {
+                        const row = document.getElementById(`attendance-row-${attendanceId}`);
+                        if (row) {
+                            row.remove();
+                            showCustomAlert('تم حذف السجل بنجاح.', 'نجاح');
+                        }
+                    } else {
+                        const error = await response.json();
+                        showCustomAlert(`فشل الحذف: ${error.message}`, 'خطأ في الحذف');
+                    }
+                } catch (error) {
+                    showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الحذف.', 'خطأ شبكة');
                 }
-            } else {
-                const error = await response.json();
-                alert(`فشل الحذف: ${error.message}`);
-            }
-        } catch (error) {
-            alert('خطأ في الاتصال بالخادم عند محاولة الحذف.');
-        }
+            },
+            'تأكيد الحذف'
+        );
     }
 
 </script>
