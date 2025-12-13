@@ -211,7 +211,7 @@ html,body{
   line-height: 1.6;
 }
 
-/* QR Scanner Modal/Overlay **الأنماط المعدلة لملء الشاشة وإصلاح الشاشة البيضاء** */
+/* QR Scanner Modal/Overlay - الأنماط المعدلة لملء الشاشة وإصلاح الشاشة البيضاء */
 .qr-scanner-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -238,6 +238,7 @@ html,body{
     z-index: 5001;
 }
 
+/* **التركيز هنا: أنماط قوية لإظهار الفيديو** */
 #reader {
     width: 100%; 
     max-width: 700px; 
@@ -249,30 +250,29 @@ html,body{
     position: relative;
     min-height: 300px; 
     
-    /* **إضافة جديدة لإصلاح الشاشة البيضاء** */
+    background-color: black; /* فرض خلفية سوداء للتأكد من أننا نرى الفيديو وليس اللون الأبيض */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* **الأنماط المعدلة لفرض إظهار الفيديو وتغطيته** */
-#reader video,
-#reader canvas { 
-    width: 100% !important; 
-    height: 100% !important; 
-    position: absolute; 
-    top: 0;
-    left: 0;
-    object-fit: cover !important; 
-    border: none !important;
-}
-
-/* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
+/* نمط لضمان أن العناصر الداخلية تملأ #reader */
 #reader div { 
     border: none !important;
     width: 100% !important; 
     height: 100% !important; 
     position: relative; 
+}
+
+/* أنماط قوية لتحديد حجم الفيديو/الكانفاس */
+#reader video,
+#reader canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover !important; 
+    z-index: 10; /* لضمان أنه فوق أي شيء آخر */
+    border: none !important;
 }
 
 .scan-message {
@@ -580,7 +580,7 @@ footer{
   let html5QrCode = null; 
 
 
-  // --- QR Scanner Functions (تم التعديل لتحسين الموثوقية) ---
+  // --- QR Scanner Functions (تم التعديل لطلب الكاميرا الخلفية فقط) ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
@@ -602,7 +602,7 @@ footer{
     }
   }
 
-  // وظيفة فتح الكاميرا 
+  // وظيفة فتح الكاميرا (للكاميرا الخلفية فقط)
   async function startScanner() {
     qrScannerOverlay.classList.add('active');
     
@@ -616,29 +616,32 @@ footer{
     };
 
     try {
-        // المحاولة الأولى: طلب الكاميرا الخلفية بشكل صريح (Environment)
-        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+        // طلب الكاميرا الخلفية بشكل صريح (Environment) 
+        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, (errorMessage) => {
+            // هذا يحدث إذا فشل فك الترميز وليس فشل بدء التشغيل
+            // هذا لكي لا تتوقف الكاميرا إذا لم تجد كود
+            console.log("QR decode failed:", errorMessage); 
+        });
         
-    } catch (errEnvironment) {
-        console.warn("Failed with environment mode, trying generic mode:", errEnvironment);
+    } catch (err) {
+        // فشل محاولة تشغيل الكاميرا بالكامل (بسبب الإذن أو عدم وجود كاميرا)
+        console.error("Failed to start QR scanner:", err);
         
-        try {
-            // المحاولة الثانية: ترك الخيار للمتصفح ليختار الكاميرا الافتراضية
-            await html5QrCode.start({ }, config, onScanSuccess);
+        let message = 'فشل في تشغيل الكاميرا.';
 
-        } catch (errGeneric) {
-            // فشل محاولة تشغيل الكاميرا بالكامل
-            console.error("Failed to start QR scanner in both modes:", errGeneric);
-            
-            if (errGeneric.name === "NotAllowedError") {
-                 alert('فشل في تشغيل الكاميرا: تم رفض إذن الوصول. الرجاء التحقق من إعدادات المتصفح وإعطاء الإذن.');
-            } else {
-                 alert('فشل في تشغيل الكاميرا. قد تكون المشكلة في إعدادات الأمان (HTTPS) أو عدم وجود كاميرا متاحة. (خطأ تقني: ' + errGeneric.message + ')');
-            }
-            stopScannerAndClose();
+        if (err.name === "NotAllowedError" || err.message.includes('permission')) {
+             message = 'فشل في تشغيل الكاميرا: تم رفض إذن الوصول. الرجاء التحقق من إعدادات المتصفح وإعطاء الإذن.';
+        } else if (err.name === "NotFoundError" || err.message.includes('No video input devices')) {
+             message = 'فشل في تشغيل الكاميرا: لم يتم العثور على كاميرا خلفية.';
+        } else {
+             message = 'فشل في تشغيل الكاميرا. قد تكون المشكلة في إعدادات الأمان أو عدم وجود كاميرا متاحة.';
         }
+
+        alert(message);
+        stopScannerAndClose();
     }
   }
+
 
   // وظيفة إغلاق الكاميرا والـ Overlay
   async function stopScannerAndClose() {
