@@ -16,6 +16,7 @@
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
   --accent-color: #3b82f6; 
+  --danger-color: #ef4444;
   --nav-height: 72px;
   --radius: 12px;
 }
@@ -64,7 +65,7 @@ html,body{
   gap:14px;
   flex-shrink: 0; 
   max-width: 80%;
-  order: 2; /* Position Brand on the right (RTL) */
+  order: 2; 
 }
 
 .brand img{
@@ -98,7 +99,7 @@ html,body{
 }
 
 .nav-buttons .btn {
-    padding: 8px 12px; /* Smaller size */
+    padding: 8px 12px; 
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
@@ -111,9 +112,8 @@ html,body{
     justify-content: center;
 }
 
-/* Glassy Gray Scan Button */
 .nav-buttons .btn-scan {
-    background: rgba(255, 255, 255, 0.08); /* Lighter gray/glassy */
+    background: rgba(255, 255, 255, 0.08); 
     color: var(--text-secondary);
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(8px);
@@ -125,9 +125,8 @@ html,body{
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Glassy Accent Register Button */
 .nav-buttons .btn-register {
-    background: rgba(59, 130, 246, 0.6); /* Accent Color - More transparent */
+    background: rgba(59, 130, 246, 0.6); 
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
@@ -165,7 +164,7 @@ html,body{
   line-height: 1.6;
 }
 
-/* STUDENT CARDS SECTION (Unchanged) */
+/* STUDENT CARDS SECTION */
 .student-cards-section {
   padding: 0 16px 20px 16px;
   max-width: 1200px;
@@ -183,22 +182,37 @@ html,body{
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 15px;
 }
+
+/* Enhanced Student Card Style */
 .student-card {
-  background: var(--drawer-bg);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05); /* Lighter glassy background */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* More prominent border */
   border-radius: var(--radius);
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   cursor: pointer;
+  backdrop-filter: blur(5px); /* Glassy effect */
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; 
+}
+.student-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+.student-card .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+    padding-bottom: 5px;
 }
 .student-card .name {
   font-weight: 700;
   font-size: 18px;
   color: var(--accent-color);
-  border-bottom: 1px dashed rgba(255,255,255,0.1);
-  padding-bottom: 5px;
+  margin-top: 0;
 }
 .student-card .details {
   font-size: 14px;
@@ -228,8 +242,60 @@ html,body{
   font-weight: 500;
 }
 
+/* Card Menu */
+.card-menu-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    transform: rotate(90deg); /* Three vertical dots (Unicode) */
+    transition: color 0.2s;
+}
+.card-menu-btn:hover {
+    color: #fff;
+}
+.card-menu-dropdown {
+    position: absolute;
+    top: 40px;
+    left: 10px; /* Position to the left side (RTL) */
+    background: var(--drawer-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    min-width: 180px;
+    z-index: 10;
+    display: none;
+    overflow: hidden;
+}
+.card-menu-dropdown.open {
+    display: block;
+}
+.card-menu-dropdown button {
+    width: 100%;
+    text-align: right;
+    padding: 10px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+    font-size: 14px;
+    display: block;
+}
+.card-menu-dropdown button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.delete-action {
+    color: var(--danger-color) !important;
+    font-weight: 600;
+}
 
-/* MODAL STYLES - Glassy */
+
+/* MODAL STYLES */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -244,7 +310,7 @@ html,body{
     display: flex;
 }
 .modal-content {
-    background: rgba(21, 21, 23, 0.95); /* Darker base for glassy look */
+    background: rgba(21, 21, 23, 0.95); 
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: var(--radius);
     padding: 30px;
@@ -256,7 +322,7 @@ html,body{
     position: relative;
     text-align: right;
     animation: fadeInScale 0.3s ease-out;
-    backdrop-filter: blur(15px); /* Stronger blur for modal */
+    backdrop-filter: blur(15px); 
 }
 @keyframes fadeInScale {
     from { opacity: 0; transform: scale(0.9); }
@@ -277,189 +343,49 @@ html,body{
     font-weight: 500;
     color: #e4e4e7;
 }
+/* ... (Existing input/select styles) ... */
 
-.modal-content input[type="text"], .modal-content select, .session-count-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    background: rgba(0,0,0,0.3);
-    color: var(--text-primary);
-    font-size: 16px;
-    font-family: inherit;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: left 10px center;
-    cursor: pointer;
+/* Custom Modal Specific Styles */
+#customAlertModal {
+    z-index: 5000; 
 }
-
-.name-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.modal-content.small-modal {
+    max-width: 400px;
+    padding: 20px;
+    text-align: center;
+}
+.modal-content.small-modal h3 {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 10px;
+    color: #ffc107; 
+}
+.modal-actions {
+    display: flex;
+    justify-content: center;
     gap: 15px;
-}
-.name-fields div {
-    margin-bottom: 15px;
-}
-.name-fields input {
-    margin-bottom: 0;
-}
-
-.subject-selection-area {
     margin-top: 20px;
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: rgba(255,255,255,0.03);
 }
-
-/* Updated Subject Checkboxes for Session Count */
-.subject-checkboxes {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.subject-item-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-}
-
-.subject-item-wrapper input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    height: 0;
-    width: 0;
-}
-
-.subject-item-wrapper label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-grow: 1; 
-    cursor: pointer;
-    font-weight: 400;
-    margin-bottom: 0;
-    user-select: none;
-}
-.subject-item-wrapper label::before {
-    content: '';
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--text-secondary);
-    border-radius: 4px;
-    background: transparent;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    margin-left: 5px; 
-}
-.subject-item-wrapper input[type="checkbox"]:checked + label {
-    color: #fff;
-}
-.subject-item-wrapper input[type="checkbox"]:checked + label::before {
-    border-color: var(--accent-color);
-    background: var(--accent-color);
-    content: '✓'; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 10px;
-    line-height: 1;
-}
-
-.subject-item-wrapper .session-count-input {
-    width: 120px;
-    margin-bottom: 0;
-    padding: 5px 10px;
+.modal-actions .action-btn {
+    flex: 1;
+    padding: 10px;
     font-size: 14px;
-    text-align: center;
-    flex-shrink: 0;
+    font-weight: 600;
 }
-
-.modal-content button {
-    padding: 10px 20px;
-    background: var(--accent-color);
+.modal-actions .confirm-btn {
+    background: var(--danger-color); 
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 16px;
-    transition: background 0.2s;
-    margin-top: 15px;
 }
-.modal-content button:hover {
-    background: #2563eb;
-}
-
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: transparent;
-    border: none;
+.modal-actions .cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
+    border: none;
+}
+.modal-actions .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
 }
 
-.modal-result {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.modal-result h4 {
-  color: #43cf66;
-  margin-bottom: 15px;
-}
-
-.modal-result img {
-  width: 150px;
-  height: 150px;
-  margin-bottom: 10px;
-  border: 1px solid var(--border-color);
-  padding: 5px;
-  background: #fff;
-  border-radius: 5px;
-}
-
-.modal-result .print-btn {
-  background: #ffc107;
-  color: #111;
-  margin-top: 10px;
-}
-
-/* Scan Modal specific styles */
-.scan-modal-content {
-    text-align: center;
-}
-.scan-modal-content h3 {
-    color: #ffc107;
-}
-.scan-area {
-    background: #000;
-    height: 300px;
-    border: 3px dashed var(--accent-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ddd;
-    margin-bottom: 20px;
-}
-.scan-modal-content button {
-    background: #ff6347;
-}
 
 footer{
   text-align:center;
@@ -484,7 +410,7 @@ footer{
       
       <button class="btn btn-register" id="openRegisterModalBtn">
         <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-        تسجيل طالب جديد
+        تسجيل طالب
       </button>
     </div>
 
@@ -508,7 +434,7 @@ footer{
   <main class="hero">
     <div class="hero-content">
       <h1>مرحباً بك في أكاديمية المعالي</h1>
-      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل طالب جديد" لتبدأ.</p>
+      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل طالب" لتبدأ.</p>
     </div>
   </main> 
 
@@ -574,8 +500,19 @@ footer{
           </p>
       </div>
       
-      <button onclick="alert('لم يتم دمج مكتبة قارئ QR بعد.')">محاكاة المسح</button>
+      <button onclick="showCustomAlert('لم يتم دمج مكتبة قارئ QR بعد.', 'خطأ')">محاكاة المسح</button>
     </div>
+  </div>
+
+  <div class="modal-overlay" id="customAlertModal">
+      <div class="modal-content small-modal">
+          <h3 id="customAlertTitle">تأكيد الإجراء</h3>
+          <p id="customAlertMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
+          <div class="modal-actions" id="customAlertActions">
+              <button class="action-btn confirm-btn" id="customAlertConfirmBtn">نعم، تأكيد</button>
+              <button class="action-btn cancel-btn" id="customAlertCancelBtn">إلغاء</button>
+          </div>
+      </div>
   </div>
 
   <footer>
@@ -584,6 +521,49 @@ footer{
 </div>
 
 <script>
+  // --- Global Custom Modal Logic (REPLACES alert() and confirm()) ---
+  let confirmCallback = null;
+
+  function showCustomAlert(message, title = 'إشعار') {
+      const modal = document.getElementById('customAlertModal');
+      document.getElementById('customAlertTitle').textContent = title;
+      document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+      document.getElementById('customAlertConfirmBtn').textContent = 'حسناً';
+      document.getElementById('customAlertCancelBtn').style.display = 'none'; 
+      document.getElementById('customAlertConfirmBtn').onclick = () => {
+          modal.classList.remove('open');
+      };
+      
+      modal.classList.add('open');
+  }
+
+  function showCustomConfirm(message, callback, title = 'تأكيد الإجراء') {
+      const modal = document.getElementById('customAlertModal');
+      document.getElementById('customAlertTitle').textContent = title;
+      document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      
+      document.getElementById('customAlertConfirmBtn').textContent = 'نعم، تأكيد';
+      document.getElementById('customAlertCancelBtn').style.display = 'inline-block';
+      
+      confirmCallback = callback;
+
+      document.getElementById('customAlertConfirmBtn').onclick = () => {
+          modal.classList.remove('open');
+          if (confirmCallback) {
+              confirmCallback(true);
+          }
+      };
+      
+      document.getElementById('customAlertCancelBtn').onclick = () => {
+          modal.classList.remove('open');
+          // No need to call callback(false) here, just close
+      };
+      
+      modal.classList.add('open');
+  }
+
+
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
@@ -603,7 +583,7 @@ footer{
   const qrCodeImage = document.getElementById('qrCodeImage');
   const resultMessage = document.getElementById('resultMessage');
 
-  let COURSES_DATA = {}; // تخزين هيكل البيانات
+  let COURSES_DATA = {}; 
   
   // --- Modal Toggles ---
   openRegisterModalBtn.addEventListener('click', () => {
@@ -637,6 +617,16 @@ footer{
   function closeScanModal() {
     scanModal.classList.remove('open');
   }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+      if (!e.target.closest('.student-card')) {
+          document.querySelectorAll('.card-menu-dropdown.open').forEach(m => {
+              m.classList.remove('open');
+          });
+      }
+  });
+
 
   // --- Dynamic Registration Form Logic ---
   
@@ -691,7 +681,6 @@ footer{
         const streamNames = Object.keys(streams);
 
         if (streamNames.length > 1 || (streamNames.length === 1 && streamNames[0] !== 'عامة')) {
-            // High school level: Requires stream selection
             for (const streamName of streamNames) {
                 const option = document.createElement('option');
                 option.value = streamName;
@@ -700,7 +689,6 @@ footer{
             }
             streamSelect.disabled = false;
         } else if (streamNames.includes('عامة')) {
-            // Primary/Middle school (General Stream): Populate subjects directly
             streamSelect.value = 'عامة';
             streamSelect.disabled = true;
             populateSubjects(streams['عامة']);
@@ -722,7 +710,7 @@ footer{
     }
   });
 
-  // 5. Render Subjects Checkboxes (UPDATED to include session count)
+  // 5. Render Subjects Checkboxes 
   function populateSubjects(subjectsArray) {
     subjectCheckboxes.innerHTML = '';
     if (subjectsArray.length === 0) {
@@ -754,7 +742,6 @@ footer{
         sessionInput.id = `count-${uniqueId}`;
         sessionInput.disabled = true; 
         
-        // تفعيل/تعطيل حقل العدد بناءً على تحديد المربع
         checkbox.addEventListener('change', (e) => {
             sessionInput.disabled = !e.target.checked;
             if (e.target.checked) {
@@ -773,7 +760,7 @@ footer{
   }
 
 
-  // --- Registration logic (UPDATED to send session count) ---
+  // --- Registration logic (Using custom alert) ---
   registerButton.addEventListener('click', async () => {
     const name = document.getElementById('studentName').value.trim();
     const lastName = document.getElementById('studentLastName').value.trim();
@@ -781,7 +768,6 @@ footer{
     const year = yearSelect.value;
     const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
-    // جمع المواد المختارة وعدد الحصص
     const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
                                 .map(checkbox => {
                                     const subjectName = checkbox.value;
@@ -790,8 +776,7 @@ footer{
                                     const sessionCount = parseInt(countInput.value, 10);
                                     
                                     if (!sessionCount || sessionCount < 1) {
-                                        alert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`);
-                                        // Throwing an error here stops the map function and prevents registration submission
+                                        showCustomAlert(`الرجاء تحديد عدد الحصص الكلي لمادة **${subjectName}**. يجب أن يكون العدد 1 أو أكثر.`, 'خطأ في الإدخال');
                                         throw new Error('Missing session count'); 
                                     }
                                     
@@ -802,11 +787,10 @@ footer{
                                 });
 
     if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
-        alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.');
+        showCustomAlert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.', 'بيانات ناقصة');
         return;
     }
     
-    // إخفاء النموذج وعرض رسالة التحميل
     registrationForm.style.display = 'none';
     resultMessage.textContent = 'جارٍ تسجيل الطالب...';
     resultMessage.style.color = '#fff';
@@ -816,16 +800,14 @@ footer{
     try {
         const response = await fetch('/register', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 name: name,
                 lastName: lastName,
                 phase: phase,
                 year: year,
                 stream: stream,
-                subjects: selectedSubjects // تمرير الهيكل الجديد
+                subjects: selectedSubjects 
             })
         });
 
@@ -836,9 +818,8 @@ footer{
             resultMessage.style.color = '#43cf66';
             qrCodeImage.src = result.qrCodeUrl;
             qrCodeImage.style.display = 'block';
-            fetchStudentCards(); // تحديث قائمة الطلاب
+            fetchStudentCards(); 
         } else {
-            // عرض رسالة الخطأ الواضحة من الخادم
             resultMessage.textContent = `فشل التسجيل: ${result.message}`;
             resultMessage.style.color = '#ff6347';
         }
@@ -846,17 +827,58 @@ footer{
     } catch (error) {
         if (error.message !== 'Missing session count') {
             console.error('Network or internal registration error:', error);
-            resultMessage.textContent = 'خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.';
-            resultMessage.style.color = '#ff6347';
+            showCustomAlert('خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.', 'خطأ شبكة');
         }
-        // في حالة وجود خطأ في الحصص، نعيد عرض النموذج
         registrationForm.style.display = 'block';
         modalResult.style.display = 'none';
     }
   });
 
+  // --- Card Menu Functions ---
+  function toggleCardMenu(button, id) {
+      const menu = document.getElementById(`menu-${id}`);
+      // Close all other menus
+      document.querySelectorAll('.card-menu-dropdown.open').forEach(m => {
+          if (m.id !== `menu-${id}`) m.classList.remove('open');
+      });
+      menu.classList.toggle('open');
+  }
 
-  // --- Student Cards Display Logic (Updated to show subject count summary) ---
+  // Custom Delete Confirmation (Uses Custom Modal)
+  function confirmDelete(id, name) {
+      showCustomConfirm(
+          `هل أنت متأكد من حذف الطالب **${name}** نهائياً؟ سيتم حذف جميع بياناته وسجلات الحضور المرتبطة به.`,
+          (isConfirmed) => {
+              if (isConfirmed) {
+                  deleteStudent(id);
+              }
+          },
+          'تأكيد حذف الطالب'
+      );
+  }
+
+  // Delete Student Function
+  async function deleteStudent(id) {
+      try {
+          const response = await fetch(`/student/${id}`, {
+              method: 'DELETE'
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+              showCustomAlert(result.message, 'نجاح');
+              fetchStudentCards(); // Refresh list
+          } else {
+              showCustomAlert(result.message, 'خطأ في الحذف');
+          }
+      } catch (error) {
+          showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الحذف.', 'خطأ شبكة');
+      }
+  }
+
+
+  // --- Student Cards Display Logic ---
   async function fetchStudentCards() {
       loadingMessage.style.display = 'block';
       studentCardsContainer.innerHTML = ''; 
@@ -884,23 +906,33 @@ footer{
                   detailsText += ` | ${student.stream}`;
               }
               
-              // ملخص المواد
               const subjectSummary = student.subjects 
                                         ? student.subjects.map(s => `${s.name} (${s.completedSessions}/${s.totalSessions})`).join(' | ') 
                                         : 'لا توجد مواد';
 
 
               card.innerHTML = `
-                  <div class="name">${student.name}</div>
+                  <div class="header-row">
+                      <div class="name">${student.name}</div>
+                      <button class="card-menu-btn" data-id="${id}" onclick="event.stopPropagation(); toggleCardMenu(this, '${id}')">&#8942;</button>
+                  </div>
                   <div class="details">
                       <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
-                      <span class="status-indicator ${statusClass}">${statusText}</span>
+                      <span class="status-indicator ${statusClass}" onclick="event.stopPropagation();">${statusText}</span>
                   </div>
                   <div class="subjects"><strong>ملخص الحصص:</strong> ${subjectSummary}</div>
+                  
+                  <div class="card-menu-dropdown" id="menu-${id}">
+                      <button onclick="event.stopPropagation(); window.location.href = '/profile.html?id=${id}'">عرض الملف الشخصي</button>
+                      <button class="delete-action" onclick="event.stopPropagation(); confirmDelete('${id}', '${student.name}')">حذف الطالب</button>
+                  </div>
               `;
               
-              card.addEventListener('click', () => {
-                  window.location.href = `/profile.html?id=${id}`;
+              card.addEventListener('click', (e) => {
+                  // Only navigate if click is not on a button/menu area
+                  if (!e.target.closest('button')) {
+                       window.location.href = `/profile.html?id=${id}`;
+                  }
               });
               
               studentCardsContainer.appendChild(card);
@@ -921,6 +953,7 @@ footer{
         fetchStudentCards();
     } catch (error) {
         console.error('Initial load failed:', error);
+        // Handle initial load failure gracefully
     }
   }
 
