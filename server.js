@@ -24,24 +24,31 @@ let isFirebaseReady = false;
 
 try {
     if (!admin.apps.length) { 
+        // استخدام متغيرات البيئة مباشرةً كما يجب في بيئات الإنتاج (مثل Vercel)
         const serviceAccountJson = process.env.SERVICE_ACCOUNT_KEY;
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
-            console.error("Missing Firebase environment variables. API calls will fail.");
+            console.error("Missing Firebase environment variables. API calls will fail. Check SERVICE_ACCOUNT_KEY and FIREBASE_DATABASE_URL.");
         } else {
-            const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
-            const serviceAccount = JSON.parse(cleanJsonString);
+            // معالجة سلسلة JSON وتجربة التحليل
+            try {
+                // تنظيف وازالة أي علامات اقتباس محيطة
+                const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
+                const serviceAccount = JSON.parse(cleanJsonString);
 
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
-                databaseURL: databaseURL
-            });
-            console.log("Firebase Admin SDK initialized successfully.");
-            
-            db = admin.database();
-            studentsRef = db.ref('students');
-            isFirebaseReady = true;
+                admin.initializeApp({
+                    credential: admin.credential.cert(serviceAccount),
+                    databaseURL: databaseURL
+                });
+                console.log("Firebase Admin SDK initialized successfully.");
+                
+                db = admin.database();
+                studentsRef = db.ref('students');
+                isFirebaseReady = true;
+            } catch (jsonError) {
+                 console.error("Failed to parse SERVICE_ACCOUNT_KEY JSON. Ensure it is a valid, unescaped JSON string in the environment variable.", jsonError.message);
+            }
         }
     }
 } catch (error) {
@@ -50,15 +57,21 @@ try {
 
 
 // =======================================================
-// بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - مفصلة
+// بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - مفصلة وكاملة
 // =======================================================
 const courses = {
     "المرحلة الابتدائية": {
         "السنة الأولى ابتدائي": {
             "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية فنية", "تربية بدنية"]
         },
+        "السنة الثانية ابتدائي": { 
+            "عامة": ["لغة عربية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تربية علمية", "تربية فنية"]
+        },
         "السنة الثالثة ابتدائي": {
             "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "تربية فنية"]
+        },
+        "السنة الرابعة ابتدائي": { 
+            "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"]
         },
         "السنة الخامسة ابتدائي": {
             "عامة": ["لغة عربية", "لغة فرنسية", "تربية إسلامية", "تربية مدنية", "رياضيات", "تاريخ وجغرافيا", "علوم طبيعية"]
@@ -66,6 +79,12 @@ const courses = {
     },
     "المرحلة المتوسطة": {
         "السنة الأولى متوسط": {
+            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"]
+        },
+        "السنة الثانية متوسط": { 
+            "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "تربية مدنية"]
+        },
+        "السنة الثالثة متوسط": { 
             "عامة": ["لغة عربية", "لغة فرنسية", "لغة إنجليزية", "رياضيات", "علوم فيزيائية وتكنولوجية", "علوم طبيعية", "تاريخ وجغرافيا", "تربية إسلامية", "إعلام آلي"]
         },
         "السنة الرابعة متوسط": {
@@ -79,7 +98,9 @@ const courses = {
         },
         "السنة الثانية ثانوي": {
             "شعبة علوم تجريبية": ["علوم طبيعية", "فيزياء", "رياضيات", "لغة عربية", "فلسفة", "لغة فرنسية", "لغة إنجليزية"],
+            "شعبة تقني رياضي": ["هندسة ميكانيكية/كهربائية/مدنية/طرائق", "رياضيات", "فيزياء", "علوم طبيعية/تكنولوجيا", "لغة عربية", "فلسفة", "لغة فرنسية", "لغة إنجليزية"],
             "شعبة تسيير واقتصاد": ["المحاسبة والمالية", "القانون", "الاقتصاد والمناجمنت", "الرياضيات", "التاريخ والجغرافيا", "لغة عربية", "لغة فرنسية", "لغة إنجليزية"], 
+            "شعبة آداب وفلسفة": ["فلسفة", "لغة عربية", "تاريخ وجغرافيا", "لغة فرنسية", "لغة إنجليزية"],
             "شعبة لغات أجنبية": ["لغة أجنبية 1 (فرنسية)", "لغة أجنبية 2 (إنجليزية)", "لغة أجنبية 3 (إسبانية)", "فلسفة", "لغة عربية", "تاريخ وجغرافيا"]
         },
         "السنة الثالثة ثانوي (بكالوريا)": {
@@ -98,6 +119,7 @@ const courses = {
 function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
         return res.status(500).json({ 
+            // رسالة أوضح للطالب في حال فشل الخادم
             message: 'خطأ في تهيئة الخادم. الرجاء التأكد من ضبط متغيرات بيئة Firebase (SERVICE_ACCOUNT_KEY و FIREBASE_DATABASE_URL).',
             error: 'FirebaseNotInitialized'
         });
