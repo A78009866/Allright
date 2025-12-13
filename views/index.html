@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أكاديمية المعالي</title>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles */
+/* CSS styles (unchanged from the last revision, but included for completeness) */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
@@ -67,7 +67,7 @@ html,body{
   align-items:center;
   gap:10px; 
   flex-shrink: 0; 
-  order: 1; 
+  order: 1; /* أقصى اليمين في نمط RTL */
 }
 
 .brand-group img{
@@ -97,7 +97,7 @@ html,body{
     display: flex;
     align-items: center;
     gap: 8px; 
-    order: 2; 
+    order: 2; /* أقصى اليسار في نمط RTL */
     flex-shrink: 0;
 }
 
@@ -113,7 +113,6 @@ html,body{
     font-size: 12px; 
     justify-content: center;
     white-space: nowrap; 
-    border: none;
 }
 
 /* زر المسح (QR) */
@@ -221,15 +220,14 @@ html,body{
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; 
-    padding: 40px 10px; 
+    justify-content: center;
+    padding: 20px;
 }
 .qr-scanner-overlay.active {
     display: flex;
 }
-/* زر الإلغاء في الماسح */
 .qr-scanner-overlay button {
-    margin-top: 25px; 
+    margin-top: 15px;
     padding: 10px 20px;
     background: #ff6347;
     color: white;
@@ -238,59 +236,27 @@ html,body{
     cursor: pointer;
     font-size: 16px;
     z-index: 5001;
-    transition: background 0.3s;
 }
-.qr-scanner-overlay button:hover {
-    background: #e04e33;
-}
-
-/* --- إصلاح الكاميرا: استخدام وضع مطلق لملء الحاوية --- */
 #reader {
-    width: 100%; 
-    max-width: 700px; 
-    flex-grow: 1; 
+    width: 90%; 
+    max-width: 400px; 
     border: 3px solid var(--accent-color);
     border-radius: var(--radius);
     overflow: hidden;
-    position: relative; /* الأب يجب أن يكون موضعاً نسبياً */
-    min-height: 300px; 
-    background-color: black; 
-    /* تم إزالة display: flex; */
+    position: relative;
 }
-
-/* ضمان أن الحاوية الداخلية تملأ الأب تماماً */
+/* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
 #reader div { 
     border: none !important;
-    width: 100% !important; 
-    height: 100% !important; 
-    position: absolute; /* تعيين موقع مطلق */
-    top: 0;
-    left: 0;
 }
-
-/* ضمان أن الفيديو والكانفاس يملأ الحاوية الداخلية تماماً */
-#reader video,
-#reader canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
-    object-fit: cover !important; 
-    z-index: 10; 
-    border: none !important;
-    position: absolute; /* التأكد من عدم وجود مسافات بيضاء */
-    top: 0;
-    left: 0;
-}
-/* --- نهاية إصلاح الكاميرا --- */
-
 
 .scan-message {
-    margin-bottom: 25px; 
+    margin-bottom: 15px;
     color: #fff;
-    font-size: 18px; 
+    font-size: 16px;
 }
 
-/* --- STUDENT CARDS SECTION (unchanged) --- */
+/* باقي الأنماط... (الطلاب، النماذج، إلخ) */
 .student-cards-section {
   padding: 0 16px 20px 16px;
   max-width: 1200px;
@@ -355,8 +321,6 @@ html,body{
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-/* --- MODAL OVERLAY & CONTENT (Glassy Update) --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -371,19 +335,18 @@ html,body{
     display: flex;
 }
 .modal-content {
-    /* الخلفية الزجاجية الجديدة */
-    background: rgba(21, 21, 23, 0.85); /* أكثر شفافية قليلاً */
-    border: 1px solid rgba(255,255,255,0.15); /* حدود أوضح */
+    background: rgba(21, 21, 23, 0.95); 
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: var(--radius);
     padding: 20px; 
     width: 95%; 
     max-width: 500px; 
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.7); /* ظل أقوى */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     position: relative;
     text-align: right;
-    backdrop-filter: blur(20px); /* تمويه أقوى للمظهر الزجاجي */
+    backdrop-filter: blur(15px); 
 }
 
 .modal-content h3 {
@@ -404,24 +367,19 @@ html,body{
 
 .modal-content input[type="text"], .modal-content select, .session-count-input {
     width: 100%;
-    padding: 10px; /* زيادة حجم الحقل */
+    padding: 8px;
     margin-bottom: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px; /* حواف أكثر مرونة */
-    background: rgba(0,0,0,0.5); /* خلفية معتمة للحقول */
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
     color: var(--text-primary);
-    font-size: 15px;
+    font-size: 14px;
     font-family: inherit;
     appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: left 10px center;
     cursor: pointer;
-    transition: border-color 0.3s;
-}
-.modal-content input[type="text"]:focus, .modal-content select:focus {
-    border-color: var(--accent-color);
-    outline: none;
 }
 
 .name-fields {
@@ -450,84 +408,20 @@ html,body{
 
 .subject-item-wrapper {
     padding: 6px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.subject-item-wrapper label {
-    flex-grow: 1;
-    margin: 0;
-    cursor: pointer;
-}
-.subject-item-wrapper input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-    cursor: pointer;
 }
 
 .subject-item-wrapper .session-count-input {
     width: 100px;
     padding: 4px 8px;
     font-size: 12px;
-    margin: 0;
 }
 
-/* --- BUTTONS STYLING (Flexible/Fluent Design) --- */
 .modal-content button {
-    padding: 10px 20px;
-    border-radius: 10px; /* حواف أكثر مرونة */
-    font-size: 15px;
-    margin-top: 15px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    cursor: pointer;
-    border: 1px solid transparent;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 12px;
 }
-
-.btn-primary {
-    background: var(--accent-color);
-    color: white;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-.btn-primary:hover {
-    background: #2563eb;
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-}
-
-/* أزرار النتيجة والإغلاق */
-.modal-result button {
-    background: var(--drawer-bg);
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-    margin-right: 10px;
-}
-.modal-result button:hover {
-    background: var(--accent-color);
-    color: var(--text-primary);
-}
-
-/* زر إغلاق المودال العلوي */
-.modal-content .modal-close-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
-    font-size: 24px;
-    padding: 0 10px;
-    line-height: 24px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: none;
-    margin: 0;
-}
-.modal-content .modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    color: #fff;
-}
-
 
 footer{
   text-align:center;
@@ -614,13 +508,13 @@ footer{
             الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
           </div>
         </div>
-        <button id="registerButton" class="btn-primary">تسجيل الطالب</button>
+        <button id="registerButton">تسجيل الطالب</button>
       </div>
       
       <div class="modal-result" id="modalResult" style="display:none;">
         <h4 id="resultMessage"></h4>
         <img id="qrCodeImage" src="" alt="QR Code">
-        <button class="print-btn btn-primary">طباعة رمز QR</button>
+        <button class="print-btn" onclick="window.print()">طباعة رمز QR</button>
         <button onclick="closeRegistrationModal()">إغلاق</button>
       </div>
     </div>
@@ -644,7 +538,7 @@ footer{
   const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
   const registrationModal = document.getElementById('registrationModal');
   const scanBtn = document.getElementById('scanBtn'); 
-  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); 
+  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); // الماسح
 
   const phaseSelect = document.getElementById('phaseSelect');
   const yearSelect = document.getElementById('yearSelect');
@@ -658,32 +552,27 @@ footer{
   const resultMessage = document.getElementById('resultMessage');
 
   let COURSES_DATA = {}; 
-  let html5QrCode = null; 
+  let html5QrCode = null; // متغير لتخزين مثيل الماسح
 
 
   // --- QR Scanner Functions ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
-    await stopScannerAndClose(); 
+    await stopScannerAndClose(); // إغلاق الكاميرا والـ Overlay
     
-    // افتراض أن الكود الممسوح هو رابط لصفحة الملف الشخصي
-    const url = decodedText.trim(); 
+    // افتراض أن الكود الممسوح هو معرف الطالب (ID)
+    const studentId = decodedText.trim(); 
     
-    // تأكد من أن النص الممسوح هو مسار صالح لصفحة الملف الشخصي
-    if (url.startsWith('/profile.html')) {
-        window.location.href = url;
+    if (studentId) {
+        // توجيه المستخدم لصفحة الملف الشخصي
+        window.location.href = `/profile.html?id=${studentId}`;
     } else {
-        // احتياطي: إذا كان مجرد معرف
-        if (url.length > 5) {
-            window.location.href = `/profile.html?id=${url}`;
-        } else {
-             alert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.');
-        }
+        alert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.');
     }
   }
 
-  // وظيفة فتح الكاميرا (للكاميرا الخلفية فقط)
+  // وظيفة فتح الكاميرا
   async function startScanner() {
     qrScannerOverlay.classList.add('active');
     
@@ -692,36 +581,24 @@ footer{
     }
 
     const config = { 
-        fps: 5, // خفض FPS لتقليل الغلتش
+        fps: 10, 
         qrbox: {width: 250, height: 250},
-        videoConstraints: {
-            facingMode: "environment" // فرض الكاميرا الخلفية
+        videoConstraints: { // إضافة القيود هنا لمنع التذبذب
+            facingMode: "environment", // الكاميرا الخلفية
+            width: { ideal: 1280, min: 640 }, 
+            height: { ideal: 720, min: 480 } 
         }
     };
 
     try {
-        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, (errorMessage) => {
-            console.log("QR decode failed:", errorMessage); 
-        });
-        
+        // نمرر facingMode في الوسيط الأول أيضاً لضمان الطلب الصحيح للكاميرا
+        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
     } catch (err) {
         console.error("Failed to start QR scanner:", err);
-        
-        let message = 'فشل في تشغيل الكاميرا.';
-
-        if (err.name === "NotAllowedError" || err.message.includes('permission')) {
-             message = 'فشل في تشغيل الكاميرا: تم رفض إذن الوصول. الرجاء التحقق من إعدادات المتصفح وإعطاء الإذن.';
-        } else if (err.name === "NotFoundError" || err.message.includes('No video input devices')) {
-             message = 'فشل في تشغيل الكاميرا: لم يتم العثور على كاميرا خلفية.';
-        } else {
-             message = 'فشل في تشغيل الكاميرا. قد تكون المشكلة في إعدادات الأمان أو عدم وجود كاميرا متاحة.';
-        }
-
-        alert(message);
+        alert('فشل في تشغيل الكاميرا. تأكد من إعطاء إذن الوصول وأنك تستخدم HTTPS أو localhost.');
         stopScannerAndClose();
     }
   }
-
 
   // وظيفة إغلاق الكاميرا والـ Overlay
   async function stopScannerAndClose() {
@@ -909,9 +786,7 @@ footer{
     const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
     // جمع المواد المختارة وعدد الحصص
-    let selectedSubjects = [];
-    try {
-         selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
+    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
                                 .map(checkbox => {
                                     const subjectName = checkbox.value;
                                     const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
@@ -928,11 +803,6 @@ footer{
                                         sessionCount: sessionCount
                                     };
                                 });
-    } catch (e) {
-        if (e.message === 'Missing session count') return; 
-        throw e;
-    }
-
 
     if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
         alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.');
@@ -1061,4 +931,4 @@ footer{
 </script>
 </body>
 
-        </html>
+</html>
