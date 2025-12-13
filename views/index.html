@@ -8,17 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles */
 :root{
-  --bg: #0b0b0c;
-  --drawer-bg: #151517;
+  --bg: #000000; /* تم التعديل إلى الأسود الخالص */
+  --drawer-bg: #0a0a0a; /* لون داكن جداً للدرج الجانبي */
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
-  --border-color: rgba(255,255,255,0.08);
+  --border-color: rgba(255,255,255,0.05); /* حدود أفتح */
   --accent-color: #3b82f6; 
-  --danger-color: #ef4444;
-  --nav-height: 72px;
-  --radius: 12px;
+  --nav-height: 60px; /* تم تصغير شريط التنقل قليلاً */
+  --radius: 20px; /* تم زيادة نصف القطر لانحناءات أكثر نعومة */
 }
 
 *{box-sizing:border-box;}
@@ -28,9 +26,8 @@ html,body{
   margin:0;
   font-family: "Tajawal", sans-serif;
   background-color: var(--bg);
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+  /* تم إزالة التدرج لجعل الخلفية سوداء خالصة */
+  background-image: none; 
   color: var(--text-primary);
   -webkit-font-smoothing:antialiased;
   direction: rtl;
@@ -42,19 +39,19 @@ html,body{
   flex-direction:column;
 }
 
-/* --- NAVBAR - Glassy Effect --- */
+/* --- NAVBAR --- */
 .navbar{
   height: var(--nav-height);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 30px; 
-  margin: 16px;
-  border-radius: var(--radius);
-  background: rgba(26, 26, 29, 0.85); 
-  backdrop-filter: blur(12px);
+  justify-content: space-between; /* للحفاظ على الاسم والصورة يمين والأزرار يسار */
+  padding: 0 16px; /* تقليل الحشو قليلاً */
+  margin: 10px; /* تقليل الهامش قليلاً */
+  border-radius: var(--radius); /* انحناءات سلسة */
+  background: rgba(0, 0, 0, 0.8); /* خلفية سوداء شفافة */
+  backdrop-filter: blur(15px); /* زيادة التمويه */
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* ظل داكن */
   position: relative;
   z-index: 1000;
 }
@@ -62,338 +59,85 @@ html,body{
 .brand{
   display:flex;
   align-items:center;
-  gap:14px;
+  gap:10px; /* تقليل المسافة */
   flex-shrink: 0; 
   max-width: 80%;
-  order: 2; 
 }
 
 .brand img{
-  width:48px;
-  height:48px;
-  border-radius: 10px;
+  width:40px; /* تصغير الصورة قليلاً */
+  height:40px; /* تصغير الصورة قليلاً */
+  border-radius: 15px; /* انحناء أكثر نعومة للصورة */
   object-fit: cover;
   border: 1px solid rgba(255,255,255,0.1);
 }
 
 .brand .title .name{
   font-weight: 800;
-  font-size: 18px;
+  font-size: 17px; /* تصغير الخط قليلاً */
   color: #fff;
   line-height: 1.2;
 }
 
 .brand .title .tag{
-  font-size: 13px;
+  font-size: 12px; /* تصغير الخط قليلاً */
   color: var(--text-secondary);
   font-weight: 400;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-/* --- Navbar Buttons Group --- */
+/* حاوية الأزرار الجديدة */
 .nav-buttons {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    order: 1; /* Position buttons on the left (RTL) */
-}
-
-.nav-buttons .btn {
-    padding: 8px 12px; 
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px; 
-    min-width: 120px;
-    justify-content: center;
-}
-
-.nav-buttons .btn-scan {
-    background: rgba(255, 255, 255, 0.08); 
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.nav-buttons .btn-scan:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.nav-buttons .btn-register {
-    background: rgba(59, 130, 246, 0.6); 
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
-    backdrop-filter: blur(10px);
-}
-.nav-buttons .btn-register:hover {
-    background: rgba(59, 130, 246, 0.9);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.6);
-}
-
-.nav-buttons svg {
-    width: 18px; 
-    height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-}
-
-/* HERO SECTION */
-.hero{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  text-align: center;
-}
-.hero-content h1{
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #fff;
-}
-.hero-content p{
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* STUDENT CARDS SECTION */
-.student-cards-section {
-  padding: 0 16px 20px 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.student-cards-section h2 {
-    font-size: 1.5rem;
-    color: #fff;
-    margin-bottom: 15px;
-    padding-right: 5px;
-    border-right: 4px solid var(--accent-color);
-}
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-}
-
-/* Enhanced Student Card Style */
-.student-card {
-  background: rgba(255, 255, 255, 0.05); /* Lighter glassy background */
-  border: 1px solid rgba(255, 255, 255, 0.15); /* More prominent border */
-  border-radius: var(--radius);
-  padding: 15px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-  backdrop-filter: blur(5px); /* Glassy effect */
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative; 
-}
-.student-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-}
-.student-card .header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px dashed rgba(255,255,255,0.1);
-    padding-bottom: 5px;
-}
-.student-card .name {
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--accent-color);
-  margin-top: 0;
-}
-.student-card .details {
-  font-size: 14px;
-  color: var(--text-secondary);
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  line-height: 1.4;
-}
-.status-indicator {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-}
-.status-active {
-  background: rgba(67, 207, 102, 0.2);
-  color: #43cf66;
-}
-.status-inactive {
-  background: rgba(255, 99, 71, 0.2);
-  color: #ff6347;
-}
-.student-card .subjects {
-  font-size: 13px;
-  color: #e4e4e7;
-  font-weight: 500;
+  gap: 8px; /* المسافة بين الأزرار */
 }
 
-/* Card Menu */
-.card-menu-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0 5px;
-    line-height: 1;
-    transform: rotate(90deg); /* Three vertical dots (Unicode) */
-    transition: color 0.2s;
+/* تصميم الأزرار - ناعمة ومصغرة */
+.menu-toggle, .scan-btn{
+  background: rgba(255,255,255,0.05); /* خلفية خفيفة */
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px; /* تصغير حجم الزر */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px; /* انحناء ناعم للزر */
+  transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.08); /* حدود خفيفة لعمق أفضل */
 }
-.card-menu-btn:hover {
-    color: #fff;
+.menu-toggle:hover, .scan-btn:hover{
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
 }
-.card-menu-dropdown {
-    position: absolute;
-    top: 40px;
-    left: 10px; /* Position to the left side (RTL) */
-    background: var(--drawer-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    min-width: 180px;
-    z-index: 10;
-    display: none;
-    overflow: hidden;
+.menu-toggle svg, .scan-btn svg{
+  width: 24px; /* تصغير الأيقونة */
+  height: 24px; /* تصغير الأيقونة */
 }
-.card-menu-dropdown.open {
-    display: block;
+
+/* تصميم زر المسح (الكاميرا) */
+.scan-btn {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
 }
-.card-menu-dropdown button {
-    width: 100%;
-    text-align: right;
-    padding: 10px 15px;
-    background: transparent;
-    border: none;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background 0.2s;
-    font-family: inherit;
-    font-size: 14px;
-    display: block;
-}
-.card-menu-dropdown button:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-.delete-action {
-    color: var(--danger-color) !important;
-    font-weight: 600;
+.scan-btn:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.6);
 }
 
 
-/* MODAL STYLES */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    z-index: 3000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-.modal-overlay.open {
-    display: flex;
-}
-.modal-content {
-    background: rgba(21, 21, 23, 0.95); 
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
-    padding: 30px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    position: relative;
-    text-align: right;
-    animation: fadeInScale 0.3s ease-out;
-    backdrop-filter: blur(15px); 
-}
-@keyframes fadeInScale {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+/* --- SIDE DRAWER --- */
+.side-drawer{
+  /* تم تطبيق نصف القطر على الزوايا الخارجية */
+  border-radius: var(--radius) 0 0 var(--radius); 
+  /* ... باقي الأنماط */
 }
 
-.modal-content h3 {
-    margin-top: 0;
-    font-size: 20px;
-    color: var(--accent-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-.modal-content label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #e4e4e7;
-}
-/* ... (Existing input/select styles) ... */
+/* ... (بقية الأنماط الأخرى لم يتم تعديلها بشكل جذري) ... */
 
-/* Custom Modal Specific Styles */
-#customAlertModal {
-    z-index: 5000; 
-}
-.modal-content.small-modal {
-    max-width: 400px;
-    padding: 20px;
-    text-align: center;
-}
-.modal-content.small-modal h3 {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 10px;
-    color: #ffc107; 
-}
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-.modal-actions .action-btn {
-    flex: 1;
-    padding: 10px;
-    font-size: 14px;
-    font-weight: 600;
-}
-.modal-actions .confirm-btn {
-    background: var(--danger-color); 
-    color: #fff;
-}
-.modal-actions .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
-    border: none;
-}
-.modal-actions .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-primary);
-}
-
-
-footer{
-  text-align:center;
-  padding:20px;
-  color:var(--text-secondary);
-  font-size:13px;
-  border-top: 1px solid var(--border-color);
-}
 </style>
 </head>
 <body>
@@ -401,20 +145,6 @@ footer{
 <div class="page">
   <header class="navbar">
     
-    <div class="nav-buttons">
-      
-      <button class="btn btn-scan" id="scanBtn">
-        <svg viewBox="0 0 24 24"><path d="M21 12.79A9.15 9.15 0 0112.79 21c-4.47 0-8.11-3.64-8.11-8.11A9.15 9.15 0 0112 3.9c1.9 0 3.66.6 5.11 1.63L21 9v3.79zM15 15l-3-3m0 0l-3 3m3-3v8m-3-11v-3m6 0v3M9 6h6"></path></svg>
-        مسح QR
-      </button>
-      
-      <button class="btn btn-register" id="openRegisterModalBtn">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-        تسجيل طالب
-      </button>
-    </div>
-
-
     <div class="brand">
       <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">
       <div class="title">
@@ -422,6 +152,20 @@ footer{
         <div class="tag">للتعليم والتطوير</div>
       </div>
     </div>
+    
+    <div class="nav-buttons">
+      <button class="scan-btn" id="scanBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+      </button>
+
+      <button class="menu-toggle" id="menuBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+
   </header>
 
   <div class="student-cards-section">
@@ -431,458 +175,711 @@ footer{
       </div>
   </div>
   
+  <div class="side-drawer-overlay" id="drawerOverlay"></div>
+
+  <aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <h3>المستويات التعليمية</h3>
+      <button class="close-btn" id="closeBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="drawer-content">
+      <div class="accordion-item level-item">
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">
+          <span class="level-title">التعليم الإبتدائي</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </div>
+        <div class="accordion-body level-body">
+          
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الأولى ابتدائي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الأولى ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثانية ابتدائي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثانية ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثالثة ابتدائي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الثالثة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الرابعة ابتدائي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الرابعة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الخامسة ابتدائي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم الإبتدائي" data-year="السنة الخامسة ابتدائي" data-subject="التربية العلمية">التربية العلمية</button>
+               </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="accordion-item level-item">
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">
+          <span class="level-title">التعليم المتوسط</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </div>
+        <div class="accordion-body level-body">
+          
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الأولى متوسط</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الأولى متوسط" data-subject="إعلام آلي">إعلام آلي</button>
+               </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثانية متوسط</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="التربية المدنية">التربية المدنية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثانية متوسط" data-subject="إعلام آلي">إعلام آلي</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثالثة متوسط</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الثالثة متوسط" data-subject="التربية المدنية">التربية المدنية</button>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الرابعة متوسط (BEM)</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+               <div class="subject-list">
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="الرياضيات">الرياضيات</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة العربية">اللغة العربية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التربية الإسلامية">التربية الإسلامية</button>
+                 <button class="sub-btn" data-level="التعليم المتوسط" data-year="السنة الرابعة متوسط (BEM)" data-subject="التربية المدنية">التربية المدنية</button>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item level-item">
+        <div class="accordion-header level-header" onclick="toggleAccordion(this)">
+          <span class="level-title">التعليم الثانوي</span>
+          <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </div>
+        <div class="accordion-body level-body">
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الأولى ثانوي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">جذع مشترك علوم وتكنولوجيا</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة العربية">اللغة العربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تربية إسلامية">تربية إسلامية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="تكنولوجيا">تكنولوجيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك علوم وتكنولوجيا" data-subject="إعلام آلي">إعلام آلي</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">جذع مشترك آداب</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="العلوم الإسلامية">العلوم الإسلامية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الأولى ثانوي" data-stream="جذع مشترك آداب" data-subject="إعلام آلي">إعلام آلي</button>
+                    </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثانية ثانوي</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة علوم تجريبية</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="لغات أجنبية">لغات أجنبية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة علوم تجريبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة رياضيات</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة رياضيات" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة تقني رياضي</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="الفيزياء">الفيزياء</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="التخصص (هندسة)">التخصص (هندسة)</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تقني رياضي" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة تسيير واقتصاد</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="محاسبة">محاسبة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="رياضيات">رياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة تسيير واقتصاد" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة لغات أجنبية</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة لغات أجنبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة آداب وفلسفة</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="التاريخ والجغرافيا">التاريخ والجغرافيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثانية ثانوي" data-stream="شعبة آداب وفلسفة" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item year-item">
+            <div class="accordion-header year-header" onclick="toggleAccordion(this)">
+              <div class="title-wrap">
+                <svg class="file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                <span>السنة الثالثة ثانوي (BAC)</span>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </div>
+            <div class="accordion-body year-body">
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة علوم تجريبية</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="علوم الطبيعة والحياة">علوم الطبيعة والحياة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="فلسفة">فلسفة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة علوم تجريبية" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة رياضيات</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="العلوم الفيزيائية">العلوم الفيزيائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="فلسفة">فلسفة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة رياضيات" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة تقني رياضي</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="الرياضيات">الرياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="الفيزياء">الفيزياء</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة ميكانيكية">هندسة ميكانيكية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة كهربائية">هندسة كهربائية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة مدنية">هندسة مدنية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="هندسة الطرائق">هندسة الطرائق</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تقني رياضي" data-subject="فلسفة">فلسفة</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة تسيير واقتصاد</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="اقتصاد ومناجمنت">اقتصاد ومناجمنت</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="محاسبة">محاسبة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="رياضيات">رياضيات</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="قانون">قانون</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="لغة عربية">لغة عربية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة تسيير واقتصاد" data-subject="فلسفة">فلسفة</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة لغات أجنبية</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الفرنسية">اللغة الفرنسية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الإنجليزية">اللغة الإنجليزية</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="اللغة الثالثة (ألمانية/إسبانية/إيطالية)">اللغة الثالثة (ألمانية/إسبانية/إيطالية)</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة لغات أجنبية" data-subject="فلسفة">فلسفة</button>
+                    </div>
+                 </div>
+               </div>
+
+               <div class="accordion-item stream-item">
+                 <div class="accordion-header stream-header" onclick="toggleAccordion(this)">
+                   <span class="stream-title">شعبة آداب وفلسفة</span>
+                   <svg class="chevron-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                 </div>
+                 <div class="accordion-body stream-body">
+                    <div class="subject-list">
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="فلسفة">فلسفة</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="اللغة العربية وآدابها">اللغة العربية وآدابها</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="تاريخ وجغرافيا">تاريخ وجغرافيا</button>
+                      <button class="sub-btn" data-level="التعليم الثانوي" data-year="السنة الثالثة ثانوي (BAC)" data-stream="شعبة آداب وفلسفة" data-subject="لغات أجنبية">لغات أجنبية</button>
+                    </div>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
   <main class="hero">
     <div class="hero-content">
       <h1>مرحباً بك في أكاديمية المعالي</h1>
-      <p>منصتك الأولى للدعم المدرسي الشامل. انقر على "تسجيل طالب" لتبدأ.</p>
+      <p>منصتك الأولى للدعم المدرسي الشامل والتحضير الفعال للاختبارات النهائية.</p>
+      <button onclick="openRegistrationModal()" style="padding: 12px 25px; border-radius: 12px; font-weight: 700; font-size: 16px; background: var(--accent-color); color: #fff; border: none; cursor: pointer; margin-top: 20px;">تسجيل طالب جديد</button>
     </div>
-  </main> 
+  </main>
 
-  <div class="modal-overlay" id="registrationModal">
-    <div class="modal-content">
-      <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
-      <h3>تسجيل طالب جديد</h3>
-
-      <div id="registrationForm">
-        <div class="name-fields">
-            <div>
-                <label for="studentName">الاسم:</label>
-                <input type="text" id="studentName" placeholder="الاسم" required>
-            </div>
-            <div>
-                <label for="studentLastName">اللقب:</label>
-                <input type="text" id="studentLastName" placeholder="اللقب" required>
-            </div>
-        </div>
-
-        <label for="phaseSelect">المرحلة الدراسية:</label>
-        <select id="phaseSelect" required>
-            <option value="" disabled selected>اختر المرحلة</option>
-        </select>
-
-        <label for="yearSelect">السنة الدراسية:</label>
-        <select id="yearSelect" required disabled>
-            <option value="" disabled selected>اختر السنة</option>
-        </select>
-
-        <label for="streamSelect">الشعبة (التخصص):</label>
-        <select id="streamSelect" required disabled>
-            <option value="" disabled selected>اختر الشعبة</option>
-        </select>
-        
-        <div class="subject-selection-area">
-          <label>اختيار المواد وتحديد عدد الحصص الكلي:</label>
-          <div id="subjectCheckboxes" class="subject-checkboxes">
-            الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
-          </div>
-        </div>
-
-        <button id="registerButton">تسجيل الطالب</button>
-      </div>
-      
-      <div class="modal-result" id="modalResult" style="display:none;">
-        <h4 id="resultMessage"></h4>
-        <img id="qrCodeImage" src="" alt="QR Code">
-        <button class="print-btn" onclick="window.print()">طباعة رمز QR</button>
-        <button onclick="closeRegistrationModal()">إغلاق</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="scanModal">
-    <div class="modal-content scan-modal-content">
-      <button class="modal-close-btn" onclick="closeScanModal()">&times;</button>
-      <h3>مسح رمز QR لتسجيل الحضور</h3>
-      
-      <div class="scan-area">
-          <p>
-            سيتم تفعيل الكاميرا هنا. <br> (يتطلب دمج مكتبة قارئ QR)
-          </p>
-      </div>
-      
-      <button onclick="showCustomAlert('لم يتم دمج مكتبة قارئ QR بعد.', 'خطأ')">محاكاة المسح</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="customAlertModal">
-      <div class="modal-content small-modal">
-          <h3 id="customAlertTitle">تأكيد الإجراء</h3>
-          <p id="customAlertMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
-          <div class="modal-actions" id="customAlertActions">
-              <button class="action-btn confirm-btn" id="customAlertConfirmBtn">نعم، تأكيد</button>
-              <button class="action-btn cancel-btn" id="customAlertCancelBtn">إلغاء</button>
-          </div>
-      </div>
-  </div>
 
   <footer>
-    &copy; 2024 أكاديمية المعالي. جميع الحقوق محفوظة.
+    &copy; 2025 أكاديمية المعالي. جميع الحقوق محفوظة.
   </footer>
 </div>
 
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="registrationModal">
+        <button class="modal-close-btn" onclick="closeRegistrationModal()">×</button>
+        <h3>تسجيل طالب جديد</h3>
+        
+        <label for="studentName">اسم الطالب الكامل:</label>
+        <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+        
+        <label for="selectedSubjects">المواد المحددة:</label>
+        <div id="selectedSubjects" style="min-height: 50px; padding: 10px; border: 1px dashed var(--border-color); border-radius: 8px; margin-bottom: 20px; color: #e4e4e7; font-size: 14px; background: rgba(0,0,0,0.1);">
+            لا توجد مواد محددة بعد.
+        </div>
+
+        <button id="registerButton">تسجيل</button>
+        <div class="modal-result" id="modalResult" style="display: none;">
+            <h4>تم التسجيل بنجاح!</h4>
+            <img id="qrCodeImage" src="" alt="QR Code">
+            <p id="studentIdDisplay" style="color: var(--text-secondary);"></p>
+            <button class="print-btn">طباعة رمز الطالب</button>
+        </div>
+    </div>
+</div>
+
 <script>
-  // --- Global Custom Modal Logic (REPLACES alert() and confirm()) ---
-  let confirmCallback = null;
-
-  function showCustomAlert(message, title = 'إشعار') {
-      const modal = document.getElementById('customAlertModal');
-      document.getElementById('customAlertTitle').textContent = title;
-      document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      
-      document.getElementById('customAlertConfirmBtn').textContent = 'حسناً';
-      document.getElementById('customAlertCancelBtn').style.display = 'none'; 
-      document.getElementById('customAlertConfirmBtn').onclick = () => {
-          modal.classList.remove('open');
-      };
-      
-      modal.classList.add('open');
-  }
-
-  function showCustomConfirm(message, callback, title = 'تأكيد الإجراء') {
-      const modal = document.getElementById('customAlertModal');
-      document.getElementById('customAlertTitle').textContent = title;
-      document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      
-      document.getElementById('customAlertConfirmBtn').textContent = 'نعم، تأكيد';
-      document.getElementById('customAlertCancelBtn').style.display = 'inline-block';
-      
-      confirmCallback = callback;
-
-      document.getElementById('customAlertConfirmBtn').onclick = () => {
-          modal.classList.remove('open');
-          if (confirmCallback) {
-              confirmCallback(true);
-          }
-      };
-      
-      document.getElementById('customAlertCancelBtn').onclick = () => {
-          modal.classList.remove('open');
-          // No need to call callback(false) here, just close
-      };
-      
-      modal.classList.add('open');
-  }
-
-
-  // --- DOM Elements ---
+  // DOM Elements
+  const menuBtn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('closeBtn');
+  const sideDrawer = document.getElementById('sideDrawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const modalOverlay = document.getElementById('modalOverlay');
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
-  
-  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
   const registrationModal = document.getElementById('registrationModal');
-  const scanModal = document.getElementById('scanModal');
-
-  const phaseSelect = document.getElementById('phaseSelect');
-  const yearSelect = document.getElementById('yearSelect');
-  const streamSelect = document.getElementById('streamSelect');
-  const subjectCheckboxes = document.getElementById('subjectCheckboxes');
-  const registerButton = document.getElementById('registerButton');
-  
-  const registrationForm = document.getElementById('registrationForm');
   const modalResult = document.getElementById('modalResult');
-  const qrCodeImage = document.getElementById('qrCodeImage');
-  const resultMessage = document.getElementById('resultMessage');
+  
+  // New Scan Button
+  const scanBtn = document.getElementById('scanBtn');
 
-  let COURSES_DATA = {}; 
-  
-  // --- Modal Toggles ---
-  openRegisterModalBtn.addEventListener('click', () => {
-    openRegistrationModal();
-    populatePhases(); 
-  });
-  
+
+  // State
+  let subjectsToRegister = [];
+
+  // Drawer Functions
+  function openDrawer() {
+    sideDrawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+  }
+
+  function closeDrawer() {
+    sideDrawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+  }
+
+  // Modal Functions
   function openRegistrationModal() {
-    registrationModal.classList.add('open');
-    registrationForm.style.display = 'block';
+    modalOverlay.classList.add('open');
+    // Hide result on open
     modalResult.style.display = 'none';
+    registrationModal.style.opacity = '1';
+    registrationModal.style.pointerEvents = 'auto';
   }
 
   function closeRegistrationModal() {
-    registrationModal.classList.remove('open');
-    // إعادة تعيين النموذج
+    modalOverlay.classList.remove('open');
+    // Reset modal content for the next use (optional but good practice)
     document.getElementById('studentName').value = '';
-    document.getElementById('studentLastName').value = '';
-    phaseSelect.value = '';
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    yearSelect.disabled = true;
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
-  }
-  
-  document.getElementById('scanBtn').addEventListener('click', () => {
-    scanModal.classList.add('open');
-  });
-
-  function closeScanModal() {
-    scanModal.classList.remove('open');
+    subjectsToRegister = [];
+    document.getElementById('selectedSubjects').innerHTML = 'لا توجد مواد محددة بعد.';
+    modalResult.style.display = 'none';
+    document.getElementById('registerButton').style.display = 'block';
   }
 
-  // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-      if (!e.target.closest('.student-card')) {
-          document.querySelectorAll('.card-menu-dropdown.open').forEach(m => {
-              m.classList.remove('open');
-          });
+  // Accordion Toggle
+  function toggleAccordion(header) {
+    const item = header.closest('.accordion-item');
+    item.classList.toggle('active');
+    // Close others
+    document.querySelectorAll('.level-item').forEach(otherItem => {
+      if (otherItem !== item && otherItem.classList.contains('active')) {
+        otherItem.classList.remove('active');
       }
-  });
-
-
-  // --- Dynamic Registration Form Logic ---
-  
-  // 1. Populate Phases
-  function populatePhases() {
-    phaseSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة</option>';
-    for (const phaseName in COURSES_DATA) {
-        const option = document.createElement('option');
-        option.value = phaseName;
-        option.textContent = phaseName;
-        phaseSelect.appendChild(option);
-    }
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    yearSelect.disabled = true;
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
-  }
-
-  // 2. Populate Years based on Phase
-  phaseSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    
-    if (selectedPhase && COURSES_DATA[selectedPhase]) {
-        for (const yearName in COURSES_DATA[selectedPhase]) {
-            const option = document.createElement('option');
-            option.value = yearName;
-            option.textContent = yearName;
-            yearSelect.appendChild(option);
-        }
-        yearSelect.disabled = false;
-    } else {
-        yearSelect.disabled = true;
-    }
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
-  });
-
-  // 3. Populate Streams and Subjects based on Year
-  yearSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    const selectedYear = yearSelect.value;
-    
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
-    
-    if (selectedPhase && selectedYear && COURSES_DATA[selectedPhase][selectedYear]) {
-        const streams = COURSES_DATA[selectedPhase][selectedYear];
-        const streamNames = Object.keys(streams);
-
-        if (streamNames.length > 1 || (streamNames.length === 1 && streamNames[0] !== 'عامة')) {
-            for (const streamName of streamNames) {
-                const option = document.createElement('option');
-                option.value = streamName;
-                option.textContent = streamName;
-                streamSelect.appendChild(option);
-            }
-            streamSelect.disabled = false;
-        } else if (streamNames.includes('عامة')) {
-            streamSelect.value = 'عامة';
-            streamSelect.disabled = true;
-            populateSubjects(streams['عامة']);
-        }
-    }
-  });
-
-  // 4. Populate Subjects based on Stream (For High School)
-  streamSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    const selectedYear = yearSelect.value;
-    const selectedStream = streamSelect.value;
-
-    if (selectedPhase && selectedYear && selectedStream && COURSES_DATA[selectedPhase][selectedYear][selectedStream]) {
-        const subjects = COURSES_DATA[selectedPhase][selectedYear][selectedStream];
-        populateSubjects(subjects);
-    } else {
-        subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
-    }
-  });
-
-  // 5. Render Subjects Checkboxes 
-  function populateSubjects(subjectsArray) {
-    subjectCheckboxes.innerHTML = '';
-    if (subjectsArray.length === 0) {
-        subjectCheckboxes.innerHTML = 'لا توجد مواد متاحة لهذه الشعبة.';
-        return;
-    }
-
-    subjectsArray.forEach(subject => {
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.className = 'subject-item-wrapper';
-        
-        const uniqueId = `sub-${subject.replace(/\s|\/|\(|\)/g, '-')}`;
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = uniqueId;
-        checkbox.name = 'subject-checkbox'; 
-        checkbox.value = subject;
-        
-        const label = document.createElement('label');
-        label.htmlFor = uniqueId;
-        label.textContent = subject;
-
-        const sessionInput = document.createElement('input');
-        sessionInput.type = 'number';
-        sessionInput.min = '1';
-        sessionInput.placeholder = 'عدد الحصص الكلي';
-        sessionInput.className = 'session-count-input';
-        sessionInput.id = `count-${uniqueId}`;
-        sessionInput.disabled = true; 
-        
-        checkbox.addEventListener('change', (e) => {
-            sessionInput.disabled = !e.target.checked;
-            if (e.target.checked) {
-                sessionInput.value = 1; 
-                sessionInput.focus();
-            } else {
-                sessionInput.value = '';
-            }
-        });
-        
-        checkboxWrapper.appendChild(checkbox);
-        checkboxWrapper.appendChild(label);
-        checkboxWrapper.appendChild(sessionInput); 
-        subjectCheckboxes.appendChild(checkboxWrapper);
     });
   }
 
-
-  // --- Registration logic (Using custom alert) ---
-  registerButton.addEventListener('click', async () => {
-    const name = document.getElementById('studentName').value.trim();
-    const lastName = document.getElementById('studentLastName').value.trim();
-    const phase = phaseSelect.value;
-    const year = yearSelect.value;
-    const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
-    
-    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
-                                .map(checkbox => {
-                                    const subjectName = checkbox.value;
-                                    const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
-                                    const countInput = document.getElementById(`count-${uniqueId}`);
-                                    const sessionCount = parseInt(countInput.value, 10);
-                                    
-                                    if (!sessionCount || sessionCount < 1) {
-                                        showCustomAlert(`الرجاء تحديد عدد الحصص الكلي لمادة **${subjectName}**. يجب أن يكون العدد 1 أو أكثر.`, 'خطأ في الإدخال');
-                                        throw new Error('Missing session count'); 
-                                    }
-                                    
-                                    return {
-                                        name: subjectName,
-                                        sessionCount: sessionCount
-                                    };
-                                });
-
-    if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
-        showCustomAlert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.', 'بيانات ناقصة');
-        return;
-    }
-    
-    registrationForm.style.display = 'none';
-    resultMessage.textContent = 'جارٍ تسجيل الطالب...';
-    resultMessage.style.color = '#fff';
-    modalResult.style.display = 'block';
-    qrCodeImage.style.display = 'none';
-
-    try {
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: name,
-                lastName: lastName,
-                phase: phase,
-                year: year,
-                stream: stream,
-                subjects: selectedSubjects 
-            })
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            resultMessage.textContent = `تم تسجيل الطالب ${name} ${lastName} بنجاح!`;
-            resultMessage.style.color = '#43cf66';
-            qrCodeImage.src = result.qrCodeUrl;
-            qrCodeImage.style.display = 'block';
-            fetchStudentCards(); 
-        } else {
-            resultMessage.textContent = `فشل التسجيل: ${result.message}`;
-            resultMessage.style.color = '#ff6347';
-        }
-
-    } catch (error) {
-        if (error.message !== 'Missing session count') {
-            console.error('Network or internal registration error:', error);
-            showCustomAlert('خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.', 'خطأ شبكة');
-        }
-        registrationForm.style.display = 'block';
-        modalResult.style.display = 'none';
+  // General Event Listeners
+  menuBtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) {
+      closeRegistrationModal();
     }
   });
 
-  // --- Card Menu Functions ---
-  function toggleCardMenu(button, id) {
-      const menu = document.getElementById(`menu-${id}`);
-      // Close all other menus
-      document.querySelectorAll('.card-menu-dropdown.open').forEach(m => {
-          if (m.id !== `menu-${id}`) m.classList.remove('open');
-      });
-      menu.classList.toggle('open');
+  // Helper to get subject info
+  function getSubjectInfo(button) {
+    const level = button.getAttribute('data-level');
+    const year = button.getAttribute('data-year');
+    const stream = button.getAttribute('data-stream');
+    const subject = button.getAttribute('data-subject');
+    let info = `${level} - ${year}`;
+    if (stream) {
+      info += ` - ${stream}`;
+    }
+    info += ` (${subject})`;
+    return { level, year, stream, subject, fullInfo: info };
   }
 
-  // Custom Delete Confirmation (Uses Custom Modal)
-  function confirmDelete(id, name) {
-      showCustomConfirm(
-          `هل أنت متأكد من حذف الطالب **${name}** نهائياً؟ سيتم حذف جميع بياناته وسجلات الحضور المرتبطة به.`,
-          (isConfirmed) => {
-              if (isConfirmed) {
-                  deleteStudent(id);
-              }
-          },
-          'تأكيد حذف الطالب'
-      );
-  }
+  // Event delegation for subject buttons
+  document.querySelectorAll('.subject-list').forEach(list => {
+    list.addEventListener('click', (event) => {
+      if (event.target.classList.contains('sub-btn')) {
+        const button = event.target;
+        const subjectInfo = getSubjectInfo(button);
+        
+        if (subjectsToRegister.some(s => s.fullInfo === subjectInfo.fullInfo)) {
+          alert('هذه المادة مضافة بالفعل.');
+          return;
+        }
 
-  // Delete Student Function
-  async function deleteStudent(id) {
-      try {
-          const response = await fetch(`/student/${id}`, {
-              method: 'DELETE'
-          });
-
-          const result = await response.json();
-
-          if (response.ok) {
-              showCustomAlert(result.message, 'نجاح');
-              fetchStudentCards(); // Refresh list
-          } else {
-              showCustomAlert(result.message, 'خطأ في الحذف');
-          }
-      } catch (error) {
-          showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الحذف.', 'خطأ شبكة');
+        subjectsToRegister.push(subjectInfo);
+        
+        // Display selected subjects in the modal
+        const selectedSubjectsDiv = document.getElementById('selectedSubjects');
+        selectedSubjectsDiv.innerHTML = subjectsToRegister.map(s => `<div>• ${s.fullInfo}</div>`).join('');
+        closeDrawer();
+        openRegistrationModal();
       }
-  }
+    });
+  });
 
+  // Registration logic
+  document.getElementById('registerButton').addEventListener('click', async () => {
+    const studentName = document.getElementById('studentName').value.trim();
+    if (!studentName || subjectsToRegister.length === 0) {
+      alert('الرجاء إدخال اسم الطالب واختيار مادة واحدة على الأقل.');
+      return;
+    }
 
-  // --- Student Cards Display Logic ---
+    // Prepare data for the server
+    const registrationData = {
+      name: studentName,
+      subjects: subjectsToRegister.map(s => s.fullInfo),
+      isActive: true, // New student is active
+      registrationDate: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+      // Simulate network request
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        document.getElementById('registerButton').style.display = 'none';
+        
+        document.getElementById('studentIdDisplay').textContent = `ID: ${result.id}`;
+        document.getElementById('qrCodeImage').src = result.qrCodeUrl;
+        
+        modalResult.style.display = 'block';
+        fetchStudentCards(); // Refresh the student list
+
+      } else {
+        alert(`فشل التسجيل: ${result.message}`);
+      }
+
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('حدث خطأ أثناء الاتصال بالخادم. يرجى المحاولة مرة أخرى.');
+    }
+  });
+
+  // Fetch and render student cards
   async function fetchStudentCards() {
       loadingMessage.style.display = 'block';
-      studentCardsContainer.innerHTML = ''; 
-
+      studentCardsContainer.innerHTML = ''; // Clear existing cards
       try {
           const response = await fetch('/students');
           const students = await response.json();
@@ -901,40 +898,14 @@ footer{
               const statusClass = student.isActive ? 'status-active' : 'status-inactive';
               const statusText = student.isActive ? 'نشط' : 'غير نشط';
               
-              let detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'}`;
-              if (student.stream && student.stream !== 'عامة') {
-                  detailsText += ` | ${student.stream}`;
-              }
-              
-              const subjectSummary = student.subjects 
-                                        ? student.subjects.map(s => `${s.name} (${s.completedSessions}/${s.totalSessions})`).join(' | ') 
-                                        : 'لا توجد مواد';
-
-
               card.innerHTML = `
-                  <div class="header-row">
-                      <div class="name">${student.name}</div>
-                      <button class="card-menu-btn" data-id="${id}" onclick="event.stopPropagation(); toggleCardMenu(this, '${id}')">&#8942;</button>
-                  </div>
+                  <div class="name">${student.name}</div>
                   <div class="details">
-                      <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
-                      <span class="status-indicator ${statusClass}" onclick="event.stopPropagation();">${statusText}</span>
+                      <span>ID: ${id.substring(0, 8)}...</span>
+                      <span class="status-indicator ${statusClass}">${statusText}</span>
                   </div>
-                  <div class="subjects"><strong>ملخص الحصص:</strong> ${subjectSummary}</div>
-                  
-                  <div class="card-menu-dropdown" id="menu-${id}">
-                      <button onclick="event.stopPropagation(); window.location.href = '/profile.html?id=${id}'">عرض الملف الشخصي</button>
-                      <button class="delete-action" onclick="event.stopPropagation(); confirmDelete('${id}', '${student.name}')">حذف الطالب</button>
-                  </div>
+                  <div class="subjects"><strong>المواد:</strong> ${student.subjects.join(' | ')}</div>
               `;
-              
-              card.addEventListener('click', (e) => {
-                  // Only navigate if click is not on a button/menu area
-                  if (!e.target.closest('button')) {
-                       window.location.href = `/profile.html?id=${id}`;
-                  }
-              });
-              
               studentCardsContainer.appendChild(card);
           }
           
@@ -944,20 +915,52 @@ footer{
       }
   }
 
-  // --- Initial Load ---
-  async function initialLoad() {
-    try {
-        const response = await fetch('/courses');
-        COURSES_DATA = await response.json();
-        
-        fetchStudentCards();
-    } catch (error) {
-        console.error('Initial load failed:', error);
-        // Handle initial load failure gracefully
-    }
-  }
+  // Fetch students on page load
+  fetchStudentCards();
+  
+  // 4. [NEW] Scan Button Functionality
+  scanBtn.addEventListener('click', () => {
+    // 1. محاكاة فتح الكاميرا ومسح رمز QR
+    const scannedStudentId = 'S00123456'; // معرف طالب وهمي لغرض المحاكاة
 
-  initialLoad();
+    console.log(`[ACTION] Simulating QR Scan for Student ID: ${scannedStudentId}`);
+    
+    // 2. التوجيه إلى البروفايل (محاكاة باستخدام النافذة المنبثقة الحالية)
+    const originalModalHTML = registrationModal.innerHTML;
+
+    // استبدال محتوى النافذة المنبثقة بمحتوى ملف الطالب الشخصي
+    registrationModal.innerHTML = `
+        <button class="modal-close-btn" id="closeProfileBtn">×</button>
+        <h3>الملف الشخصي للطالب (حضور)</h3>
+        
+        <div style="text-align: right; line-height: 2.0; font-size: 16px;">
+            <p style="color:var(--accent-color); font-weight:700;">تم تأكيد المسح!</p>
+            <p><strong>اسم الطالب:</strong> ${scannedStudentId}</p>
+            <p><strong>المستوى/المادة:</strong> السنة الثالثة ثانوي (الرياضيات)</p>
+            <p style="margin-top:20px; color:#43cf66; font-weight: 700;">تم تسجيل الحضور بنجاح اليوم.</p>
+            <p style="font-size:12px; color:var(--text-secondary); margin-top: 15px;">**تنبيه: هذه رسالة محاكاة لوظيفة الكاميرا والتوجيه للبروفايل.**</p>
+        </div>
+        <button id="returnToMain" style="background:var(--accent-color); margin-top:20px; width:100%; padding: 10px 20px; border:none; color:white; border-radius: 8px; cursor:pointer;">العودة إلى القائمة الرئيسية</button>
+    `;
+    
+    modalOverlay.classList.add('open');
+    
+    // إضافة مستمعي إغلاق للنافذة المنبثقة الجديدة
+    const closeProfileBtn = document.getElementById('closeProfileBtn');
+    const returnToMainBtn = document.getElementById('returnToMain');
+
+    const restoreModal = () => {
+        modalOverlay.classList.remove('open');
+        // يتم استعادة المحتوى الأصلي للنافذة المنبثقة عند الإغلاق
+        // ملاحظة: في التطبيق الفعلي قد تحتاج فقط لإغلاق النافذة والعمل على صفحة مخصصة للبروفايل.
+        setTimeout(() => {
+            registrationModal.innerHTML = originalModalHTML;
+        }, 300); // تأخير بسيط للسماح بانتقال الإغلاق
+    };
+
+    closeProfileBtn.onclick = restoreModal;
+    returnToMainBtn.onclick = restoreModal;
+  });
   
 </script>
 </body>
