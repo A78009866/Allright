@@ -211,7 +211,7 @@ html,body{
   line-height: 1.6;
 }
 
-/* QR Scanner Modal/Overlay **الأنماط المعدلة لملء الشاشة** */
+/* QR Scanner Modal/Overlay **الأنماط المعدلة لملء الشاشة وإصلاح الشاشة البيضاء** */
 .qr-scanner-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -237,6 +237,7 @@ html,body{
     font-size: 16px;
     z-index: 5001;
 }
+
 #reader {
     width: 100%; 
     max-width: 700px; 
@@ -246,8 +247,24 @@ html,body{
     border-radius: var(--radius);
     overflow: hidden;
     position: relative;
-    /* تحديد نسبة الارتفاع (لتجنب الشاشة البيضاء في بعض الحالات) */
     min-height: 300px; 
+    
+    /* **إضافة جديدة لإصلاح الشاشة البيضاء** */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* **الأنماط المعدلة لفرض إظهار الفيديو وتغطيته** */
+#reader video,
+#reader canvas { 
+    width: 100% !important; 
+    height: 100% !important; 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    object-fit: cover !important; 
+    border: none !important;
 }
 
 /* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
@@ -255,12 +272,7 @@ html,body{
     border: none !important;
     width: 100% !important; 
     height: 100% !important; 
-}
-/* إضافة نمط لضمان أن الفيديو يملأ الـ #reader */
-#reader video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover;
+    position: relative; 
 }
 
 .scan-message {
@@ -568,21 +580,20 @@ footer{
   let html5QrCode = null; 
 
 
-  // --- QR Scanner Functions ---
+  // --- QR Scanner Functions (تم التعديل لتحسين الموثوقية) ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
     await stopScannerAndClose(); 
     
-    // افتراض أن الكود الممسوح هو معرف الطالب (ID)
-    // الكود الممسوح يتضمن الرابط كاملاً، لذا نقوم بتحويل المستخدم مباشرة.
+    // افتراض أن الكود الممسوح هو رابط لصفحة الملف الشخصي
     const url = decodedText.trim(); 
     
     // تأكد من أن النص الممسوح هو مسار صالح لصفحة الملف الشخصي
     if (url.startsWith('/profile.html')) {
         window.location.href = url;
     } else {
-        // إذا كان مجرد معرف، استخدم المنطق القديم (مع افتراض أن هذا يجب أن يتغير في الخادم)
+        // احتياطي: إذا كان مجرد معرف
         if (url.length > 5) {
             window.location.href = `/profile.html?id=${url}`;
         } else {
@@ -591,7 +602,7 @@ footer{
     }
   }
 
-  // وظيفة فتح الكاميرا (تم التعديل لتحسين الموثوقية)
+  // وظيفة فتح الكاميرا 
   async function startScanner() {
     qrScannerOverlay.classList.add('active');
     
@@ -835,7 +846,7 @@ footer{
                                     };
                                 });
     } catch (e) {
-        if (e.message === 'Missing session count') return; // توقف التنفيذ
+        if (e.message === 'Missing session count') return; 
         throw e;
     }
 
