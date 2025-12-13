@@ -238,7 +238,7 @@ html,body{
     z-index: 5001;
 }
 
-/* **التركيز هنا: أنماط قوية لإظهار الفيديو** */
+/* **أنماط قوية لإظهار الفيديو** */
 #reader {
     width: 100%; 
     max-width: 700px; 
@@ -250,7 +250,7 @@ html,body{
     position: relative;
     min-height: 300px; 
     
-    background-color: black; /* فرض خلفية سوداء للتأكد من أننا نرى الفيديو وليس اللون الأبيض */
+    background-color: black; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -271,7 +271,7 @@ html,body{
     height: 100% !important;
     display: block !important;
     object-fit: cover !important; 
-    z-index: 10; /* لضمان أنه فوق أي شيء آخر */
+    z-index: 10; 
     border: none !important;
 }
 
@@ -580,7 +580,7 @@ footer{
   let html5QrCode = null; 
 
 
-  // --- QR Scanner Functions (تم التعديل لطلب الكاميرا الخلفية فقط) ---
+  // --- QR Scanner Functions (تم التعديل لطلب الكاميرا الخلفية وتخفيف FPS) ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
@@ -611,15 +611,18 @@ footer{
     }
 
     const config = { 
-        fps: 10, 
+        // **التعديل الجديد:** تم خفض قيمة FPS إلى 5 لتحسين الأداء وتقليل الغلتش
+        fps: 5, 
         qrbox: {width: 250, height: 250},
+        videoConstraints: {
+            facingMode: "environment"
+        }
     };
 
     try {
         // طلب الكاميرا الخلفية بشكل صريح (Environment) 
         await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, (errorMessage) => {
             // هذا يحدث إذا فشل فك الترميز وليس فشل بدء التشغيل
-            // هذا لكي لا تتوقف الكاميرا إذا لم تجد كود
             console.log("QR decode failed:", errorMessage); 
         });
         
@@ -648,6 +651,7 @@ footer{
     qrScannerOverlay.classList.remove('active');
     if (html5QrCode && html5QrCode.isScanning) {
         try {
+            // يتم إيقاف الكاميرا هنا فقط بعد المسح الناجح أو النقر على "إلغاء المسح"
             await html5QrCode.stop();
         } catch (err) {
             console.warn("Error stopping the scanner:", err);
