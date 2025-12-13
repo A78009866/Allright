@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid'); 
+
 // 1. استخدام dotenv لقراءة متغيرات البيئة محلياً
 require('dotenv').config(); 
 
@@ -31,10 +32,8 @@ try {
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
-            // رسالة خطأ أكثر تحديدًا للبيئة
             console.error("Critical: Missing Firebase environment variables. Please ensure SERVICE_ACCOUNT_KEY and FIREBASE_DATABASE_URL are set in your environment or a .env file.");
         } else {
-            // معالجة سلسلة JSON وتجربة التحليل
             try {
                 // تنظيف وإزالة أي علامات اقتباس محيطة قد تضيفها البيئة
                 const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
@@ -151,7 +150,7 @@ app.get('/courses', (req, res) => {
 });
 
 
-// 2. نقطة نهاية تسجيل طالب جديد
+// 2. نقطة نهاية تسجيل طالب جديد (محدثة لدعم عدد الحصص)
 app.post('/register', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
@@ -159,9 +158,18 @@ app.post('/register', async (req, res) => {
     const studentId = uuidv4(); 
     const fullName = `${name} ${lastName}`;
 
-    if (!fullName || !phase || !year || !stream || !subjects || subjects.length === 0) {
-        return res.status(400).json({ message: 'الرجاء توفير جميع بيانات الطالب والمواد المختارة.' });
+    // التحقق من الهيكل الجديد للمواد
+    if (!fullName || !phase || !year || !stream || !subjects || !Array.isArray(subjects) || subjects.length === 0 || 
+        !subjects.every(s => s.name && s.sessionCount !== undefined && s.sessionCount > 0)) {
+        return res.status(400).json({ message: 'الرجاء توفير جميع بيانات الطالب وتحديد المواد وعدد الحصص الكلي لكل مادة.' });
     }
+
+    // تهيئة هيكل المواد الجديد
+    const studentSubjects = subjects.map(s => ({
+        name: s.name,
+        totalSessions: parseInt(s.sessionCount, 10),
+        completedSessions: 0, // يبدأ بصفر حصص مكتملة
+    }));
 
     try {
         const studentData = {
@@ -170,13 +178,14 @@ app.post('/register', async (req, res) => {
             phase: phase,      
             year: year,        
             stream: stream,    
-            subjects: subjects, 
+            subjects: studentSubjects, // استخدام الهيكل الجديد
             isActive: true, 
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
         await studentsRef.child(studentId).set(studentData); 
-
+        
+        // سجل الحضور (Check-in/Check-out)
         await db.ref(`attendance/${studentId}`).set({}); 
 
         const qrData = `/profile.html?id=${studentId}`; 
@@ -278,6 +287,135 @@ app.get('/student-details/:id', async (req, res) => {
     } catch (error) {
         console.error('Error fetching student details:', error);
         res.status(500).json({ message: 'فشل في جلب بيانات الطالب' });
+    }
+});
+
+// 6. نقطة نهاية تسجيل حصة مكتملة (إداري - زيادة العداد)
+app.post('/record-session-attended/:studentId', async (req, res) => {
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+    const studentId = req.params.studentId;
+    const { subjectName } = req.body; 
+
+    if (!subjectName) {
+        return res.status(400).json({ message: 'الرجاء توفير اسم المادة.' });
+    }
+
+    try {
+        const studentRef = studentsRef.child(studentId);
+        const snapshot = await studentRef.once('value');
+        const student = snapshot.val();
+
+        if (!student) {
+            return res.status(404).json({ message: 'الطالب غير موجود.' });
+        }
+        
+        let updated = false;
+        const updatedSubjects = student.subjects.map(s => {
+            if (s.name === subjectName) {
+                if (s.completedSessions < s.totalSessions) {
+                    s.completedSessions += 1; // زيادة حصة مكتملة واحدة
+                    updated = true;
+                } else {
+                    return res.status(400).json({ message: `تم بالفعل إكمال جميع حصص مادة ${subjectName}.` });
+                }
+            }
+            return s;
+        });
+
+        if (!updated) {
+             return res.status(404).json({ message: `المادة ${subjectName} غير مسجلة للطالب.` });
+        }
+
+        await studentRef.update({ subjects: updatedSubjects });
+        
+        res.json({
+            message: `تم تسجيل حصة مكتملة جديدة بنجاح لمادة ${subjectName}.`,
+            subjects: updatedSubjects
+        });
+
+    } catch (error) {
+        console.error('Error recording session:', error);
+        res.status(500).json({ message: 'فشل داخلي في تسجيل الحصة.' });
+    }
+});
+
+
+// 7. نقطة نهاية التراجع عن حصة مكتملة (إداري - إنقاص العداد)
+app.post('/undo-session-attended/:studentId', async (req, res) => {
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+    const studentId = req.params.studentId;
+    const { subjectName } = req.body; 
+
+    if (!subjectName) {
+        return res.status(400).json({ message: 'الرجاء توفير اسم المادة.' });
+    }
+
+    try {
+        const studentRef = studentsRef.child(studentId);
+        const snapshot = await studentRef.once('value');
+        const student = snapshot.val();
+
+        if (!student) {
+            return res.status(404).json({ message: 'الطالب غير موجود.' });
+        }
+        
+        let updated = false;
+        const updatedSubjects = student.subjects.map(s => {
+            if (s.name === subjectName) {
+                if (s.completedSessions > 0) {
+                    s.completedSessions -= 1; // إنقاص حصة مكتملة واحدة
+                    updated = true;
+                } else {
+                    return res.status(400).json({ message: `لا توجد حصص مكتملة يمكن التراجع عنها لمادة ${subjectName}.` });
+                }
+            }
+            return s;
+        });
+
+        if (!updated) {
+             return res.status(404).json({ message: `المادة ${subjectName} غير مسجلة للطالب.` });
+        }
+
+        await studentRef.update({ subjects: updatedSubjects });
+        
+        res.json({
+            message: `تم التراجع عن تسجيل حصة مكتملة لمادة ${subjectName}.`,
+            subjects: updatedSubjects
+        });
+
+    } catch (error) {
+        console.error('Error undoing session:', error);
+        res.status(500).json({ message: 'فشل داخلي في التراجع عن الحصة.' });
+    }
+});
+
+
+// 8. نقطة نهاية لجلب QR Code للطالب
+app.get('/qr-code/:id', async (req, res) => {
+    const studentId = req.params.id;
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+
+    try {
+        const qrData = `/profile.html?id=${studentId}`; 
+        const qrCodeUrl = await QRCode.toDataURL(qrData);
+        res.json({ qrCodeUrl });
+    } catch (error) {
+        console.error('Error generating QR code:', error);
+        res.status(500).json({ message: 'فشل في توليد رمز QR.' });
+    }
+});
+
+// 9. نقطة نهاية لحذف سجل حضور (Check-in/Check-out)
+app.delete('/attendance/:studentId/:attendanceId', async (req, res) => {
+    const { studentId, attendanceId } = req.params;
+    if (!isFirebaseReady) return checkFirebaseReadiness(res); 
+
+    try {
+        await db.ref(`attendance/${studentId}/${attendanceId}`).remove();
+        res.status(200).json({ message: 'تم حذف سجل الحضور بنجاح.' });
+    } catch (error) {
+        console.error('Error deleting attendance record:', error);
+        res.status(500).json({ message: 'فشل داخلي في حذف السجل.' });
     }
 });
 
