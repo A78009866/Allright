@@ -163,7 +163,8 @@ app.post('/register', async (req, res) => {
         await studentsRef.child(studentId).set(studentData); 
         await db.ref(`attendance/${studentId}`).set({}); 
 
-        const qrData = `/profile.html?id=${studentId}`; 
+        // التعديل 1: استخدام مُعرِّف الطالب النظيف فقط لرمز QR
+        const qrData = studentId; 
         const qrCodeUrl = await QRCode.toDataURL(qrData);
 
         res.status(201).json({
@@ -199,8 +200,24 @@ app.post('/check-in', async (req, res) => {
 
     const { qrData } = req.body;
     
-    const studentIdMatch = qrData.match(/id=([^&]+)/);
-    const studentId = studentIdMatch ? studentIdMatch[1] : null;
+    // التعديل 3: منطق قوي لاستخلاص مُعرِّف الطالب (UUID) من محتوى رمز QR
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    let studentId = null;
+
+    // 1. محاولة استخدام qrData مباشرة (المعرف النظيف)
+    if (uuidRegex.test(qrData)) {
+        studentId = qrData;
+    } 
+    // 2. تراجع: محاولة استخراجه من صيغة الرابط القديمة
+    else {
+         const studentIdMatch = qrData.match(/id=([^&]+)/);
+         const extractedId = studentIdMatch ? studentIdMatch[1] : null;
+
+         // التحقق مما إذا كان المعرف المستخرج هو UUID صالح
+         if (extractedId && uuidRegex.test(extractedId)) {
+            studentId = extractedId;
+         }
+    }
 
     if (!studentId) {
         return res.status(400).json({ message: 'رمز QR غير صالح أو غير معرّف.' });
@@ -371,7 +388,8 @@ app.get('/qr-code/:id', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
     try {
-        const qrData = `/profile.html?id=${studentId}`; 
+        // التعديل 2: استخدام مُعرِّف الطالب النظيف فقط لرمز QR
+        const qrData = studentId; 
         const qrCodeUrl = await QRCode.toDataURL(qrData);
         res.json({ qrCodeUrl });
     } catch (error) {
