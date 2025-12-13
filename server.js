@@ -5,10 +5,7 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid'); // إضافة uuidv4 لإنشاء معرفات فريدة
-
-// تحميل متغيرات البيئة من ملف .env (إذا كنت تستخدمه محليًا)
-// require('dotenv').config(); // هذا الكود يجب إزالته أو تركه معطّلاً عند النشر على Vercel
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,14 +24,12 @@ let isFirebaseReady = false;
 
 try {
     if (!admin.apps.length) { 
-        // استخدام متغيرات البيئة مباشرةً كما يجب في بيئات الإنتاج (مثل Vercel)
         const serviceAccountJson = process.env.SERVICE_ACCOUNT_KEY;
         const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
         if (!serviceAccountJson || !databaseURL) {
             console.error("Missing Firebase environment variables. API calls will fail.");
         } else {
-            // تنظيف وازالة أي علامات اقتباس محيطة
             const cleanJsonString = serviceAccountJson.replace(/^[\"]+|[\"]+$/g, '');
             const serviceAccount = JSON.parse(cleanJsonString);
 
@@ -56,7 +51,6 @@ try {
 
 // =======================================================
 // بيانات المواد الشاملة (حسب نظام الدراسة الجزائري) - مفصلة
-// الهيكل: المرحلة (Phase) -> السنة (Year) -> الشعبة (Stream) -> المواد (Subjects)
 // =======================================================
 const courses = {
     "المرحلة الابتدائية": {
@@ -85,8 +79,8 @@ const courses = {
         },
         "السنة الثانية ثانوي": {
             "شعبة علوم تجريبية": ["علوم طبيعية", "فيزياء", "رياضيات", "لغة عربية", "فلسفة", "لغة فرنسية", "لغة إنجليزية"],
-            "شعبة تسيير واقتصاد": ["المحاسبة والمالية", "القانون", "الاقتصاد والمناجمنت", "الرياضيات", "التاريخ والجغرافيا", "لغة عربية", "لغة فرنسية", "لغة إنجليزية"], // المواد المتخصصة المطلوبة
-            "شعبة لغات أجنبية": ["لغة أجنبية 1 (فرنسية)", "لغة أجنبية 2 (إنجليزية)", "لغة أجنبية 3 (إسبانية)", "فلسفة", "لغة عربية", "تاريخ وجغرافيا"] // إضافة الإسبانية
+            "شعبة تسيير واقتصاد": ["المحاسبة والمالية", "القانون", "الاقتصاد والمناجمنت", "الرياضيات", "التاريخ والجغرافيا", "لغة عربية", "لغة فرنسية", "لغة إنجليزية"], 
+            "شعبة لغات أجنبية": ["لغة أجنبية 1 (فرنسية)", "لغة أجنبية 2 (إنجليزية)", "لغة أجنبية 3 (إسبانية)", "فلسفة", "لغة عربية", "تاريخ وجغرافيا"]
         },
         "السنة الثالثة ثانوي (بكالوريا)": {
             "شعبة علوم تجريبية": ["علوم طبيعية", "فيزياء", "رياضيات", "لغة عربية", "فلسفة", "لغة فرنسية", "لغة إنجليزية"],
@@ -101,7 +95,6 @@ const courses = {
 // =======================================================
 
 
-// وظيفة مساعدة للتحقق من جاهزية Firebase
 function checkFirebaseReadiness(res) {
     if (!isFirebaseReady) {
         return res.status(500).json({ 
@@ -112,63 +105,53 @@ function checkFirebaseReadiness(res) {
 }
 
 
-// ---------------------------
 // --- مسارات عرض الملفات ---
-// ---------------------------
-
-// عرض index.html كصفحة رئيسية
 app.get('/', (req, res) => {
     res.sendFile(path.join(VIEWS_PATH, 'index.html'));
 });
 
-// عرض status.html عند مسح QR code
 app.get('/status.html', (req, res) => {
     res.sendFile(path.join(VIEWS_PATH, 'status.html'));
 });
 
-// عرض profile.html لملف الطالب
 app.get('/profile.html', (req, res) => {
     res.sendFile(path.join(VIEWS_PATH, 'profile.html'));
 });
 
 
-// ---------------------------
 // --- مسارات API لـ CRUD ---
-// ---------------------------
-
-// 1. نقطة نهاية جلب قائمة المواد (البيانات المطلوبة)
+// 1. نقطة نهاية جلب قائمة المواد 
 app.get('/courses', (req, res) => {
     res.json(courses);
 });
 
 
 // 2. نقطة نهاية تسجيل طالب جديد
-// تم تحديثها لاستقبال المرحلة، السنة، والشعبة
 app.post('/register', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
-    const { name, phase, year, stream, subjects } = req.body; 
+    const { name, lastName, phase, year, stream, subjects } = req.body; 
     const studentId = uuidv4(); 
+    const fullName = `${name} ${lastName}`;
 
-    if (!name || !phase || !year || !stream || !subjects || subjects.length === 0) {
-        return res.status(400).json({ message: 'الرجاء توفير اسم الطالب والمرحلة والسنة والشعبة والمواد المختارة.' });
+    if (!fullName || !phase || !year || !stream || !subjects || subjects.length === 0) {
+        return res.status(400).json({ message: 'الرجاء توفير جميع بيانات الطالب والمواد المختارة.' });
     }
 
     try {
         const studentData = {
             id: studentId,
-            name: name,
-            phase: phase,      // مثال: "المرحلة الثانوية"
-            year: year,        // مثال: "السنة الثالثة ثانوي (بكالوريا)"
-            stream: stream,    // مثال: "شعبة تسيير واقتصاد"
-            subjects: subjects, // مصفوفة بأسماء المواد التي اختارها الطالب
+            name: fullName,
+            phase: phase,      
+            year: year,        
+            stream: stream,    
+            subjects: subjects, 
             isActive: true, 
             registeredAt: admin.database.ServerValue.TIMESTAMP
         };
 
         await studentsRef.child(studentId).set(studentData); 
 
-        // إنشاء سجل حضور فارغ
         await db.ref(`attendance/${studentId}`).set({}); 
 
         const qrData = `/profile.html?id=${studentId}`; 
@@ -221,11 +204,10 @@ app.post('/check-in', async (req, res) => {
         if (!student) {
             return res.status(404).json({ message: 'الطالب غير موجود.' });
         }
-        
-        // تسجيل الحضور
+
         const attendanceRef = db.ref(`attendance/${studentId}`).push();
         await attendanceRef.set({
-            phase: student.phase || 'N/A', // استخدام البيانات الجديدة
+            phase: student.phase || 'N/A', 
             year: student.year || 'N/A',
             stream: student.stream || 'N/A',
             action: 'Check-in',
@@ -273,7 +255,6 @@ app.get('/student-details/:id', async (req, res) => {
         res.status(500).json({ message: 'فشل في جلب بيانات الطالب' });
     }
 });
-
 
 // تشغيل الخادم
 app.listen(PORT, () => {
