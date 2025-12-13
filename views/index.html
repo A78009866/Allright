@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles (محدثة لدعم الأزرار وقائمة الحذف والتأثير الزجاجي) */
+/* CSS styles (محدثة لتحسين نافذة تسجيل الطلاب) */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
@@ -17,8 +17,8 @@
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
   --accent-color: #3b82f6; 
-  --danger-color: #ff6347; /* تم التعديل */
-  --success-color: #43cf66; /* تم التعديل */
+  --danger-color: #ff6347; 
+  --success-color: #43cf66; 
   --nav-height: 72px;
   --radius: 12px;
 }
@@ -46,7 +46,7 @@ html,body{
   flex-direction:column;
 }
 
-/* --- FLEXIBLE BUTTONS (NEW) --- */
+/* --- FLEXIBLE BUTTONS --- */
 .btn-style { 
     padding: 10px 18px;
     border: none;
@@ -71,6 +71,12 @@ html,body{
     background-color: #2563eb;
     transform: translateY(-1px);
 }
+.btn-primary.delete-action {
+    background-color: var(--danger-color);
+}
+.btn-primary.delete-action:hover {
+    background-color: #c54231;
+}
 
 .btn-secondary {
     background-color: var(--drawer-bg);
@@ -83,7 +89,7 @@ html,body{
 }
 
 
-/* --- NAVBAR - Glassy Effect (UNCHANGED) --- */
+/* --- NAVBAR - Glassy Effect --- */
 .navbar{
   height: var(--nav-height);
   display: flex;
@@ -99,7 +105,6 @@ html,body{
   position: relative;
   z-index: 1000;
 }
-/* ... (باقي أنماط الشريط العلوي) ... */
 .brand-group{
   display:flex;
   align-items:center;
@@ -139,8 +144,12 @@ html,body{
     flex-shrink: 0;
 }
 
-.nav-buttons .btn {
-    padding: 8px 10px; 
+.nav-buttons .btn-scan {
+    /* تطبيق الأنماط الجديدة */
+    background: var(--drawer-bg); 
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -152,33 +161,29 @@ html,body{
     justify-content: center;
     white-space: nowrap; 
 }
-
-/* زر المسح (QR) */
-.nav-buttons .btn-scan {
-    background: rgba(255, 255, 255, 0.08); 
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
 .nav-buttons .btn-scan:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: #29292c;
+    color: var(--text-primary);
     border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* زر التسجيل (+) */
 .nav-buttons .btn-register {
-    background: rgba(59, 130, 246, 0.6); 
+    background: var(--accent-color); 
     color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
-    backdrop-filter: blur(10px);
     width: 40px; 
     height: 40px; 
     padding: 0; 
     border-radius: 50%; 
+    transition: all 0.3s;
 }
+.nav-buttons .btn-register:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
 .nav-buttons .btn-register span {
     display: none; 
 }
@@ -230,7 +235,7 @@ html,body{
 }
 
 
-/* HERO SECTION (UNCHANGED) */
+/* HERO SECTION */
 .hero{
   flex:1;
   display:flex;
@@ -266,15 +271,26 @@ html,body{
 }
 .qr-scanner-overlay button {
     margin-top: 15px;
-    padding: 10px 20px;
-    background: #ff6347;
-    color: white;
+    /* تطبيق الأزرار المرنة هنا */
+    padding: 10px 18px;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius);
+    font-weight: 500;
     cursor: pointer;
+    font-family: "Tajawal", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--danger-color);
+    color: white;
     font-size: 16px;
     z-index: 5001;
 }
+.qr-scanner-overlay button:hover {
+    background: #c54231;
+}
+
 #reader {
     width: 90%; 
     max-width: 400px; 
@@ -320,10 +336,10 @@ html,body{
   flex-direction: column;
   gap: 8px;
   cursor: pointer;
-  position: relative; /* تم التعديل: للسماح بتموضع قائمة الإجراءات */
-  transition: transform 0.2s, box-shadow 0.2s; /* تم التعديل */
+  position: relative; 
+  transition: transform 0.2s, box-shadow 0.2s; 
 }
-.student-card:hover { /* تم التعديل */
+.student-card:hover { 
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
@@ -365,7 +381,7 @@ html,body{
   white-space: nowrap;
 }
 
-/* --- ACTION MENU (NEW) --- */
+/* --- ACTION MENU --- */
 .action-menu {
     position: absolute;
     top: 10px;
@@ -419,11 +435,11 @@ html,body{
     background-color: rgba(255, 255, 255, 0.05);
 }
 .delete-action {
-    color: var(--danger-color); /* أحمر للحذف */
+    color: var(--danger-color); 
 }
 
 
-/* --- MODAL (Glassmorphism & UNCHANGED) --- */
+/* --- MODAL (Glassmorphism) --- */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -437,6 +453,22 @@ html,body{
 .modal-overlay.open {
     display: flex;
 }
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.modal-close-btn:hover {
+    color: var(--danger-color);
+}
+
 .modal-content {
     background: rgba(21, 21, 23, 0.95); 
     border: 1px solid rgba(255,255,255,0.1);
@@ -467,21 +499,37 @@ html,body{
     color: #e4e4e7;
     font-size: 14px;
 }
-/* ... (باقي أنماط حقول النموذج) ... */
-.modal-content input[type="text"], .modal-content select, .session-count-input {
+/* --- حقول الإدخال والاختيار (INPUTS/SELECTS) المُحسَّنة (MODIFIED) --- */
+.modal-content input[type="text"], 
+.modal-content select, 
+.subject-selection-area input[type="number"] {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    background: rgba(0,0,0,0.3);
+    padding: 10px; /* زيادة التباعد الداخلي */
+    margin-bottom: 15px; /* زيادة التباعد السفلي */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* زيادة تقوس الحواف */
+    background: rgba(255, 255, 255, 0.05); /* خلفية داكنة فاتحة */
     color: var(--text-primary);
-    font-size: 14px;
+    font-size: 15px; /* خط أكبر قليلاً */
     font-family: inherit;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.modal-content input:focus, 
+.modal-content select:focus, 
+.subject-selection-area input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.1); /* خلفية زرقاء خفيفة عند التركيز */
+}
+
+/* تنسيق خاص للـ Selects لإزالة المظهر الافتراضي */
+.modal-content select {
     appearance: none;
+    -webkit-appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
-    background-position: left 10px center;
+    background-position: left 15px center;
     cursor: pointer;
 }
 
@@ -499,25 +547,111 @@ html,body{
 
 .subject-selection-area {
     margin-top: 15px;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background: rgba(255,255,255,0.03);
 }
 
+.subject-selection-area label:first-child {
+    font-size: 16px;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* --- تنسيق مربعات اختيار المواد (MODIFIED) --- */
 .subject-checkboxes {
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
 }
 
 .subject-item-wrapper {
-    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+.subject-item-wrapper:last-child {
+    border-bottom: none;
+}
+
+.subject-item-wrapper .subject-label-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.subject-item-wrapper input[type="checkbox"] {
+    /* إخفاء التشيك بوكس الافتراضي واستخدام تصميم مخصص */
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+    transition: all 0.2s;
+}
+
+.subject-item-wrapper input[type="checkbox"]:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+.subject-item-wrapper input[type="checkbox"]:checked::after {
+    content: '✓';
+    color: var(--text-primary);
+    font-size: 14px;
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    line-height: 1;
+}
+
+.subject-item-wrapper label {
+    margin-bottom: 0;
+    font-size: 15px;
+    color: var(--text-primary);
+    cursor: pointer;
 }
 
 .subject-item-wrapper .session-count-input {
-    width: 100px;
-    padding: 4px 8px;
-    font-size: 12px;
+    width: 80px;
+    padding: 6px 8px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 0; 
+    background: rgba(255, 255, 255, 0.05); 
 }
+
+/* --- تنسيق نتائج التسجيل --- */
+.modal-result h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.modal-result img {
+    border: 3px solid var(--accent-color);
+}
+
+
+/* --- Custom Alert/Confirm Styles (UNCHANGED) --- */
+#custom-alert-overlay {
+    background:rgba(0,0,0,0.7);
+}
+#custom-alert-box {
+    background:rgba(21, 21, 23, 0.95);
+    backdrop-filter: blur(10px);
+}
+#custom-alert-title {
+    color:var(--text-primary);
+}
+
 
 </style>
 </head>
@@ -537,12 +671,12 @@ html,body{
 
     <div class="nav-buttons">
       
-      <button class="btn btn-scan" id="scanBtn">
+      <button class="btn-style btn-scan" id="scanBtn">
         <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
         مسح QR
       </button>
       
-      <button class="btn btn-register" id="openRegisterModalBtn">
+      <button class="btn-style btn-primary btn-register" id="openRegisterModalBtn">
         <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         <span>تسجيل جديد</span>
       </button>
@@ -618,7 +752,7 @@ html,body{
   <div class="qr-scanner-overlay" id="qrScannerOverlay">
     <p class="scan-message">امسح رمز QR الخاص بالطالب لتسجيل الدخول.</p>
     <div id="reader"></div> 
-    <button onclick="stopScannerAndClose()">إلغاء المسح</button>
+    <button class="btn-style" style="background: var(--danger-color); color: white;" onclick="stopScannerAndClose()">إلغاء المسح</button>
   </div>
 
   <footer>
@@ -661,7 +795,7 @@ html,body{
   let COURSES_DATA = {}; 
   let html5QrCode = null; 
 
-  // --- Custom Alert/Confirmation Functions (NEW) ---
+  // --- Custom Alert/Confirmation Functions ---
   function showCustomConfirm(message, callback, title = 'تأكيد') {
       const overlay = document.getElementById('custom-alert-overlay');
       const msg = document.getElementById('custom-alert-message');
@@ -718,7 +852,7 @@ html,body{
       };
   }
   
-  // إغلاق قائمة الإجراءات عند النقر في أي مكان آخر (NEW)
+  // إغلاق قائمة الإجراءات عند النقر في أي مكان آخر
   document.addEventListener('click', (e) => {
       if (!e.target.closest('.action-menu') && document.querySelector('#custom-alert-overlay').style.display !== 'flex') {
           document.querySelectorAll('.action-menu-dropdown.active').forEach(d => {
@@ -728,7 +862,7 @@ html,body{
   });
 
 
-  // --- QR Scanner Functions (UNCHANGED) ---
+  // --- QR Scanner Functions ---
 
   async function onScanSuccess(decodedText, decodedResult) {
     await stopScannerAndClose(); 
@@ -782,7 +916,7 @@ html,body{
   scanBtn.addEventListener('click', startScanner);
 
 
-  // --- Modal Toggles (UNCHANGED) ---
+  // --- Modal Toggles ---
   openRegisterModalBtn.addEventListener('click', () => {
     openRegistrationModal();
     populatePhases(); 
@@ -808,7 +942,7 @@ html,body{
   }
   
 
-  // --- Dynamic Registration Form Logic (UNCHANGED) ---
+  // --- Dynamic Registration Form Logic ---
   
   function populatePhases() {
     phaseSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة</option>';
@@ -908,6 +1042,13 @@ html,body{
         const label = document.createElement('label');
         label.htmlFor = uniqueId;
         label.textContent = subject;
+        
+        // Group checkbox and label
+        const labelGroup = document.createElement('div');
+        labelGroup.className = 'subject-label-group';
+        labelGroup.appendChild(checkbox);
+        labelGroup.appendChild(label);
+
 
         const sessionInput = document.createElement('input');
         sessionInput.type = 'number';
@@ -927,15 +1068,14 @@ html,body{
             }
         });
         
-        checkboxWrapper.appendChild(checkbox);
-        checkboxWrapper.appendChild(label);
+        checkboxWrapper.appendChild(labelGroup);
         checkboxWrapper.appendChild(sessionInput); 
         subjectCheckboxes.appendChild(checkboxWrapper);
     });
   }
 
 
-  // --- Registration logic (UNCHANGED) ---
+  // --- Registration logic ---
   registerButton.addEventListener('click', async () => {
     const name = document.getElementById('studentName').value.trim();
     const lastName = document.getElementById('studentLastName').value.trim();
@@ -943,36 +1083,37 @@ html,body{
     const year = yearSelect.value;
     const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
-    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
-                                .map(checkbox => {
-                                    const subjectName = checkbox.value;
-                                    const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
-                                    const countInput = document.getElementById(`count-${uniqueId}`);
-                                    const sessionCount = parseInt(countInput.value, 10);
-                                    
-                                    if (!sessionCount || sessionCount < 1) {
-                                        showCustomAlert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`, 'خطأ في الإدخال');
-                                        throw new Error('Missing session count'); 
-                                    }
-                                    
-                                    return {
-                                        name: subjectName,
-                                        sessionCount: sessionCount
-                                    };
-                                });
-
-    if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
-        showCustomAlert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.', 'بيانات غير مكتملة');
-        return;
-    }
-    
-    registrationForm.style.display = 'none';
-    resultMessage.textContent = 'جارٍ تسجيل الطالب...';
-    resultMessage.style.color = '#fff';
-    modalResult.style.display = 'block';
-    qrCodeImage.style.display = 'none';
-
     try {
+        const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
+                                    .map(checkbox => {
+                                        const subjectName = checkbox.value;
+                                        const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
+                                        const countInput = document.getElementById(`count-${uniqueId}`);
+                                        const sessionCount = parseInt(countInput.value, 10);
+                                        
+                                        if (!sessionCount || sessionCount < 1) {
+                                            showCustomAlert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`, 'خطأ في الإدخال');
+                                            throw new Error('Missing session count'); 
+                                        }
+                                        
+                                        return {
+                                            name: subjectName,
+                                            sessionCount: sessionCount
+                                        };
+                                    });
+
+        if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
+            showCustomAlert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.', 'بيانات غير مكتملة');
+            return;
+        }
+        
+        registrationForm.style.display = 'none';
+        resultMessage.textContent = 'جارٍ تسجيل الطالب...';
+        resultMessage.style.color = '#fff';
+        modalResult.style.display = 'block';
+        qrCodeImage.style.display = 'none';
+
+        
         const response = await fetch('/register', {
             method: 'POST',
             headers: {
@@ -1013,9 +1154,9 @@ html,body{
   });
 
 
-  // --- Student Cards Display Logic (MODIFIED) ---
+  // --- Student Cards Display Logic ---
   
-  // دالة حذف الطالب (NEW)
+  // دالة حذف الطالب
   async function deleteStudent(studentId, studentName) {
       try {
           const response = await fetch(`/student/${studentId}`, {
@@ -1049,7 +1190,12 @@ html,body{
               return;
           }
           
-          for (const [id, student] of Object.entries(students)) {
+          const studentArray = Object.values(students);
+          studentArray.sort((a, b) => b.registeredAt - a.registeredAt); // فرز الأحدث أولا
+
+          for (const student of studentArray) {
+              const id = student.id;
+              
               const card = document.createElement('div');
               card.className = 'student-card';
               
@@ -1068,7 +1214,7 @@ html,body{
                                         : 'لا توجد مواد';
 
 
-              // بناء بطاقة الطالب مع قائمة الإجراءات (NEW)
+              // بناء بطاقة الطالب مع قائمة الإجراءات
               const actionMenuHTML = `
                 <div class="action-menu">
                     <button class="action-menu-toggle" aria-expanded="false" aria-controls="menu-${id}">•••</button>
@@ -1089,14 +1235,14 @@ html,body{
               `;
               
               
-              // 1. Profile Click Listener (Modified)
+              // 1. Profile Click Listener
               card.addEventListener('click', (e) => {
                   if (!e.target.closest('.action-menu') && !e.target.closest('.modal-overlay')) {
                       window.location.href = `/profile.html?id=${id}`;
                   }
               });
               
-              // 2. Action Menu Toggle Listener (NEW)
+              // 2. Action Menu Toggle Listener
               const toggleButton = card.querySelector('.action-menu-toggle');
               const dropdown = card.querySelector('.action-menu-dropdown');
               
@@ -1109,7 +1255,7 @@ html,body{
                   dropdown.classList.toggle('active');
               });
 
-              // 3. Delete Button Listener (NEW)
+              // 3. Delete Button Listener
               const deleteButton = card.querySelector('.delete-action');
               deleteButton.addEventListener('click', (e) => {
                   e.stopPropagation(); 
@@ -1135,7 +1281,7 @@ html,body{
       }
   }
 
-  // --- Initial Load (UNCHANGED) ---
+  // --- Initial Load ---
   async function initialLoad() {
     try {
         const response = await fetch('/courses');
