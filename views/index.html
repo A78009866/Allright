@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles (unchanged from the last revision, but included for completeness) */
+/* CSS styles */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
@@ -67,7 +67,7 @@ html,body{
   align-items:center;
   gap:10px; 
   flex-shrink: 0; 
-  order: 1; /* أقصى اليمين في نمط RTL */
+  order: 1; 
 }
 
 .brand-group img{
@@ -97,7 +97,7 @@ html,body{
     display: flex;
     align-items: center;
     gap: 8px; 
-    order: 2; /* أقصى اليسار في نمط RTL */
+    order: 2; 
     flex-shrink: 0;
 }
 
@@ -220,14 +220,14 @@ html,body{
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* التعديل: لبدء المحتوى من الأعلى */
-    padding: 40px 10px; /* التعديل: لزيادة التباعد */
+    justify-content: flex-start; 
+    padding: 40px 10px; 
 }
 .qr-scanner-overlay.active {
     display: flex;
 }
 .qr-scanner-overlay button {
-    margin-top: 25px; /* التعديل: لزيادة المسافة عن الماسح */
+    margin-top: 25px; 
     padding: 10px 20px;
     background: #ff6347;
     color: white;
@@ -238,20 +238,23 @@ html,body{
     z-index: 5001;
 }
 #reader {
-    width: 100%; /* التعديل: لملء العرض */
-    max-width: 700px; /* التعديل: لزيادة الحد الأقصى للعرض على الشاشات الكبيرة */
-    flex-grow: 1; /* التعديل: للسماح له بالتمدد عمودياً */
+    width: 100%; 
+    max-width: 700px; 
+    flex-grow: 1; 
     
     border: 3px solid var(--accent-color);
     border-radius: var(--radius);
     overflow: hidden;
     position: relative;
+    /* تحديد نسبة الارتفاع (لتجنب الشاشة البيضاء في بعض الحالات) */
+    min-height: 300px; 
 }
+
 /* إخفاء إطار html5-qrcode الافتراضي للحفاظ على الأسلوب */
 #reader div { 
     border: none !important;
-    width: 100% !important; /* التعديل: لملء الحاوية الداخلية */
-    height: 100% !important; /* التعديل: لملء الحاوية الداخلية */
+    width: 100% !important; 
+    height: 100% !important; 
 }
 /* إضافة نمط لضمان أن الفيديو يملأ الـ #reader */
 #reader video {
@@ -261,9 +264,9 @@ html,body{
 }
 
 .scan-message {
-    margin-bottom: 25px; /* التعديل: لزيادة المسافة */
+    margin-bottom: 25px; 
     color: #fff;
-    font-size: 18px; /* التعديل: لتكبير الخط قليلاً */
+    font-size: 18px; 
 }
 
 /* باقي الأنماط... (الطلاب، النماذج، إلخ) */
@@ -548,7 +551,7 @@ footer{
   const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
   const registrationModal = document.getElementById('registrationModal');
   const scanBtn = document.getElementById('scanBtn'); 
-  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); // الماسح
+  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); 
 
   const phaseSelect = document.getElementById('phaseSelect');
   const yearSelect = document.getElementById('yearSelect');
@@ -562,47 +565,67 @@ footer{
   const resultMessage = document.getElementById('resultMessage');
 
   let COURSES_DATA = {}; 
-  let html5QrCode = null; // متغير لتخزين مثيل الماسح
+  let html5QrCode = null; 
 
 
   // --- QR Scanner Functions ---
 
   // وظيفة يتم تنفيذها عند المسح الناجح
   async function onScanSuccess(decodedText, decodedResult) {
-    await stopScannerAndClose(); // إغلاق الكاميرا والـ Overlay
+    await stopScannerAndClose(); 
     
     // افتراض أن الكود الممسوح هو معرف الطالب (ID)
-    const studentId = decodedText.trim(); 
+    // الكود الممسوح يتضمن الرابط كاملاً، لذا نقوم بتحويل المستخدم مباشرة.
+    const url = decodedText.trim(); 
     
-    if (studentId) {
-        // توجيه المستخدم لصفحة الملف الشخصي
-        window.location.href = `/profile.html?id=${studentId}`;
+    // تأكد من أن النص الممسوح هو مسار صالح لصفحة الملف الشخصي
+    if (url.startsWith('/profile.html')) {
+        window.location.href = url;
     } else {
-        alert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.');
+        // إذا كان مجرد معرف، استخدم المنطق القديم (مع افتراض أن هذا يجب أن يتغير في الخادم)
+        if (url.length > 5) {
+            window.location.href = `/profile.html?id=${url}`;
+        } else {
+             alert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.');
+        }
     }
   }
 
-  // وظيفة فتح الكاميرا
+  // وظيفة فتح الكاميرا (تم التعديل لتحسين الموثوقية)
   async function startScanner() {
     qrScannerOverlay.classList.add('active');
     
     if (!html5QrCode) {
-        // استخدام Html5Qrcode بدون مكتبة فرعية
         html5QrCode = new Html5Qrcode("reader");
     }
 
     const config = { 
         fps: 10, 
-        qrbox: {width: 250, height: 250}, // يتم تجاهل هذا بواسطة CSS الواسع
-        facingMode: "environment" // استخدام الكاميرا الخلفية (للهواتف)
+        qrbox: {width: 250, height: 250},
     };
 
     try {
+        // المحاولة الأولى: طلب الكاميرا الخلفية بشكل صريح (Environment)
         await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
-    } catch (err) {
-        console.error("Failed to start QR scanner:", err);
-        alert('فشل في تشغيل الكاميرا. تأكد من إعطاء إذن الوصول وأنك تستخدم HTTPS أو localhost.');
-        stopScannerAndClose();
+        
+    } catch (errEnvironment) {
+        console.warn("Failed with environment mode, trying generic mode:", errEnvironment);
+        
+        try {
+            // المحاولة الثانية: ترك الخيار للمتصفح ليختار الكاميرا الافتراضية
+            await html5QrCode.start({ }, config, onScanSuccess);
+
+        } catch (errGeneric) {
+            // فشل محاولة تشغيل الكاميرا بالكامل
+            console.error("Failed to start QR scanner in both modes:", errGeneric);
+            
+            if (errGeneric.name === "NotAllowedError") {
+                 alert('فشل في تشغيل الكاميرا: تم رفض إذن الوصول. الرجاء التحقق من إعدادات المتصفح وإعطاء الإذن.');
+            } else {
+                 alert('فشل في تشغيل الكاميرا. قد تكون المشكلة في إعدادات الأمان (HTTPS) أو عدم وجود كاميرا متاحة. (خطأ تقني: ' + errGeneric.message + ')');
+            }
+            stopScannerAndClose();
+        }
     }
   }
 
@@ -792,7 +815,9 @@ footer{
     const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
     // جمع المواد المختارة وعدد الحصص
-    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
+    let selectedSubjects = [];
+    try {
+         selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
                                 .map(checkbox => {
                                     const subjectName = checkbox.value;
                                     const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
@@ -809,6 +834,11 @@ footer{
                                         sessionCount: sessionCount
                                     };
                                 });
+    } catch (e) {
+        if (e.message === 'Missing session count') return; // توقف التنفيذ
+        throw e;
+    }
+
 
     if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
         alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.');
