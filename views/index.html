@@ -47,10 +47,10 @@ html,body{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px; /* Adjust padding after removing menu */
+  padding: 0 30px; 
   margin: 16px;
   border-radius: var(--radius);
-  background: rgba(26, 26, 29, 0.85); /* Dark background with transparency */
+  background: rgba(26, 26, 29, 0.85); 
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -144,11 +144,6 @@ html,body{
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
-}
-
-/* --- Side Drawer (Hidden as requested) --- */
-.side-drawer-overlay, .side-drawer {
-    display: none !important;
 }
 
 /* HERO SECTION */
@@ -283,7 +278,7 @@ html,body{
     color: #e4e4e7;
 }
 
-.modal-content input[type="text"], .modal-content select {
+.modal-content input[type="text"], .modal-content select, .session-count-input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -320,39 +315,42 @@ html,body{
     background: rgba(255,255,255,0.03);
 }
 
+/* Updated Subject Checkboxes for Session Count */
 .subject-checkboxes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-top: 10px;
 }
 
-.subject-checkboxes input[type="checkbox"] {
-    /* Hide default checkbox */
+.subject-item-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.subject-item-wrapper input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     height: 0;
     width: 0;
 }
-.subject-checkboxes label {
+
+.subject-item-wrapper label {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
+    flex-grow: 1; 
     cursor: pointer;
     font-weight: 400;
     margin-bottom: 0;
-    transition: background 0.2s, border-color 0.2s;
     user-select: none;
 }
-.subject-checkboxes label:hover {
-    background: rgba(0,0,0,0.4);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-.subject-checkboxes label::before {
+.subject-item-wrapper label::before {
     content: '';
     width: 16px;
     height: 16px;
@@ -361,14 +359,12 @@ html,body{
     background: transparent;
     transition: all 0.2s;
     flex-shrink: 0;
-    margin-left: 5px; /* Adjust spacing for RTL checkmark */
+    margin-left: 5px; 
 }
-.subject-checkboxes input[type="checkbox"]:checked + label {
-    border-color: var(--accent-color);
-    background: rgba(59, 130, 246, 0.15); 
+.subject-item-wrapper input[type="checkbox"]:checked + label {
     color: #fff;
 }
-.subject-checkboxes input[type="checkbox"]:checked + label::before {
+.subject-item-wrapper input[type="checkbox"]:checked + label::before {
     border-color: var(--accent-color);
     background: var(--accent-color);
     content: '✓'; 
@@ -378,6 +374,15 @@ html,body{
     color: #fff;
     font-size: 10px;
     line-height: 1;
+}
+
+.subject-item-wrapper .session-count-input {
+    width: 120px;
+    margin-bottom: 0;
+    padding: 5px 10px;
+    font-size: 14px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 .modal-content button {
@@ -540,7 +545,7 @@ footer{
         </select>
         
         <div class="subject-selection-area">
-          <label>اختيار المواد:</label>
+          <label>اختيار المواد وتحديد عدد الحصص الكلي:</label>
           <div id="subjectCheckboxes" class="subject-checkboxes">
             الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
           </div>
@@ -644,7 +649,6 @@ footer{
         option.textContent = phaseName;
         phaseSelect.appendChild(option);
     }
-    // إعادة تعيين السنوات والشعب
     yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
     streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
     yearSelect.disabled = true;
@@ -718,7 +722,7 @@ footer{
     }
   });
 
-  // 5. Render Subjects Checkboxes
+  // 5. Render Subjects Checkboxes (UPDATED to include session count)
   function populateSubjects(subjectsArray) {
     subjectCheckboxes.innerHTML = '';
     if (subjectsArray.length === 0) {
@@ -730,24 +734,46 @@ footer{
         const checkboxWrapper = document.createElement('div');
         checkboxWrapper.className = 'subject-item-wrapper';
         
+        const uniqueId = `sub-${subject.replace(/\s|\/|\(|\)/g, '-')}`;
+
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.id = `sub-${subject.replace(/\s/g, '-')}`;
-        checkbox.name = 'subject';
+        checkbox.id = uniqueId;
+        checkbox.name = 'subject-checkbox'; 
         checkbox.value = subject;
         
         const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
+        label.htmlFor = uniqueId;
         label.textContent = subject;
 
+        const sessionInput = document.createElement('input');
+        sessionInput.type = 'number';
+        sessionInput.min = '1';
+        sessionInput.placeholder = 'عدد الحصص الكلي';
+        sessionInput.className = 'session-count-input';
+        sessionInput.id = `count-${uniqueId}`;
+        sessionInput.disabled = true; 
+        
+        // تفعيل/تعطيل حقل العدد بناءً على تحديد المربع
+        checkbox.addEventListener('change', (e) => {
+            sessionInput.disabled = !e.target.checked;
+            if (e.target.checked) {
+                sessionInput.value = 1; 
+                sessionInput.focus();
+            } else {
+                sessionInput.value = '';
+            }
+        });
+        
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(label);
+        checkboxWrapper.appendChild(sessionInput); 
         subjectCheckboxes.appendChild(checkboxWrapper);
     });
   }
 
 
-  // --- Registration logic ---
+  // --- Registration logic (UPDATED to send session count) ---
   registerButton.addEventListener('click', async () => {
     const name = document.getElementById('studentName').value.trim();
     const lastName = document.getElementById('studentLastName').value.trim();
@@ -755,11 +781,28 @@ footer{
     const year = yearSelect.value;
     const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
     
-    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject"]:checked'))
-                                .map(checkbox => checkbox.value);
+    // جمع المواد المختارة وعدد الحصص
+    const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
+                                .map(checkbox => {
+                                    const subjectName = checkbox.value;
+                                    const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
+                                    const countInput = document.getElementById(`count-${uniqueId}`);
+                                    const sessionCount = parseInt(countInput.value, 10);
+                                    
+                                    if (!sessionCount || sessionCount < 1) {
+                                        alert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`);
+                                        // Throwing an error here stops the map function and prevents registration submission
+                                        throw new Error('Missing session count'); 
+                                    }
+                                    
+                                    return {
+                                        name: subjectName,
+                                        sessionCount: sessionCount
+                                    };
+                                });
 
     if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
-        alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل.');
+        alert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.');
         return;
     }
     
@@ -782,7 +825,7 @@ footer{
                 phase: phase,
                 year: year,
                 stream: stream,
-                subjects: selectedSubjects
+                subjects: selectedSubjects // تمرير الهيكل الجديد
             })
         });
 
@@ -801,14 +844,19 @@ footer{
         }
 
     } catch (error) {
-        console.error('Network or internal registration error:', error);
-        resultMessage.textContent = 'خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.';
-        resultMessage.style.color = '#ff6347';
+        if (error.message !== 'Missing session count') {
+            console.error('Network or internal registration error:', error);
+            resultMessage.textContent = 'خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.';
+            resultMessage.style.color = '#ff6347';
+        }
+        // في حالة وجود خطأ في الحصص، نعيد عرض النموذج
+        registrationForm.style.display = 'block';
+        modalResult.style.display = 'none';
     }
   });
 
 
-  // --- Student Cards Display Logic ---
+  // --- Student Cards Display Logic (Updated to show subject count summary) ---
   async function fetchStudentCards() {
       loadingMessage.style.display = 'block';
       studentCardsContainer.innerHTML = ''; 
@@ -831,11 +879,16 @@ footer{
               const statusClass = student.isActive ? 'status-active' : 'status-inactive';
               const statusText = student.isActive ? 'نشط' : 'غير نشط';
               
-              // عرض المرحلة والسنة والشعبة في البطاقة
               let detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'}`;
               if (student.stream && student.stream !== 'عامة') {
                   detailsText += ` | ${student.stream}`;
               }
+              
+              // ملخص المواد
+              const subjectSummary = student.subjects 
+                                        ? student.subjects.map(s => `${s.name} (${s.completedSessions}/${s.totalSessions})`).join(' | ') 
+                                        : 'لا توجد مواد';
+
 
               card.innerHTML = `
                   <div class="name">${student.name}</div>
@@ -843,7 +896,7 @@ footer{
                       <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
                       <span class="status-indicator ${statusClass}">${statusText}</span>
                   </div>
-                  <div class="subjects"><strong>المواد:</strong> ${student.subjects.join(' | ')}</div>
+                  <div class="subjects"><strong>ملخص الحصص:</strong> ${subjectSummary}</div>
               `;
               
               card.addEventListener('click', () => {
