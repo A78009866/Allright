@@ -407,6 +407,22 @@ html,body{
         <img id="qrCodeImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="رمز QR للطالب">
     </div>
 
+    <div class="card undone-sessions-log-card">
+        <h2>سجل الحصص المشطوبة (تراجع عن اكتمال الحصة)</h2>
+        
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>المادة</th>
+                    <th>رقم الحصة المشطوبة</th>
+                    <th>تاريخ الشطب</th>
+                </tr>
+            </thead>
+            <tbody id="undoneSessionsBody">
+                <tr><td colspan="3" class="no-records">جاري تحميل سجل الشطب...</td></tr>
+            </tbody>
+        </table>
+    </div>
     <div class="card attendance-log-card">
         <h2>سجل الحضور (Check-in/Check-out)</h2>
         
@@ -493,7 +509,7 @@ html,body{
         fetchQRCode(studentId);
     }
     
-    // دالة جلب بيانات الطالب والتحقق من حالة التعطيل
+    // دالة جلب بيانات الطالب والتحقق من حالة التعطيل (مُحدثة لجلب سجل الشطب)
     async function fetchStudentDetails(id) {
         try {
             const response = await fetch(`/student-details/${id}`);
@@ -507,6 +523,7 @@ html,body{
             const data = await response.json();
             const student = data.student;
             const attendance = data.attendance;
+            const undoneSessions = data.undoneSessions; // **الجديد**
             
             // تحديث بيانات الطالب
             document.getElementById('studentNameHeader').textContent = `${student.name || 'طالب غير معروف'}`;
@@ -526,6 +543,9 @@ html,body{
             // عرض سجل الحضور
             renderAttendanceLog(id, attendance);
             
+            // **عرض سجل الشطب (الجديد)**
+            renderUndoneSessionsLog(undoneSessions);
+
             
             // **المنطق الجديد: التحقق من حالة التعطيل التلقائي**
             const isActive = student.isActive;
@@ -538,7 +558,7 @@ html,body{
                     async (isConfirmed) => {
                         if (isConfirmed) {
                             try {
-                                // افتراض أن هذا هو نقطة الاتصال لتعطيل حالة الطالب
+                                // افتراض أن هذا هو نقطة الاتصال لتعطيل حالة الطالب (يجب أن توجد هذه النقطة في server.js)
                                 const deactivateResponse = await fetch(`/deactivate-student/${id}`, {
                                     method: 'POST', 
                                     headers: { 'Content-Type': 'application/json' }
@@ -569,7 +589,7 @@ html,body{
         }
     }
 
-    // دالة جلب رمز QR
+    // دالة جلب رمز QR (بدون تغيير)
     async function fetchQRCode(id) {
         try {
             const response = await fetch(`/qr-code/${id}`);
@@ -606,10 +626,11 @@ html,body{
             // بناء قائمة الحصص المكتملة
             let sessionsHtml = '';
             if (subject.completedSessions > 0) {
-                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (اضغط على حصة لشطبها):</div><ul class="sessions-list">';
-                for (let i = subject.completedSessions; i >= 1; i--) { // الترتيب التنازلي للحصص (الأحدث أولاً)
+                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (اضغط على حصة لشطبها/التراجع عنها):</div><ul class="sessions-list">';
+                for (let i = subject.completedSessions; i >= 1; i--) { 
+                    // يتم شطب/التراجع عن آخر حصة مكتملة دائمًا، لكن العرض يُظهر كل واحدة برقمها
                     sessionsHtml += `<li class="session-item" data-subject="${subject.name}" data-session-number="${i}">
-                        الحصة رقم ${i}
+                        **الحصة رقم ${i}**
                     </li>`;
                 }
                 sessionsHtml += '</ul>';
@@ -649,7 +670,7 @@ html,body{
             });
         });
 
-        // **الربط الجديد: شطب الحصص الفردية**
+        // **الربط الجديد: شطب الحصص الفردية (باستخدام نفس وظيفة التراجع)**
         container.querySelectorAll('.session-item').forEach(item => {
             item.addEventListener('click', () => {
                 const subjectName = item.getAttribute('data-subject');
@@ -659,44 +680,88 @@ html,body{
         });
     }
 
-    // دالة الإدارة لتسجيل/شطب الحصص
+    // **دالة عرض سجل الحصص المشطوبة (الجديدة)**
+    function renderUndoneSessionsLog(undoneSessions) {
+        const tbody = document.getElementById('undoneSessionsBody');
+        tbody.innerHTML = '';
+        
+        const records = Object.entries(undoneSessions).map(([id, record]) => ({
+            id: id,
+            ...record
+        }));
+        
+        // الترتيب التنازلي حسب تاريخ الشطب
+        records.sort((a, b) => b.undoneAt - a.undoneAt); 
+
+        if (records.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="no-records">لم يتم شطب أي حصص بعد.</td></tr>`;
+            return;
+        }
+
+        records.forEach(record => {
+            const date = new Date(record.undoneAt).toLocaleString('ar-EG', {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+            
+            const row = document.createElement('tr');
+            row.id = `undone-row-${record.id}`;
+            row.innerHTML = `
+                <td>${record.subjectName}</td>
+                <td>الحصة رقم ${record.sessionNumber}</td>
+                <td>${date}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+
+    // دالة الإدارة لتسجيل/شطب الحصص (مُعدلة لتقليل نوافذ التأكيد)
     async function updateSessionCount(studentId, subjectName, action) {
         
-        // تحديد رسالة التأكيد بناءً على الإجراء
-        let confirmMsg = action === 'add' 
-            ? `هل أنت متأكد من تسجيل **حصة مكتملة** لمادة **${subjectName}**؟`
-            : `هل أنت متأكد من **شطب/التراجع** عن آخر حصة مكتملة لمادة **${subjectName}**؟`;
-
-        showCustomConfirm(
-            confirmMsg,
-            async (isConfirmed) => {
-                if (!isConfirmed) return;
-
-                const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
-        
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ subjectName: subjectName })
-                    });
-        
-                    const result = await response.json();
-        
-                    if (response.ok) {
-                        showCustomAlert(result.message, 'نجاح');
-                        // إعادة جلب التفاصيل لتحديث العرض والتحقق من حالة التعطيل
-                        await fetchStudentDetails(studentId); 
-                    } else {
-                        showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
-                    }
-        
-                } catch (error) {
-                    showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
+        const performUpdate = async () => {
+            // endpoint for add: /record-session-attended, endpoint for subtract: /undo-session-attended
+            const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
+    
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subjectName: subjectName })
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    showCustomAlert(result.message, 'نجاح');
+                    // إعادة جلب التفاصيل لتحديث العرض والتحقق من حالة التعطيل
+                    await fetchStudentDetails(studentId); 
+                } else {
+                    showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
                 }
-            },
-            action === 'add' ? 'تسجيل حضور' : 'شطب حصة'
-        );
+    
+            } catch (error) {
+                showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
+            }
+        };
+
+        if (action === 'add') {
+             // تنفيذ فوري لتسجيل حصة جديدة (لتقليل عدد نوافذ التأكيد)
+            performUpdate();
+        } else {
+            // إبقاء التأكيد لعملية الشطب/التراجع (لأنها عملية حرجة)
+            const confirmMsg = `هل أنت متأكد من **شطب/التراجع** عن آخر حصة مكتملة لمادة **${subjectName}**؟ (سيتم تسجيل ذلك في سجل الشطب)`;
+
+            showCustomConfirm(
+                confirmMsg,
+                (isConfirmed) => {
+                    if (isConfirmed) {
+                        performUpdate();
+                    }
+                },
+                'شطب حصة'
+            );
+        }
     }
 
 
