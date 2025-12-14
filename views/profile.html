@@ -30,530 +30,498 @@ html,body{
   background-color: var(--bg);
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+    radial-gradient(circle at 85% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%);
   color: var(--text-primary);
-  -webkit-font-smoothing:antialiased;
-  direction: rtl;
+  line-height:1.6;
+  padding:20px;
 }
 
-.container{
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 0 20px 40px;
+#container{
+  max-width:900px;
+  margin:0 auto;
+  padding-bottom: 50px;
 }
 
-/* Glassy Card Style */
-.card{
-  background: rgba(21, 21, 23, 0.95); 
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 30px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-}
-
-.header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
+.header-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
 }
-.header h1{
-  font-size: 26px;
-  color: var(--accent-color);
-  margin: 0;
+
+.header-bar h1{
+  font-size:24px;
+  margin:0;
+  font-weight:700;
 }
+
 .back-btn{
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  padding: 8px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.2s;
-  font-size: 14px;
+  background:transparent;
+  border:1px solid var(--border-color);
+  color:var(--text-primary);
+  padding:8px 15px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:all 0.3s;
+  text-decoration:none;
+  font-family:"Tajawal",sans-serif;
+  font-size:14px;
 }
+
 .back-btn:hover{
-  background: rgba(255, 255, 255, 0.2);
+  background:rgba(255,255,255,0.05);
 }
 
-/* Student Info Section */
-.student-info h2, .section-header h2{
-    font-size: 20px;
-    color: #fff;
-    border-right: 4px solid var(--accent-color);
-    padding-right: 10px;
-    margin-top: 0;
-    margin-bottom: 20px;
+/* Card Styling */
+.card{
+  background-color:var(--card-bg);
+  padding:20px;
+  border-radius:var(--radius);
+  margin-bottom:20px;
+  border:1px solid var(--border-color);
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -2px rgba(0,0,0,0.1);
 }
 
-.detail-row{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border-color);
-}
-.detail-row:last-child{
-    border-bottom: none;
-}
-.detail-row strong{
-    color: #e4e4e7;
-    font-weight: 500;
-}
-.detail-row span{
-    color: var(--text-secondary);
-}
-.status-active {
-    color: var(--success-color);
-    font-weight: 700;
-}
-.status-inactive {
-    color: var(--danger-color);
-    font-weight: 700;
+.profile-info h2{
+  font-size:20px;
+  margin-top:0;
+  margin-bottom:15px;
+  color:var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
 }
 
-/* Subject Management Section */
-.subject-list-management {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
-.subject-list-management .subject-card {
-    padding: 15px;
-    margin-bottom: 0 !important; 
-    background: rgba(255, 255, 255, 0.05); 
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
+.profile-info p{
+  margin:5px 0;
+  color:var(--text-secondary);
+  font-size:15px;
 }
 
-.action-btn {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s;
-    border: none;
+.profile-info strong{
+  color:var(--text-primary);
+  font-weight:600;
+  margin-left: 5px;
 }
-.mark-attended-btn {
-    background: var(--accent-color);
-    color: #fff;
-}
-.mark-attended-btn:hover:not(:disabled) {
-    background: #2563eb;
-}
-.action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Progress Bar */
-.progress-bar {
-    height: 8px; 
-    background: rgba(255,255,255,0.1); 
-    border-radius: 4px; 
-    margin-bottom: 15px;
-}
-.progress-bar-fill {
-    height: 100%; 
-    background: var(--accent-color);
-    border-radius: 4px; 
-    transition: width 0.5s;
-}
-
-/* Sessions List Styling */
-.sessions-list-header {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-.sessions-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 15px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-.session-item {
-    background: rgba(59, 130, 246, 0.15); 
-    color: var(--accent-color);
-    padding: 5px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s, opacity 0.2s;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-.session-item:hover {
-    background: rgba(59, 130, 246, 0.3);
-}
-.no-completed-sessions {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 10px;
-}
-
 
 /* QR Code Section */
-.qr-section{
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    background: rgba(255, 255, 255, 0.03);
+#qrCodeContainer{
+  text-align:center;
+  padding:20px 0;
+}
+
+#qrCodeImage{
+  max-width:150px;
+  height:auto;
+  border:5px solid var(--card-bg);
+  border-radius:var(--radius);
+  background:white;
+}
+
+/* Subject Management */
+#subjectManagementContainer{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.subject-card{
+  display:flex;
+  flex-direction:column;
+}
+
+.progress-bar{
+  height:8px;
+  background:rgba(255,255,255,0.1);
+  border-radius:4px;
+  overflow:hidden;
+  margin-top:5px;
+}
+
+.progress-bar-fill{
+  height:100%;
+  transition:width 0.5s ease;
+}
+
+.sessions-list{
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+    display: flex; /* تغيير جديد */
+    flex-wrap: wrap; /* تغيير جديد */
+    gap: 10px; /* تغيير جديد */
+    justify-content: flex-start;
+}
+
+.session-item{
+    background: rgba(255,255,255,0.05);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
 }
-.qr-section img{
-    width: 150px;
-    height: 150px;
-    border: 5px solid #fff;
-    border-radius: 10px;
-    margin-top: 15px;
-    background: #fff;
+
+.status-completed {
+    color: var(--success-color);
+    border-color: var(--success-color);
+    background-color: rgba(67, 207, 102, 0.1);
 }
-.qr-section p{
+
+.status-pending {
     color: var(--text-secondary);
-    font-size: 14px;
 }
+
+.sessions-list-header {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* Action Buttons */
+.action-btn{
+  background:var(--accent-color);
+  color:#fff;
+  border:none;
+  padding:10px 15px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-weight:500;
+  font-size:14px;
+  transition:background 0.3s;
+  font-family:"Tajawal",sans-serif;
+}
+
+.action-btn:hover:not([disabled]){
+  background:#2563eb;
+}
+
+.action-btn[disabled]{
+  background:rgba(255,255,255,0.1);
+  color:var(--text-secondary);
+  cursor:not-allowed;
+}
+
 
 /* Attendance Table */
-.attendance-table{
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    text-align: right;
-    font-size: 14px;
-}
-.attendance-table th, .attendance-table td{
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-.attendance-table th{
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--accent-color);
-    font-weight: 600;
-}
-.attendance-table tbody tr:hover{
-    background: rgba(255, 255, 255, 0.05);
+.attendance-section h2{
+  font-size:20px;
+  margin-top:20px;
+  margin-bottom:15px;
+  color:var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
 }
 
-.delete-btn{
-    background: var(--danger-color);
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    transition: background 0.2s;
+.attendance-table-container{
+  overflow-x:auto;
 }
-.delete-btn:hover{
-    background: #c30000;
+
+.attendance-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.attendance-table th,.attendance-table td{
+  padding:12px 15px;
+  text-align:right;
+  border-bottom:1px solid var(--border-color);
+}
+
+.attendance-table th{
+  background-color:rgba(255,255,255,0.05);
+  color:var(--text-primary);
+  font-weight:600;
+}
+
+.attendance-table td{
+  color:var(--text-secondary);
+}
+
+.attendance-table td .delete-btn{
+  background:var(--danger-color);
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  transition:background 0.3s;
+}
+
+.attendance-table td .delete-btn:hover{
+  background:#c23030;
+}
+
+
+/* General Statuses */
+.error-message, .loading-message, .no-records {
+    padding: 15px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.loading-message {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
 }
 
 .no-records {
-    text-align: center;
+    background-color: rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
-    padding: 20px;
+    border: 1px solid var(--border-color);
 }
 
-/* Custom Modal Specific Styles */
-#customAlertModal {
+
+/* Custom Alert/Confirm */
+#customAlert, #customConfirm {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    z-index: 5000;
-    display: none;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; 
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
-#customAlertModal.open {
-    display: flex;
-}
-.modal-content.small-modal {
-    background: rgba(21, 21, 23, 0.95); 
-    border: 1px solid rgba(255,255,255,0.1);
+
+.alert-content, .confirm-content {
+    background: var(--card-bg);
+    padding: 30px;
     border-radius: var(--radius);
+    width: 90%;
     max-width: 400px;
-    padding: 20px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    backdrop-filter: blur(15px); 
+    border: 1px solid var(--border-color);
 }
-.modal-content.small-modal h3 {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 10px;
-    color: #ffc107; 
+
+.alert-content h3, .confirm-content h3 {
+    margin-top: 0;
+    color: var(--accent-color);
 }
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-.modal-actions .confirm-btn {
-    background: var(--danger-color); 
-    color: #fff;
-}
-.modal-actions .confirm-btn:hover {
-    background: #c30000;
-}
-.modal-actions .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
+
+.alert-content p, .confirm-content p {
     color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.alert-content button, .confirm-content button {
+    padding: 10px 20px;
     border: none;
-}
-.modal-actions .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-primary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin: 0 5px;
+    font-weight: 500;
+    font-family: "Tajawal", sans-serif;
+    font-size: 14px;
 }
 
+.alert-content button {
+    background: var(--accent-color);
+    color: white;
+}
 
-/* --- Mobile Optimization Styles --- */
-@media (max-width: 600px) {
-    .container {
-        margin: 10px auto;
-        padding: 0 10px 20px;
-    }
-    .card {
-        padding: 15px;
-    }
-    .header h1 {
-        font-size: 22px;
-    }
-    .back-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-    .subject-list-management {
-        grid-template-columns: 1fr; /* Single column on mobile */
-    }
-    .detail-row {
-        font-size: 14px;
-    }
-    .attendance-table th, .attendance-table td {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
-    /* Stack sessions vertically on very small screens */
-    .sessions-list {
-        gap: 8px; 
-        flex-direction: column; 
-    }
-    .session-item {
-        width: 100%;
-        text-align: right;
-    }
+.confirm-content .confirm-yes {
+    background: var(--danger-color);
+    color: white;
+}
+
+.confirm-content .confirm-no {
+    background: var(--text-secondary);
+    color: var(--bg);
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
+<div id="container">
+    <div class="header-bar">
         <h1>ملف الطالب</h1>
-        <a href="/" class="back-btn">العودة للرئيسية</a>
+        <a href="/" class="back-btn">العودة للصفحة الرئيسية</a>
     </div>
 
-    <div class="card student-info">
-        <h2 id="studentNameHeader">جاري التحميل...</h2>
-        
-        <div class="detail-row">
-            <strong>الرقم التعريفي:</strong>
-            <span id="studentIdDisplay">...</span>
-        </div>
-        <div class="detail-row">
-            <strong>حالة التسجيل:</strong>
-            <span id="registrationStatus">...</span>
-        </div>
-        
-        <h2 style="margin-top: 30px;">المعلومات الأكاديمية</h2>
+    <div id="loading" class="loading-message">جاري تحميل بيانات الطالب...</div>
+    <div id="error" class="error-message" style="display: none;"></div>
 
-        <div class="detail-row">
-            <strong>المرحلة التعليمية:</strong>
-            <span id="studentPhase">غير محدد</span>
-        </div>
-        <div class="detail-row">
-            <strong>السنة الدراسية:</strong>
-            <span id="studentYear">غير محدد</span>
-        </div>
-        <div class="detail-row">
-            <strong>الشعبة/التخصص:</strong>
-            <span id="studentStream">غير محدد</span>
-        </div>
+    <div id="profileInfo" class="card profile-info" style="display: none;">
+        <h2>البيانات الشخصية</h2>
+        <p>الاسم: <strong id="studentName"></strong></p>
+        <p>رقم الطالب: <strong id="studentId"></strong></p>
+        <p>رقم الهاتف: <strong id="studentPhone"></strong></p>
     </div>
 
-    <div class="card">
-        <h2>المواد المسجل بها وعدد الحصص</h2>
-        <div id="subjectManagementContainer" class="subject-list-management">
-            <span style="color: var(--text-secondary);">جاري تحميل المواد...</span>
-        </div>
-    </div>
-    
-    <div class="card qr-section">
-        <h2>رمز دخول الطالب</h2>
-        <p>استخدم هذا الرمز لتسجيل الحضور في كل حصة.</p>
-        <img id="qrCodeImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="رمز QR للطالب">
+    <div id="qrCodeContainer" class="card" style="display: none;">
+        <h2>رمز QR لتسجيل الحضور</h2>
+        <img id="qrCodeImage" src="" alt="QR Code">
     </div>
 
-    <div class="card attendance-log-card">
-        <h2>سجل الحضور (Check-in/Check-out)</h2>
-        
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th>التاريخ والوقت</th>
-                    <th>المرحلة</th>
-                    <th>السنة/الشعبة</th>
-                    <th>الإجراء</th>
-                    <th>إدارة</th>
-                </tr>
-            </thead>
-            <tbody id="attendanceRecordsBody">
-                <tr><td colspan="5" class="no-records">جاري تحميل سجل الحضور...</td></tr>
-            </tbody>
-        </table>
+    <div id="subjectManagementContainer" style="display: none;">
+        </div>
+
+    <div class="attendance-section" style="display: none;" id="attendanceSection">
+        <h2>سجل الحضور والإنصراف</h2>
+        <div class="attendance-table-container">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>وقت الدخول</th>
+                        <th>وقت الخروج</th>
+                        <th>الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceRecords">
+                    </tbody>
+            </table>
+        </div>
+        <p id="noAttendanceMessage" class="no-records" style="display: none;">لا يوجد سجل حضور حتى الآن.</p>
     </div>
 
 </div>
 
-<div class="modal-overlay" id="customAlertModal">
-    <div class="modal-content small-modal">
-        <h3 id="customAlertTitle">تأكيد الإجراء</h3>
-        <p id="customAlertMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
-        <div class="modal-actions" id="customAlertActions">
-            <button class="action-btn confirm-btn" id="customAlertConfirmBtn">نعم، تأكيد</button>
-            <button class="action-btn cancel-btn" id="customAlertCancelBtn">إلغاء</button>
-        </div>
+<div id="customAlert" style="display: none;">
+    <div class="alert-content">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage">رسالة التنبيه</p>
+        <button onclick="closeCustomAlert()">موافق</button>
+    </div>
+</div>
+
+<div id="customConfirm" style="display: none;">
+    <div class="confirm-content">
+        <h3 id="confirmTitle">تأكيد</h3>
+        <p id="confirmMessage">هل أنت متأكد من هذا الإجراء؟</p>
+        <button class="confirm-yes">نعم</button>
+        <button class="confirm-no">لا</button>
     </div>
 </div>
 
 <script>
-    // --- Global Custom Modal Logic (REPLACES alert() and confirm()) ---
-    let confirmCallback = null;
+    let currentConfirmAction = null;
 
-    function showCustomAlert(message, title = 'إشعار') {
-        const modal = document.getElementById('customAlertModal');
-        document.getElementById('customAlertTitle').textContent = title;
-        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        document.getElementById('customAlertConfirmBtn').textContent = 'حسناً';
-        document.getElementById('customAlertCancelBtn').style.display = 'none'; 
-        document.getElementById('customAlertConfirmBtn').onclick = () => {
-            modal.classList.remove('open');
-        };
-        
-        modal.classList.add('open');
+    // --- Custom Alert Functions ---
+    function showCustomAlert(message, title = 'تنبيه') {
+        document.getElementById('alertTitle').textContent = title;
+        document.getElementById('alertMessage').textContent = message;
+        document.getElementById('customAlert').style.display = 'flex';
     }
 
-    function showCustomConfirm(message, callback, title = 'تأكيد الإجراء') {
-        const modal = document.getElementById('customAlertModal');
-        document.getElementById('customAlertTitle').textContent = title;
-        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        document.getElementById('customAlertConfirmBtn').textContent = 'نعم، تأكيد';
-        document.getElementById('customAlertCancelBtn').style.display = 'inline-block';
-        
-        confirmCallback = callback;
-
-        document.getElementById('customAlertConfirmBtn').onclick = () => {
-            modal.classList.remove('open');
-            if (confirmCallback) {
-                confirmCallback(true);
-            }
-        };
-        
-        document.getElementById('customAlertCancelBtn').onclick = () => {
-            modal.classList.remove('open');
-        };
-        
-        modal.classList.add('open');
+    function closeCustomAlert() {
+        document.getElementById('customAlert').style.display = 'none';
     }
 
+    // --- Custom Confirm Functions ---
+    function showCustomConfirm(message, callback, title = 'تأكيد') {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        currentConfirmAction = callback;
 
-    // الحصول على رقم الطالب من الـ URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const studentId = urlParams.get('id');
+        const confirmYes = document.querySelector('#customConfirm .confirm-yes');
+        const confirmNo = document.querySelector('#customConfirm .confirm-no');
 
-    if (!studentId) {
-        document.querySelector('.container').innerHTML = '<h1 style="text-align:center; color:#ef4444; margin-top:50px;">خطأ: لم يتم تحديد رقم الطالب في الرابط.</h1>';
-    } else {
-        fetchStudentDetails(studentId);
-        fetchQRCode(studentId);
+        // Clean previous listeners
+        const newConfirmYes = confirmYes.cloneNode(true);
+        confirmYes.parentNode.replaceChild(newConfirmYes, confirmYes);
+
+        const newConfirmNo = confirmNo.cloneNode(true);
+        confirmNo.parentNode.replaceChild(newConfirmNo, confirmNo);
+
+        // Add new listeners
+        newConfirmYes.addEventListener('click', () => {
+            currentConfirmAction(true);
+            document.getElementById('customConfirm').style.display = 'none';
+        });
+
+        newConfirmNo.addEventListener('click', () => {
+            currentConfirmAction(false);
+            document.getElementById('customConfirm').style.display = 'none';
+        });
+
+        document.getElementById('customConfirm').style.display = 'flex';
     }
-    
-    // دالة جلب بيانات الطالب
-    async function fetchStudentDetails(id) {
+
+    // --- Main Fetch Function ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        if (!studentId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = 'خطأ: لم يتم تحديد رقم الطالب.';
+            document.getElementById('error').style.display = 'block';
+            return;
+        }
+
+        fetchStudentData(studentId);
+        fetchQrCode(studentId);
+        fetchAttendanceHistory(studentId);
+    });
+
+    async function fetchStudentData(studentId) {
         try {
-            const response = await fetch(`/student-details/${id}`);
-            if (!response.ok) {
+            const response = await fetch(`/student/${studentId}`);
+            document.getElementById('loading').style.display = 'none';
+
+            if (response.ok) {
+                const student = await response.json();
+                renderProfileInfo(student);
+                renderSubjectManagement(studentId, student.subjects || []);
+                document.getElementById('profileInfo').style.display = 'block';
+                document.getElementById('subjectManagementContainer').style.display = 'grid';
+            } else {
                 const error = await response.json();
-                document.getElementById('studentNameHeader').textContent = 'خطأ في جلب البيانات';
-                showCustomAlert(error.message, 'خطأ في جلب البيانات');
-                return;
+                document.getElementById('error').textContent = `فشل في تحميل البيانات: ${error.message}`;
+                document.getElementById('error').style.display = 'block';
             }
-
-            const data = await response.json();
-            const student = data.student;
-            const attendance = data.attendance;
-            
-            // تحديث بيانات الطالب
-            document.getElementById('studentNameHeader').textContent = `${student.name || 'طالب غير معروف'}`;
-            document.getElementById('studentIdDisplay').textContent = student.id;
-            document.getElementById('registrationStatus').innerHTML = student.isActive 
-                ? `<span class="status-active">نشط (مفعل)</span>` 
-                : `<span class="status-inactive">غير نشط</span>`;
-            
-            document.getElementById('studentPhase').textContent = student.phase || 'غير محدد';
-            document.getElementById('studentYear').textContent = student.year || 'غير محدد';
-            document.getElementById('studentStream').textContent = student.stream === 'عامة' 
-                ? 'عامة' : student.stream || 'غير محدد';
-            
-            // عرض وإدارة المواد
-            renderSubjectManagement(id, student.subjects);
-
-            // عرض سجل الحضور
-            renderAttendanceLog(id, attendance);
-            
-            
-            // **تمت إزالة منطق التحقق من حالة التعطيل التلقائي بناءً على طلب المستخدم**
-            // تم ترك هذا الجزء فارغًا
-            
-
         } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('studentNameHeader').textContent = 'خطأ في الاتصال بالخادم';
-            showCustomAlert('فشل في الاتصال بالخادم عند محاولة جلب بيانات الطالب.', 'خطأ شبكة');
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = 'خطأ في الاتصال بالخادم عند تحميل البيانات.';
+            document.getElementById('error').style.display = 'block';
         }
     }
 
-    // دالة جلب رمز QR
-    async function fetchQRCode(id) {
+    function renderProfileInfo(student) {
+        document.getElementById('studentName').textContent = student.name;
+        document.getElementById('studentId').textContent = student.id;
+        document.getElementById('studentPhone').textContent = student.phone || 'غير متوفر';
+    }
+
+    // --- QR Code Functions ---
+    async function fetchQrCode(studentId) {
         try {
-            const response = await fetch(`/qr-code/${id}`);
+            const response = await fetch(`/generate-qr/${studentId}`);
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById('qrCodeImage').src = data.qrCodeUrl;
+                document.getElementById('qrCodeContainer').style.display = 'block';
             } else {
-                document.getElementById('qrCodeImage').alt = 'فشل توليد رمز QR';
+                console.error('فشل في توليد رمز QR');
             }
         } catch (error) {
-            console.error('QR Code error:', error);
+            console.error('خطأ في الاتصال بالخادم لتوليد رمز QR:', error);
         }
     }
-    
-    // دالة عرض وإدارة المواد والحصص (مُعدلة لعرض الحصص الفردية)
+
+
+    // --- Subject Management (SESSIONS) ---
+
+    // دالة عرض وإدارة المواد والحصص (مُعدلة لعرض الحالة التفصيلية)
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -572,134 +540,167 @@ html,body{
             subjectDiv.className = 'subject-card card';
             subjectDiv.id = `subject-${subject.name.replace(/\s/g, '-')}`;
             
-            // بناء قائمة الحصص المكتملة
-            let sessionsHtml = '';
-            if (subject.completedSessions > 0) {
-                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (اضغط على حصة لشطبها):</div><ul class="sessions-list">';
-                for (let i = subject.completedSessions; i >= 1; i--) { // الترتيب التنازلي للحصص (الأحدث أولاً)
-                    sessionsHtml += `<li class="session-item" data-subject="${subject.name}" data-session-number="${i}">
-                        الحصة رقم ${i}
-                    </li>`;
-                }
-                sessionsHtml += '</ul>';
-            } else {
-                 sessionsHtml = '<p class="no-completed-sessions">لا توجد حصص مكتملة حتى الآن.</p>';
+            // 1. بناء قائمة الحصص التفصيلية (✔ / ❍)
+            let sessionsHtml = '<ul class="sessions-list">'; 
+            
+            for (let i = 1; i <= subject.totalSessions; i++) {
+                const isSessionCompleted = i <= subject.completedSessions;
+                const icon = isSessionCompleted ? '✔' : '❍';
+                const statusClass = isSessionCompleted ? 'session-item status-completed' : 'session-item status-pending';
+                
+                // ملاحظة: تم إزالة خاصية النقر من الحصص الفردية لتجنب الالتباس
+                sessionsHtml += `<li class="${statusClass}"> 
+                    <span style="margin-left: 5px; font-size: 14px; font-weight: 700;">${icon}</span>
+                    الحصة ${i}
+                </li>`;
             }
+            sessionsHtml += '</ul>';
 
             subjectDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <strong style="font-size: 16px; color: #fff;">${subject.name}</strong>
+                    <strong style="font-size: 18px; color: #fff; border-right: 4px solid var(--success-color); padding-right: 10px;">${subject.name}</strong>
                     <span id="session-count-${subject.name.replace(/\s/g, '-')}" style="font-size: 14px; color: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'}; font-weight:700;">
                         ${subject.completedSessions} من ${subject.totalSessions} حصة
                     </span>
                 </div>
                 
-                <div class="progress-bar">
+                <div class="progress-bar" style="margin-bottom: 25px;">
                     <div class="progress-bar-fill" style="width: ${progressPercent}%; background: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'};"></div>
                 </div>
                 
                 ${sessionsHtml}
                 
-                <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 15px;">
-                    <button class="action-btn mark-attended-btn" data-subject="${subject.name}" 
+                <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 20px;">
+                    <button class="action-btn mark-attended-btn" data-subject="${subject.name}" data-action="add"
                         ${isCompleted ? 'disabled' : ''}>
-                        تسجيل حصة جديدة
+                        تسجيل الحصة التالية
+                    </button>
+                    <button class="action-btn undo-attended-btn" data-subject="${subject.name}" data-action="subtract"
+                        ${subject.completedSessions === 0 ? 'disabled' : ''} 
+                        style="background: var(--danger-color); color: #fff;">
+                        شطب آخر حصة (${subject.completedSessions > 0 ? `الحصة ${subject.completedSessions}` : ''})
                     </button>
                 </div>
             `;
             container.appendChild(subjectDiv);
         });
         
-        // ربط زر تسجيل حصة جديدة
-        container.querySelectorAll('.mark-attended-btn').forEach(button => {
+        // 2. ربط أزرار الإضافة/الشطب العامة (لزيادة/إنقاص العداد)
+        container.querySelectorAll('.mark-attended-btn, .undo-attended-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const subjectName = button.getAttribute('data-subject');
-                updateSessionCount(studentId, subjectName, 'add');
-            });
-        });
-
-        // **الربط الجديد: شطب الحصص الفردية**
-        container.querySelectorAll('.session-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const subjectName = item.getAttribute('data-subject');
-                // يتم إعادة استخدام وظيفة 'subtract' لتقليل العدد بواحد
-                updateSessionCount(studentId, subjectName, 'subtract'); 
+                const action = button.getAttribute('data-action');
+                updateSessionCount(studentId, subjectName, action);
             });
         });
     }
 
-    // دالة الإدارة لتسجيل/شطب الحصص
+    // دالة تحديث عدد الحصص (بدون تغيير)
     async function updateSessionCount(studentId, subjectName, action) {
-        
-        // تحديد رسالة التأكيد بناءً على الإجراء
-        let confirmMsg = action === 'add' 
-            ? `هل أنت متأكد من تسجيل **حصة مكتملة** لمادة **${subjectName}**؟`
-            : `هل أنت متأكد من **شطب/التراجع** عن آخر حصة مكتملة لمادة **${subjectName}**؟`;
+        const actionText = action === 'add' ? 'تسجيل حصة جديدة' : 'شطب آخر حصة';
+        const confirmMessage = action === 'add' ? 
+            `هل أنت متأكد من ${actionText} للمادة: ${subjectName}؟` :
+            `هل أنت متأكد من ${actionText} للمادة: ${subjectName}؟ سيتم إنقاص العداد بواحد.`;
 
         showCustomConfirm(
-            confirmMsg,
+            confirmMessage,
             async (isConfirmed) => {
                 if (!isConfirmed) return;
 
-                const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
-        
                 try {
+                    const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ subjectName: subjectName })
+                        body: JSON.stringify({ subjectName })
                     });
-        
-                    const result = await response.json();
-        
+
                     if (response.ok) {
-                        showCustomAlert(result.message, 'نجاح');
-                        // إعادة جلب التفاصيل لتحديث العرض وتحديث سجل الحضور
-                        await fetchStudentDetails(studentId); 
+                        const result = await response.json();
+                        // إعادة تحميل البيانات لتحديث العرض
+                        fetchStudentData(studentId); 
+                        showCustomAlert(`تم ${action === 'add' ? 'تسجيل' : 'شطب'} الحصة بنجاح.`, 'نجاح');
                     } else {
-                        showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
+                        const error = await response.json();
+                        showCustomAlert(`فشل الإجراء: ${error.message}`, 'خطأ');
                     }
-        
                 } catch (error) {
-                    showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
+                    showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الإجراء.', 'خطأ شبكة');
                 }
             },
-            action === 'add' ? 'تسجيل حضور' : 'شطب حصة'
+            actionText
         );
     }
 
 
-    // دالة عرض سجل الحضور (Check-in/Check-out) (بدون تغيير)
-    function renderAttendanceLog(studentId, attendance) {
-        const tbody = document.getElementById('attendanceRecordsBody');
+    // --- Attendance History Functions ---
+    function formatTime(timestamp) {
+        if (!timestamp) return '—';
+        const date = new Date(timestamp);
+        // تنسيق الوقت (ساعة:دقيقة ص/م)
+        return date.toLocaleTimeString('ar-EG', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '—';
+        const date = new Date(timestamp);
+        // تنسيق التاريخ (يوم/شهر/سنة)
+        return date.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    }
+
+    async function fetchAttendanceHistory(studentId) {
+        try {
+            const response = await fetch(`/attendance-history/${studentId}`);
+            if (response.ok) {
+                const records = await response.json();
+                renderAttendanceRecords(studentId, records);
+                document.getElementById('attendanceSection').style.display = 'block';
+            } else {
+                console.error('فشل في تحميل سجل الحضور.');
+            }
+        } catch (error) {
+            console.error('خطأ في الاتصال بالخادم لتحميل سجل الحضور:', error);
+        }
+    }
+
+    function renderAttendanceRecords(studentId, records) {
+        const tbody = document.getElementById('attendanceRecords');
+        const noMessage = document.getElementById('noAttendanceMessage');
         tbody.innerHTML = '';
         
-        const records = Object.entries(attendance).map(([id, record]) => ({
-            id: id,
-            ...record
-        }));
-        
-        records.sort((a, b) => b.timestamp - a.timestamp);
-
-        if (records.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="no-records">لا يوجد سجل حضور بعد.</td></tr>`;
+        if (Object.keys(records).length === 0) {
+            noMessage.style.display = 'block';
             return;
         }
 
-        records.forEach(record => {
-            const date = new Date(record.timestamp).toLocaleString('ar-EG', {
-                year: 'numeric', month: 'numeric', day: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-            
+        noMessage.style.display = 'none';
+
+        // تحويل الكائن إلى مصفوفة وفرزها حسب التاريخ (الأحدث أولاً)
+        const sortedRecords = Object.keys(records).map(key => ({
+            ...records[key],
+            id: key,
+            timestamp: records[key].checkInTime // استخدم وقت الدخول للفرز
+        })).sort((a, b) => b.timestamp - a.timestamp);
+
+        sortedRecords.forEach(record => {
+            const date = formatDate(record.checkInTime);
+            const checkIn = formatTime(record.checkInTime);
+            const checkOut = formatTime(record.checkOutTime);
+
             const row = document.createElement('tr');
             row.id = `attendance-row-${record.id}`;
-            // الإجراء (action) سيُظهر 'شطب حصة' إذا تم تسجيله في البيانات الخلفية
             row.innerHTML = `
                 <td>${date}</td>
-                <td>${record.phase || 'N/A'}</td>
-                <td>${record.year} - ${record.stream === 'عامة' ? '' : record.stream || 'N/A'}</td>
-                <td>${record.action || 'حضور'}</td>
+                <td>${checkIn}</td>
+                <td>${checkOut}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteAttendanceRecord('${studentId}', '${record.id}')">حذف</button>
                 </td>
