@@ -545,44 +545,65 @@ html,body{
     margin-bottom: 0;
 }
 
+/* --- تنسيق منطقة اختيار المواد (محسن) --- */
 .subject-selection-area {
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 15px;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: rgba(255,255,255,0.03);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.02);
 }
 
-.subject-selection-area label:first-child {
-    font-size: 16px;
-    color: var(--accent-color);
-    font-weight: 600;
+.subject-selection-header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 700;
 }
 
-/* --- تنسيق مربعات اختيار المواد (MODIFIED) --- */
 .subject-checkboxes {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
+    gap: 8px; /* مسافة بين صفوف المواد */
+    max-height: 250px; /* شريط تمرير إذا كثرت المواد */
+    overflow-y: auto;
+    padding-left: 5px; /* مساحة للـ scrollbar */
 }
+
+/* تنسيق شريط التمرير */
+.subject-checkboxes::-webkit-scrollbar { width: 4px; }
+.subject-checkboxes::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
 .subject-item-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04); /* خلفية لكل صف */
+    border: 1px solid transparent;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
-.subject-item-wrapper:last-child {
-    border-bottom: none;
+
+/* حالة التفعيل عند اختيار المادة */
+.subject-item-wrapper.active {
+    background: rgba(59, 130, 246, 0.1); /* لون أزرق خافت */
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.subject-item-wrapper:hover {
+    background: rgba(255, 255, 255, 0.07);
 }
 
 .subject-item-wrapper .subject-label-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex: 1;
 }
 
@@ -617,17 +638,28 @@ html,body{
 .subject-item-wrapper label {
     margin-bottom: 0;
     font-size: 15px;
-    color: var(--text-primary);
+    font-weight: 500;
     cursor: pointer;
+    color: #fff;
 }
 
 .subject-item-wrapper .session-count-input {
-    width: 80px;
-    padding: 6px 8px;
+    width: 90px;
+    padding: 6px 10px;
     font-size: 14px;
     text-align: center;
-    margin-bottom: 0; 
-    background: rgba(255, 255, 255, 0.05); 
+    margin-bottom: 0 !important; /* إلغاء المارجن العام */
+    background: #000;
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    font-weight: bold;
+    height: 36px;
+}
+
+.subject-item-wrapper .session-count-input:disabled {
+    background: transparent;
+    color: #555;
+    border-color: transparent;
 }
 
 /* --- تنسيق نتائج التسجيل --- */
@@ -725,10 +757,19 @@ html,body{
         <select id="streamSelect" required disabled>
             <option value="" disabled selected>اختر الشعبة</option>
         </select>
+        
         <div class="subject-selection-area">
-          <label>اختيار المواد وتحديد عدد الحصص الكلي:</label>
+          <label style="display:block; margin-bottom:10px; color:var(--accent-color);">تحديد المواد الدراسية:</label>
+          
+          <div class="subject-selection-header">
+              <span>اسم المادة</span>
+              <span>عدد الحصص المقررة</span>
+          </div>
+
           <div id="subjectCheckboxes" class="subject-checkboxes">
-            الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
+            <div style="text-align:center; padding:20px; color:var(--text-secondary);">
+                الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
+            </div>
           </div>
         </div>
         
@@ -770,6 +811,7 @@ html,body{
         </div>
     </div>
 </div>
+
 
 
 <script>
@@ -1298,4 +1340,4 @@ html,body{
 </script>
 </body>
 
-</html>
+  </html>
