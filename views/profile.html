@@ -149,9 +149,9 @@ html,body{
     list-style: none;
     padding: 0;
     margin: 15px 0 0;
-    display: flex; /* تغيير جديد */
-    flex-wrap: wrap; /* تغيير جديد */
-    gap: 10px; /* تغيير جديد */
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
     justify-content: flex-start;
 }
 
@@ -456,7 +456,7 @@ html,body{
         document.getElementById('customConfirm').style.display = 'flex';
     }
 
-    // --- Main Fetch Function ---
+    // --- Main Fetch Function (Combined Student Data and Attendance) ---
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const studentId = urlParams.get('id');
@@ -468,22 +468,31 @@ html,body{
             return;
         }
 
-        fetchStudentData(studentId);
+        fetchStudentDataAndAttendance(studentId); // Combined fetch
         fetchQrCode(studentId);
-        fetchAttendanceHistory(studentId);
     });
 
-    async function fetchStudentData(studentId) {
+
+    // دالة جلب بيانات الطالب وسجل الحضور (مُعدلة لمطابقة مسار الخادم)
+    async function fetchStudentDataAndAttendance(studentId) {
         try {
-            const response = await fetch(`/student/${studentId}`);
+            // **التصحيح الأول: تعديل المسار من /student/ إلى /student-details/**
+            const response = await fetch(`/student-details/${studentId}`);
             document.getElementById('loading').style.display = 'none';
 
             if (response.ok) {
-                const student = await response.json();
+                const data = await response.json();
+                const student = data.student;
+                const attendance = data.attendance;
+
                 renderProfileInfo(student);
                 renderSubjectManagement(studentId, student.subjects || []);
+                renderAttendanceRecords(studentId, attendance); // استخدام بيانات الحضور المدمجة
+
                 document.getElementById('profileInfo').style.display = 'block';
                 document.getElementById('subjectManagementContainer').style.display = 'grid';
+                document.getElementById('attendanceSection').style.display = 'block';
+
             } else {
                 const error = await response.json();
                 document.getElementById('error').textContent = `فشل في تحميل البيانات: ${error.message}`;
@@ -496,6 +505,7 @@ html,body{
         }
     }
 
+
     function renderProfileInfo(student) {
         document.getElementById('studentName').textContent = student.name;
         document.getElementById('studentId').textContent = student.id;
@@ -503,9 +513,11 @@ html,body{
     }
 
     // --- QR Code Functions ---
+    // دالة جلب رمز QR (مُعدلة لمطابقة مسار الخادم)
     async function fetchQrCode(studentId) {
         try {
-            const response = await fetch(`/generate-qr/${studentId}`);
+            // **التصحيح الثاني: تعديل المسار من /generate-qr/ إلى /qr-code/**
+            const response = await fetch(`/qr-code/${studentId}`);
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById('qrCodeImage').src = data.qrCodeUrl;
@@ -548,7 +560,7 @@ html,body{
                 const icon = isSessionCompleted ? '✔' : '❍';
                 const statusClass = isSessionCompleted ? 'session-item status-completed' : 'session-item status-pending';
                 
-                // ملاحظة: تم إزالة خاصية النقر من الحصص الفردية لتجنب الالتباس
+                // تم إزالة خاصية النقر من الحصص الفردية لتجنب الالتباس
                 sessionsHtml += `<li class="${statusClass}"> 
                     <span style="margin-left: 5px; font-size: 14px; font-weight: 700;">${icon}</span>
                     الحصة ${i}
@@ -617,8 +629,8 @@ html,body{
 
                     if (response.ok) {
                         const result = await response.json();
-                        // إعادة تحميل البيانات لتحديث العرض
-                        fetchStudentData(studentId); 
+                        // إعادة تحميل البيانات لتحديث العرض (إعادة استدعاء الدالة المدمجة)
+                        fetchStudentDataAndAttendance(studentId); 
                         showCustomAlert(`تم ${action === 'add' ? 'تسجيل' : 'شطب'} الحصة بنجاح.`, 'نجاح');
                     } else {
                         const error = await response.json();
@@ -656,27 +668,13 @@ html,body{
         });
     }
 
-    async function fetchAttendanceHistory(studentId) {
-        try {
-            const response = await fetch(`/attendance-history/${studentId}`);
-            if (response.ok) {
-                const records = await response.json();
-                renderAttendanceRecords(studentId, records);
-                document.getElementById('attendanceSection').style.display = 'block';
-            } else {
-                console.error('فشل في تحميل سجل الحضور.');
-            }
-        } catch (error) {
-            console.error('خطأ في الاتصال بالخادم لتحميل سجل الحضور:', error);
-        }
-    }
-
+    // دالة عرض سجل الحضور (تستقبل البيانات المدمجة)
     function renderAttendanceRecords(studentId, records) {
         const tbody = document.getElementById('attendanceRecords');
         const noMessage = document.getElementById('noAttendanceMessage');
         tbody.innerHTML = '';
         
-        if (Object.keys(records).length === 0) {
+        if (!records || Object.keys(records).length === 0) {
             noMessage.style.display = 'block';
             return;
         }
