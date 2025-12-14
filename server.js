@@ -253,7 +253,7 @@ app.post('/check-in', async (req, res) => {
 });
 
 
-// 5. نقطة نهاية لجلب بيانات طالب واحد مع سجل الحضور
+// 5. نقطة نهاية لجلب بيانات طالب واحد مع سجل الحضور وسجل الشطب (مُحدثة)
 app.get('/student-details/:id', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
 
@@ -270,10 +270,17 @@ app.get('/student-details/:id', async (req, res) => {
         const attendanceRef = db.ref(`attendance/${studentId}`);
         const attendanceSnapshot = await attendanceRef.once('value');
         const attendanceData = attendanceSnapshot.val() || {};
+        
+        // **جلب سجل الحصص المشطوبة (الجديد)**
+        const undoneSessionsRef = db.ref(`undoneSessions/${studentId}`);
+        const undoneSessionsSnapshot = await undoneSessionsRef.once('value');
+        const undoneSessionsData = undoneSessionsSnapshot.val() || {};
+        // **نهاية الجلب**
 
         res.json({
             student: studentData,
-            attendance: attendanceData
+            attendance: attendanceData,
+            undoneSessions: undoneSessionsData // إضافة سجل الشطب للرد
         });
 
     } catch (error) {
@@ -332,7 +339,7 @@ app.post('/record-session-attended/:studentId', async (req, res) => {
 });
 
 
-// 7. نقطة نهاية التراجع عن حصة مكتملة (إداري - إنقاص العداد)
+// 7. نقطة نهاية التراجع عن حصة مكتملة (إداري - إنقاص العداد وتسجيل الشطب)
 app.post('/undo-session-attended/:studentId', async (req, res) => {
     if (!isFirebaseReady) return checkFirebaseReadiness(res); 
     const studentId = req.params.studentId;
@@ -352,9 +359,11 @@ app.post('/undo-session-attended/:studentId', async (req, res) => {
         }
         
         let updated = false;
+        let sessionNumberUndone = 0; // لتسجيل رقم الحصة التي تم شطبها
         const updatedSubjects = student.subjects.map(s => {
             if (s.name === subjectName) {
                 if (s.completedSessions > 0) {
+                    sessionNumberUndone = s.completedSessions; // الحصة الأخيرة المكتملة هي التي سيتم شطبها
                     s.completedSessions -= 1; 
                     updated = true;
                 } else {
@@ -370,8 +379,21 @@ app.post('/undo-session-attended/:studentId', async (req, res) => {
 
         await studentRef.update({ subjects: updatedSubjects });
         
+        // **المنطق الجديد: تسجيل الشطب في قاعدة البيانات**
+        if (sessionNumberUndone > 0) {
+            const rollbackRecord = {
+                subjectName: subjectName,
+                sessionNumber: sessionNumberUndone,
+                undoneAt: admin.database.ServerValue.TIMESTAMP,
+                undoneBy: 'Admin (Manual Rollback)', // يمكن تعديلها لتشمل اسم المسؤول
+            };
+            // حفظ السجل في مسار جديد خاص بسجلات الشطب
+            await db.ref(`undoneSessions/${studentId}`).push(rollbackRecord);
+        }
+        // **نهاية المنطق الجديد**
+        
         res.json({
-            message: `تم التراجع عن تسجيل حصة مكتملة لمادة ${subjectName}.`,
+            message: `تم التراجع عن تسجيل حصة مكتملة رقم ${sessionNumberUndone} لمادة ${subjectName}.`,
             subjects: updatedSubjects
         });
 
@@ -422,8 +444,10 @@ app.delete('/student/:studentId', async (req, res) => {
         await studentsRef.child(studentId).remove();
         // حذف سجل الحضور المرتبط
         await db.ref(`attendance/${studentId}`).remove();
+        // حذف سجل الشطب المرتبط (جديد)
+        await db.ref(`undoneSessions/${studentId}`).remove();
 
-        res.status(200).json({ message: 'تم حذف الطالب وسجل حضوره بنجاح.' });
+        res.status(200).json({ message: 'تم حذف الطالب وسجل حضوره وسجل شطب حصصه بنجاح.' });
     } catch (error) {
         console.error('Error deleting student:', error);
         res.status(500).json({ message: 'فشل داخلي في حذف الطالب.' });
