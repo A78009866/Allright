@@ -346,6 +346,14 @@ html,body{
     background: var(--text-secondary);
     color: var(--bg);
 }
+
+/* Mobile adjustments for table */
+@media (max-width: 600px) {
+    .attendance-table th, .attendance-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
 </style>
 </head>
 <body>
@@ -375,22 +383,22 @@ html,body{
         </div>
 
     <div class="attendance-section" style="display: none;" id="attendanceSection">
-        <h2>سجل الحضور والإنصراف</h2>
+        <h2>سجل الأنشطة (الحصص والحضور العام)</h2>
         <div class="attendance-table-container">
             <table class="attendance-table">
                 <thead>
                     <tr>
-                        <th>التاريخ</th>
-                        <th>وقت الدخول</th>
-                        <th>وقت الخروج</th>
-                        <th>الإجراء</th>
+                        <th>التاريخ والوقت</th>
+                        <th>النوع/المادة</th>
+                        <th>التفاصيل/الإجراء</th>
+                        <th>إدارة</th>
                     </tr>
                 </thead>
                 <tbody id="attendanceRecords">
                     </tbody>
             </table>
         </div>
-        <p id="noAttendanceMessage" class="no-records" style="display: none;">لا يوجد سجل حضور حتى الآن.</p>
+        <p id="noAttendanceMessage" class="no-records" style="display: none;">لا يوجد سجل أنشطة (حصص/حضور) حتى الآن.</p>
     </div>
 
 </div>
@@ -456,6 +464,19 @@ html,body{
         document.getElementById('customConfirm').style.display = 'flex';
     }
 
+    // --- Time Utility ---
+    function formatTime(timestamp) {
+        if (!timestamp) return '—';
+        const date = new Date(timestamp);
+        // تنسيق الوقت (ساعة:دقيقة ص/م)
+        return date.toLocaleTimeString('ar-EG', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+
     // --- Main Fetch Function (Combined Student Data and Attendance) ---
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -473,7 +494,7 @@ html,body{
     });
 
 
-    // دالة جلب بيانات الطالب وسجل الحضور (مُعدلة لمطابقة مسار الخادم)
+    // دالة جلب بيانات الطالب وسجل الحضور
     async function fetchStudentDataAndAttendance(studentId) {
         try {
             const response = await fetch(`/student-details/${studentId}`);
@@ -530,7 +551,7 @@ html,body{
 
     // --- Subject Management (SESSIONS) ---
 
-    // دالة عرض وإدارة المواد والحصص (مُعدلة لدعم النقر على الحصة)
+    // دالة عرض وإدارة المواد والحصص
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -595,10 +616,6 @@ html,body{
                 const completedCount = subjects.find(s => s.name === subjectName).completedSessions;
 
                 // المنطق:
-                // 1. إذا كانت الحصة غير مكتملة وهي الحصة التالية مباشرة (completedCount + 1)، نسجلها (ADD).
-                // 2. إذا كانت الحصة مكتملة وهي آخر حصة تم تسجيلها حالياً (completedCount)، نشطبها (SUBTRACT).
-                // 3. منع النقر على أي حالة أخرى.
-
                 let action = null;
                 if (!isCompleted && sessionNumber === completedCount + 1) {
                     // تسجيل الحصة التالية
@@ -608,7 +625,10 @@ html,body{
                     action = 'subtract';
                 } else {
                     // تنبيه عند محاولة تسجيل حصة ليست التالية أو شطب حصة ليست الأخيرة
-                    showCustomAlert('يجب تسجيل الحصص بالتسلسل (التالية) أو شطب آخر حصة تم تسجيلها.', 'إجراء غير مسموح');
+                    const targetSession = isCompleted ? `رقم ${completedCount}` : `رقم ${completedCount + 1}`;
+                    const targetAction = isCompleted ? `شطب الحصة الأخيرة: ${targetSession}` : `تسجيل الحصة التالية: ${targetSession}`;
+
+                    showCustomAlert(`يجب تسجيل الحصص بالتسلسل (التالية) أو شطب آخر حصة تم تسجيلها. <br> الإجراء المتاح حالياً هو: <strong>${targetAction}</strong>`, 'إجراء غير مسموح');
                     return;
                 }
                 
@@ -618,12 +638,12 @@ html,body{
     }
 
 
-    // دالة تحديث عدد الحصص (مُعدلة لإرسال رقم الحصة)
+    // دالة تحديث عدد الحصص
     async function updateSessionCount(studentId, subjectName, action, sessionNumber) {
         const actionText = action === 'add' ? `تسجيل الحصة رقم ${sessionNumber}` : `شطب الحصة رقم ${sessionNumber}`;
         const confirmMessage = action === 'add' ? 
-            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إضافتها لسجل الحضور.` :
-            `هل أنت متأكد من شطب الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إنقاص العداد وإضافتها لسجل الحضور كشطب.`;
+            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: <strong>${subjectName}</strong>؟ سيتم إضافتها لسجل الأنشطة.` :
+            `هل أنت متأكد من شطب الحصة رقم ${sessionNumber} للمادة: <strong>${subjectName}</strong>؟ سيتم إنقاص العداد وإضافتها لسجل الأنشطة كشطب.`;
 
         showCustomConfirm(
             confirmMessage,
@@ -635,13 +655,13 @@ html,body{
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        // إرسال رقم الحصة إلى الخادم
+                        // إرسال اسم المادة ورقم الحصة (الرقم هنا لتفاصيل السجل فقط، الخادم يعتمد على العداد الحالي)
                         body: JSON.stringify({ subjectName, sessionNumber }) 
                     });
 
                     if (response.ok) {
                         const result = await response.json();
-                        // إعادة تحميل البيانات لتحديث العرض (إعادة استدعاء الدالة المدمجة)
+                        // إعادة تحميل البيانات لتحديث العرض
                         fetchStudentDataAndAttendance(studentId); 
                         showCustomAlert(`تم ${action === 'add' ? 'تسجيل' : 'شطب'} الحصة بنجاح.`, 'نجاح');
                     } else {
@@ -658,29 +678,8 @@ html,body{
 
 
     // --- Attendance History Functions ---
-    function formatTime(timestamp) {
-        if (!timestamp) return '—';
-        const date = new Date(timestamp);
-        // تنسيق الوقت (ساعة:دقيقة ص/م)
-        return date.toLocaleTimeString('ar-EG', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
-
-    function formatDate(timestamp) {
-        if (!timestamp) return '—';
-        const date = new Date(timestamp);
-        // تنسيق التاريخ (يوم/شهر/سنة)
-        return date.toLocaleDateString('ar-EG', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        });
-    }
-
-    // دالة عرض سجل الحضور (تستقبل البيانات المدمجة)
+    
+    // دالة عرض سجل الحضور (مُعدّلة لدمج سجلات الحصص والحضور العام)
     function renderAttendanceRecords(studentId, records) {
         const tbody = document.getElementById('attendanceRecords');
         const noMessage = document.getElementById('noAttendanceMessage');
@@ -693,29 +692,52 @@ html,body{
 
         noMessage.style.display = 'none';
 
-        // تحويل الكائن إلى مصفوفة وفرزها حسب التاريخ (الأحدث أولاً)
+        // تحويل الكائن إلى مصفوفة وفرزها حسب الطابع الزمني (الأحدث أولاً)
         const sortedRecords = Object.keys(records).map(key => ({
             ...records[key],
             id: key,
-            timestamp: records[key].checkInTime || records[key].timestamp // استخدم وقت الدخول أو الطابع الزمني للفرز
+            // استخدام الطابع الزمني أو وقت الدخول للفرز
+            timestamp: records[key].timestamp || records[key].checkInTime 
         })).sort((a, b) => b.timestamp - a.timestamp);
 
         sortedRecords.forEach(record => {
-            // تجاهل سجلات الحصص هنا والتركيز على الدخول/الخروج
+            let dateTime, typeOrSubject, detailsOrAction;
+
+            const dateObj = new Date(record.timestamp);
+            dateTime = dateObj.toLocaleDateString('ar-EG', {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+
             if (record.type === 'Session Registered' || record.type === 'Session Undone') {
+                // حالة سجل الحصة
+                typeOrSubject = record.subject || 'غير محدد';
+                
+                if (record.type === 'Session Registered') {
+                    detailsOrAction = `<span style="color: var(--success-color); font-weight: 600;">تسجيل حصة رقم ${record.sessionNumber || 'N/A'}</span>`;
+                } else {
+                    detailsOrAction = `<span style="color: var(--danger-color); font-weight: 600;">شطب حصة رقم ${record.sessionNumber || 'N/A'}</span>`;
+                }
+                
+            } else if (record.action === 'Check-in') {
+                // حالة سجل الحضور العام (Check-in/Check-out)
+                const checkInTime = formatTime(record.checkInTime);
+                const checkOutTime = record.checkOutTime ? formatTime(record.checkOutTime) : '—';
+                
+                typeOrSubject = `<span style="color: var(--accent-color);">حضور عام (QR)</span>`;
+                detailsOrAction = `دخول: ${checkInTime} / خروج: ${checkOutTime}`;
+                
+            } else {
+                // تجاهل السجلات التي لا نريد عرضها (مثل Check-out المنفصل إذا لم يكن مسجلاً كزوج)
                 return;
             }
-
-            const date = formatDate(record.checkInTime);
-            const checkIn = formatTime(record.checkInTime);
-            const checkOut = formatTime(record.checkOutTime);
 
             const row = document.createElement('tr');
             row.id = `attendance-row-${record.id}`;
             row.innerHTML = `
-                <td>${date}</td>
-                <td>${checkIn}</td>
-                <td>${checkOut}</td>
+                <td>${dateTime}</td>
+                <td>${typeOrSubject}</td>
+                <td>${detailsOrAction}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteAttendanceRecord('${studentId}', '${record.id}')">حذف</button>
                 </td>
@@ -724,11 +746,11 @@ html,body{
         });
     }
 
-    // دالة حذف سجل الحضور (Check-in/Check-out) (بدون تغيير)
+    // دالة حذف سجل الحضور (Check-in/Check-out/Session Log)
     async function deleteAttendanceRecord(studentId, attendanceId) {
         
         showCustomConfirm(
-            'هل أنت متأكد من حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء.',
+            'هل أنت متأكد من حذف سجل النشاط هذا؟ لا يمكن التراجع عن هذا الإجراء.',
             async (isConfirmed) => {
                 if (!isConfirmed) return;
                 
@@ -738,11 +760,9 @@ html,body{
                     });
 
                     if (response.ok) {
-                        const row = document.getElementById(`attendance-row-${attendanceId}`);
-                        if (row) {
-                            row.remove();
-                            showCustomAlert('تم حذف السجل بنجاح.', 'نجاح');
-                        }
+                        // إعادة جلب البيانات لتحديث سجل الأنشطة بالكامل
+                        await fetchStudentDataAndAttendance(studentId); 
+                        showCustomAlert('تم حذف السجل بنجاح.', 'نجاح');
                     } else {
                         const error = await response.json();
                         showCustomAlert(`فشل الحذف: ${error.message}`, 'خطأ في الحذف');
