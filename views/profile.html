@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أكاديمية المعالي | ملف الطالب</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght=300;400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
 /* CSS styles */
@@ -18,7 +18,6 @@
   --accent-color: #3b82f6; 
   --danger-color: #ef4444;
   --success-color: #43cf66;
-  --undo-color: #ffc107; /* لون جديد للشطب/الحصة الأخيرة */
   --radius: 12px;
 }
 
@@ -31,571 +30,507 @@ html,body{
   background-color: var(--bg);
   background-image: 
     radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+    radial-gradient(circle at 85% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%);
   color: var(--text-primary);
-  -webkit-font-smoothing:antialiased;
-  direction: rtl;
+  line-height:1.6;
+  padding:20px;
 }
 
-.container{
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 0 20px 40px;
+#container{
+  max-width:900px;
+  margin:0 auto;
+  padding-bottom: 50px;
 }
 
-/* Glassy Card Style */
-.card{
-  background: rgba(21, 21, 23, 0.95); 
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 30px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-}
-
-.header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
+.header-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
 }
-.header h1{
-  font-size: 26px;
-  color: var(--accent-color);
-  margin: 0;
+
+.header-bar h1{
+  font-size:24px;
+  margin:0;
+  font-weight:700;
 }
+
 .back-btn{
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  padding: 8px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.2s;
-  font-size: 14px;
+  background:transparent;
+  border:1px solid var(--border-color);
+  color:var(--text-primary);
+  padding:8px 15px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:all 0.3s;
+  text-decoration:none;
+  font-family:"Tajawal",sans-serif;
+  font-size:14px;
 }
+
 .back-btn:hover{
-  background: rgba(255, 255, 255, 0.2);
+  background:rgba(255,255,255,0.05);
 }
 
-/* Student Info Section */
-.student-info h2, .section-header h2{
-    font-size: 20px;
-    color: #fff;
-    border-right: 4px solid var(--accent-color);
-    padding-right: 10px;
-    margin-top: 0;
-    margin-bottom: 20px;
+/* Card Styling */
+.card{
+  background-color:var(--card-bg);
+  padding:20px;
+  border-radius:var(--radius);
+  margin-bottom:20px;
+  border:1px solid var(--border-color);
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -2px rgba(0,0,0,0.1);
 }
 
-.detail-row{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border-color);
-}
-.detail-row:last-child{
-    border-bottom: none;
-}
-.detail-row strong{
-    color: #e4e4e7;
-    font-weight: 500;
-}
-.detail-row span{
-    color: var(--text-secondary);
-}
-.status-active {
-    color: var(--success-color);
-    font-weight: 700;
-}
-.status-inactive {
-    color: var(--danger-color);
-    font-weight: 700;
+.profile-info h2{
+  font-size:20px;
+  margin-top:0;
+  margin-bottom:15px;
+  color:var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
 }
 
-/* Subject Management Section */
-.subject-list-management {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
-.subject-list-management .subject-card {
-    padding: 15px;
-    margin-bottom: 0 !important; 
-    background: rgba(255, 255, 255, 0.05); 
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
+.profile-info p{
+  margin:5px 0;
+  color:var(--text-secondary);
+  font-size:15px;
 }
 
-.action-btn {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s;
-    border: none;
+.profile-info strong{
+  color:var(--text-primary);
+  font-weight:600;
+  margin-left: 5px;
 }
-.mark-attended-btn {
-    background: var(--accent-color);
-    color: #fff;
-}
-.mark-attended-btn:hover:not(:disabled) {
-    background: #2563eb;
-}
-.action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Progress Bar */
-.progress-bar {
-    height: 8px; 
-    background: rgba(255,255,255,0.1); 
-    border-radius: 4px; 
-    margin-bottom: 15px;
-}
-.progress-bar-fill {
-    height: 100%; 
-    background: var(--accent-color);
-    border-radius: 4px; 
-    transition: width 0.5s;
-}
-
-/* Sessions List Styling */
-.sessions-list-header {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-.sessions-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 15px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-.session-item {
-    /* Style for all sessions (to look clickable) */
-    background: rgba(59, 130, 246, 0.15); 
-    color: var(--accent-color);
-    padding: 5px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s, opacity 0.2s;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-.session-item:hover {
-    background: rgba(59, 130, 246, 0.3);
-}
-
-/* Style for the LATEST session (the one that can be undone) */
-.session-item[data-latest="true"] {
-    background: var(--undo-color); /* Yellow background */
-    color: #1e1e1e; /* Dark text for contrast */
-    border-color: #ff9800;
-    font-weight: 600;
-}
-.session-item[data-latest="true"]:hover {
-    background: #e5b300; /* Darker yellow on hover */
-}
-
-.no-completed-sessions {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 10px;
-}
-
 
 /* QR Code Section */
-.qr-section{
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-}
-.qr-section img{
-    width: 150px;
-    height: 150px;
-    border: 5px solid #fff;
-    border-radius: 10px;
-    margin-top: 15px;
-    background: #fff;
-}
-.qr-section p{
-    color: var(--text-secondary);
-    font-size: 14px;
+#qrCodeContainer{
+  text-align:center;
+  padding:20px 0;
 }
 
-/* Attendance Table */
-.attendance-table{
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    text-align: right;
-    font-size: 14px;
-}
-.attendance-table th, .attendance-table td{
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-.attendance-table th{
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--accent-color);
-    font-weight: 600;
-}
-.attendance-table tbody tr:hover{
-    background: rgba(255, 255, 255, 0.05);
+#qrCodeImage{
+  max-width:150px;
+  height:auto;
+  border:5px solid var(--card-bg);
+  border-radius:var(--radius);
+  background:white;
 }
 
-.delete-btn{
-    background: var(--danger-color);
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
+/* Subject Management */
+#subjectManagementContainer{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.subject-card{
+  display:flex;
+  flex-direction:column;
+}
+
+.progress-bar{
+  height:8px;
+  background:rgba(255,255,255,0.1);
+  border-radius:4px;
+  overflow:hidden;
+  margin-top:5px;
+}
+
+.progress-bar-fill{
+  height:100%;
+  transition:width 0.5s ease;
+}
+
+.sessions-list{
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+    justify-content: flex-start;
+}
+
+.session-item{
+    background: rgba(255,255,255,0.05);
+    padding: 5px 10px;
     border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 13px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    cursor: pointer; /* لجعلها قابلة للنقر */
     transition: background 0.2s;
 }
-.delete-btn:hover{
-    background: #c30000;
+
+.session-item:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.status-completed {
+    color: var(--success-color);
+    border-color: var(--success-color);
+    background-color: rgba(67, 207, 102, 0.1);
+}
+
+.status-pending {
+    color: var(--text-secondary);
+}
+
+/* Action Buttons (موجودة في الستايل القديم ولكنها محذوفة في HTML) */
+.action-btn{
+  background:var(--accent-color);
+  color:#fff;
+  border:none;
+  padding:10px 15px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  font-weight:500;
+  font-size:14px;
+  transition:background 0.3s;
+  font-family:"Tajawal",sans-serif;
+}
+
+.action-btn:hover:not([disabled]){
+  background:#2563eb;
+}
+
+.action-btn[disabled]{
+  background:rgba(255,255,255,0.1);
+  color:var(--text-secondary);
+  cursor:not-allowed;
+}
+
+
+/* Attendance Table */
+.attendance-section h2{
+  font-size:20px;
+  margin-top:20px;
+  margin-bottom:15px;
+  color:var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 5px;
+}
+
+.attendance-table-container{
+  overflow-x:auto;
+}
+
+.attendance-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.attendance-table th,.attendance-table td{
+  padding:12px 15px;
+  text-align:right;
+  border-bottom:1px solid var(--border-color);
+}
+
+.attendance-table th{
+  background-color:rgba(255,255,255,0.05);
+  color:var(--text-primary);
+  font-weight:600;
+}
+
+.attendance-table td{
+  color:var(--text-secondary);
+}
+
+.attendance-table td .delete-btn{
+  background:var(--danger-color);
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+  transition:background 0.3s;
+}
+
+.attendance-table td .delete-btn:hover{
+  background:#c23030;
+}
+
+
+/* General Statuses */
+.error-message, .loading-message, .no-records {
+    padding: 15px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.loading-message {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
 }
 
 .no-records {
-    text-align: center;
+    background-color: rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
-    padding: 20px;
+    border: 1px solid var(--border-color);
 }
 
-/* Custom Modal Specific Styles */
-#customAlertModal {
+
+/* Custom Alert/Confirm */
+#customAlert, #customConfirm {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    z-index: 5000;
-    display: none;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; 
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
-#customAlertModal.open {
-    display: flex;
-}
-.modal-content.small-modal {
-    background: rgba(21, 21, 23, 0.95); 
-    border: 1px solid rgba(255,255,255,0.1);
+
+.alert-content, .confirm-content {
+    background: var(--card-bg);
+    padding: 30px;
     border-radius: var(--radius);
+    width: 90%;
     max-width: 400px;
-    padding: 20px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    backdrop-filter: blur(15px); 
+    border: 1px solid var(--border-color);
 }
-.modal-content.small-modal h3 {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 10px;
-    color: #ffc107; 
+
+.alert-content h3, .confirm-content h3 {
+    margin-top: 0;
+    color: var(--accent-color);
 }
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-.modal-actions .confirm-btn {
-    background: var(--danger-color); 
-    color: #fff;
-}
-.modal-actions .confirm-btn:hover {
-    background: #c30000;
-}
-.modal-actions .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
+
+.alert-content p, .confirm-content p {
     color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.alert-content button, .confirm-content button {
+    padding: 10px 20px;
     border: none;
-}
-.modal-actions .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--text-primary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    margin: 0 5px;
+    font-weight: 500;
+    font-family: "Tajawal", sans-serif;
+    font-size: 14px;
 }
 
+.alert-content button {
+    background: var(--accent-color);
+    color: white;
+}
 
-/* --- Mobile Optimization Styles --- */
-@media (max-width: 600px) {
-    .container {
-        margin: 10px auto;
-        padding: 0 10px 20px;
-    }
-    .card {
-        padding: 15px;
-    }
-    .header h1 {
-        font-size: 22px;
-    }
-    .back-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-    }
-    .subject-list-management {
-        grid-template-columns: 1fr; /* Single column on mobile */
-    }
-    .detail-row {
-        font-size: 14px;
-    }
-    .attendance-table th, .attendance-table td {
-        padding: 8px 10px;
-        font-size: 12px;
-    }
-    /* Stack sessions vertically on very small screens */
-    .sessions-list {
-        gap: 8px; 
-        flex-direction: column; 
-    }
-    .session-item {
-        width: 100%;
-        text-align: right;
-    }
+.confirm-content .confirm-yes {
+    background: var(--danger-color);
+    color: white;
+}
+
+.confirm-content .confirm-no {
+    background: var(--text-secondary);
+    color: var(--bg);
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
+<div id="container">
+    <div class="header-bar">
         <h1>ملف الطالب</h1>
-        <a href="/" class="back-btn">العودة للرئيسية</a>
+        <a href="/" class="back-btn">العودة للصفحة الرئيسية</a>
     </div>
 
-    <div class="card student-info">
-        <h2 id="studentNameHeader">جاري التحميل...</h2>
-        
-        <div class="detail-row">
-            <strong>الرقم التعريفي:</strong>
-            <span id="studentIdDisplay">...</span>
-        </div>
-        <div class="detail-row">
-            <strong>حالة التسجيل:</strong>
-            <span id="registrationStatus">...</span>
-        </div>
-        
-        <h2 style="margin-top: 30px;">المعلومات الأكاديمية</h2>
+    <div id="loading" class="loading-message">جاري تحميل بيانات الطالب...</div>
+    <div id="error" class="error-message" style="display: none;"></div>
 
-        <div class="detail-row">
-            <strong>المرحلة التعليمية:</strong>
-            <span id="studentPhase">غير محدد</span>
-        </div>
-        <div class="detail-row">
-            <strong>السنة الدراسية:</strong>
-            <span id="studentYear">غير محدد</span>
-        </div>
-        <div class="detail-row">
-            <strong>الشعبة/التخصص:</strong>
-            <span id="studentStream">غير محدد</span>
-        </div>
+    <div id="profileInfo" class="card profile-info" style="display: none;">
+        <h2>البيانات الشخصية</h2>
+        <p>الاسم: <strong id="studentName"></strong></p>
+        <p>رقم الطالب: <strong id="studentId"></strong></p>
+        <p>رقم الهاتف: <strong id="studentPhone"></strong></p>
     </div>
 
-    <div class="card">
-        <h2>المواد المسجل بها وعدد الحصص</h2>
-        <div id="subjectManagementContainer" class="subject-list-management">
-            <span style="color: var(--text-secondary);">جاري تحميل المواد...</span>
-        </div>
-    </div>
-    
-    <div class="card qr-section">
-        <h2>رمز دخول الطالب</h2>
-        <p>استخدم هذا الرمز لتسجيل الحضور في كل حصة.</p>
-        <img id="qrCodeImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="رمز QR للطالب">
+    <div id="qrCodeContainer" class="card" style="display: none;">
+        <h2>رمز QR لتسجيل الحضور</h2>
+        <img id="qrCodeImage" src="" alt="QR Code">
     </div>
 
-    <div class="card session-log-card">
-        <h2>سجل الأنشطة (الحصص والحضور العام)</h2>
-        
-        <table class="attendance-table">
-            <thead>
-                <tr>
-                    <th>التاريخ والوقت</th>
-                    <th>المادة/المرحلة</th>
-                    <th>الإجراء</th>
-                    <th>رقم الحصة/الشعبة</th>
-                    <th>إدارة</th>
-                </tr>
-            </thead>
-            <tbody id="activityRecordsBody">
-                <tr><td colspan="5" class="no-records">جاري تحميل سجل الأنشطة...</td></tr>
-            </tbody>
-        </table>
+    <div id="subjectManagementContainer" style="display: none;">
+        </div>
+
+    <div class="attendance-section" style="display: none;" id="attendanceSection">
+        <h2>سجل الحضور والإنصراف</h2>
+        <div class="attendance-table-container">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>وقت الدخول</th>
+                        <th>وقت الخروج</th>
+                        <th>الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceRecords">
+                    </tbody>
+            </table>
+        </div>
+        <p id="noAttendanceMessage" class="no-records" style="display: none;">لا يوجد سجل حضور حتى الآن.</p>
     </div>
 
 </div>
 
-<div class="modal-overlay" id="customAlertModal">
-    <div class="modal-content small-modal">
-        <h3 id="customAlertTitle">تأكيد الإجراء</h3>
-        <p id="customAlertMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
-        <div class="modal-actions" id="customAlertActions">
-            <button class="action-btn confirm-btn" id="customAlertConfirmBtn">نعم، تأكيد</button>
-            <button class="action-btn cancel-btn" id="customAlertCancelBtn">إلغاء</button>
-        </div>
+<div id="customAlert" style="display: none;">
+    <div class="alert-content">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage">رسالة التنبيه</p>
+        <button onclick="closeCustomAlert()">موافق</button>
+    </div>
+</div>
+
+<div id="customConfirm" style="display: none;">
+    <div class="confirm-content">
+        <h3 id="confirmTitle">تأكيد</h3>
+        <p id="confirmMessage">هل أنت متأكد من هذا الإجراء؟</p>
+        <button class="confirm-yes">نعم</button>
+        <button class="confirm-no">لا</button>
     </div>
 </div>
 
 <script>
-    // --- Global Custom Modal Logic (REPLACES alert() and confirm()) ---
-    let confirmCallback = null;
+    let currentConfirmAction = null;
 
-    function showCustomAlert(message, title = 'إشعار') {
-        const modal = document.getElementById('customAlertModal');
-        document.getElementById('customAlertTitle').textContent = title;
-        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        document.getElementById('customAlertConfirmBtn').textContent = 'حسناً';
-        document.getElementById('customAlertCancelBtn').style.display = 'none'; 
-        document.getElementById('customAlertConfirmBtn').onclick = () => {
-            modal.classList.remove('open');
-        };
-        
-        modal.classList.add('open');
+    // --- Custom Alert Functions ---
+    function showCustomAlert(message, title = 'تنبيه') {
+        document.getElementById('alertTitle').textContent = title;
+        document.getElementById('alertMessage').textContent = message;
+        document.getElementById('customAlert').style.display = 'flex';
     }
 
-    function showCustomConfirm(message, callback, title = 'تأكيد الإجراء') {
-        const modal = document.getElementById('customAlertModal');
-        document.getElementById('customAlertTitle').textContent = title;
-        document.getElementById('customAlertMessage').innerHTML = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        document.getElementById('customAlertConfirmBtn').textContent = 'نعم، تأكيد';
-        document.getElementById('customAlertCancelBtn').style.display = 'inline-block';
-        
-        confirmCallback = callback;
-
-        document.getElementById('customAlertConfirmBtn').onclick = () => {
-            modal.classList.remove('open');
-            if (confirmCallback) {
-                confirmCallback(true);
-            }
-        };
-        
-        document.getElementById('customAlertCancelBtn').onclick = () => {
-            modal.classList.remove('open');
-        };
-        
-        modal.classList.add('open');
+    function closeCustomAlert() {
+        document.getElementById('customAlert').style.display = 'none';
     }
 
+    // --- Custom Confirm Functions ---
+    function showCustomConfirm(message, callback, title = 'تأكيد') {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        currentConfirmAction = callback;
 
-    // الحصول على رقم الطالب من الـ URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const studentId = urlParams.get('id');
+        const confirmYes = document.querySelector('#customConfirm .confirm-yes');
+        const confirmNo = document.querySelector('#customConfirm .confirm-no');
 
-    if (!studentId) {
-        document.querySelector('.container').innerHTML = '<h1 style="text-align:center; color:#ef4444; margin-top:50px;">خطأ: لم يتم تحديد رقم الطالب في الرابط.</h1>';
-    } else {
-        fetchStudentDetails(studentId);
-        fetchQRCode(studentId);
+        // Clean previous listeners
+        const newConfirmYes = confirmYes.cloneNode(true);
+        confirmYes.parentNode.replaceChild(newConfirmYes, confirmYes);
+
+        const newConfirmNo = confirmNo.cloneNode(true);
+        confirmNo.parentNode.replaceChild(newConfirmNo, confirmNo);
+
+        // Add new listeners
+        newConfirmYes.addEventListener('click', () => {
+            currentConfirmAction(true);
+            document.getElementById('customConfirm').style.display = 'none';
+        });
+
+        newConfirmNo.addEventListener('click', () => {
+            currentConfirmAction(false);
+            document.getElementById('customConfirm').style.display = 'none';
+        });
+
+        document.getElementById('customConfirm').style.display = 'flex';
     }
-    
-    // دالة جلب بيانات الطالب والتحقق من حالة التعطيل
-    async function fetchStudentDetails(id) {
+
+    // --- Main Fetch Function (Combined Student Data and Attendance) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        if (!studentId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = 'خطأ: لم يتم تحديد رقم الطالب.';
+            document.getElementById('error').style.display = 'block';
+            return;
+        }
+
+        fetchStudentDataAndAttendance(studentId); // Combined fetch
+        fetchQrCode(studentId);
+    });
+
+
+    // دالة جلب بيانات الطالب وسجل الحضور (مُعدلة لمطابقة مسار الخادم)
+    async function fetchStudentDataAndAttendance(studentId) {
         try {
-            const response = await fetch(`/student-details/${id}`);
-            if (!response.ok) {
+            const response = await fetch(`/student-details/${studentId}`);
+            document.getElementById('loading').style.display = 'none';
+
+            if (response.ok) {
+                const data = await response.json();
+                const student = data.student;
+                const attendance = data.attendance;
+
+                renderProfileInfo(student);
+                renderSubjectManagement(studentId, student.subjects || []);
+                renderAttendanceRecords(studentId, attendance); 
+
+                document.getElementById('profileInfo').style.display = 'block';
+                document.getElementById('subjectManagementContainer').style.display = 'grid';
+                document.getElementById('attendanceSection').style.display = 'block';
+
+            } else {
                 const error = await response.json();
-                document.getElementById('studentNameHeader').textContent = 'خطأ في جلب البيانات';
-                showCustomAlert(error.message, 'خطأ في جلب البيانات');
-                return;
+                document.getElementById('error').textContent = `فشل في تحميل البيانات: ${error.message}`;
+                document.getElementById('error').style.display = 'block';
             }
-
-            const data = await response.json();
-            const student = data.student;
-            const attendance = data.attendance;
-            
-            // تحديث بيانات الطالب
-            document.getElementById('studentNameHeader').textContent = `${student.name || 'طالب غير معروف'}`;
-            document.getElementById('studentIdDisplay').textContent = student.id;
-            document.getElementById('registrationStatus').innerHTML = student.isActive 
-                ? `<span class="status-active">نشط (مفعل)</span>` 
-                : `<span class="status-inactive">غير نشط</span>`;
-            
-            document.getElementById('studentPhase').textContent = student.phase || 'غير محدد';
-            document.getElementById('studentYear').textContent = student.year || 'غير محدد';
-            document.getElementById('studentStream').textContent = student.stream === 'عامة' 
-                ? 'عامة' : student.stream || 'غير محدد';
-            
-            // عرض وإدارة المواد
-            renderSubjectManagement(id, student.subjects);
-
-            // عرض سجل الأنشطة (الحصص والحضور العام)
-            renderActivityLog(id, attendance);
-            
-            
-            // **منطق التحقق من حالة التعطيل التلقائي**
-            const isActive = student.isActive;
-            const allSessionsZero = student.subjects && student.subjects.every(s => s.completedSessions === 0);
-            
-            if (isActive && allSessionsZero) {
-                showCustomConfirm(
-                    `الطالب **${student.name}** ليس لديه أي حصص مكتملة متبقية في أي مادة. هل تريد تفعيل حالة **غير نشط** له؟`,
-                    async (isConfirmed) => {
-                        if (isConfirmed) {
-                            try {
-                                const deactivateResponse = await fetch(`/deactivate-student/${id}`, {
-                                    method: 'POST', 
-                                    headers: { 'Content-Type': 'application/json' }
-                                });
-                                
-                                if (deactivateResponse.ok) {
-                                    showCustomAlert('تم تعطيل حالة الطالب بنجاح.', 'تم التعطيل');
-                                    fetchStudentDetails(id); 
-                                } else {
-                                    const error = await deactivateResponse.json();
-                                    showCustomAlert(`فشل في تعطيل حالة الطالب: ${error.message}`, 'خطأ في التعطيل');
-                                }
-                            } catch (error) {
-                                showCustomAlert('خطأ في الاتصال بالخادم عند محاولة تعطيل الطالب.', 'خطأ شبكة');
-                            }
-                        }
-                    },
-                    'تعطيل حالة الطالب'
-                );
-            }
-
-
         } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('studentNameHeader').textContent = 'خطأ في الاتصال بالخادم';
-            showCustomAlert('فشل في الاتصال بالخادم عند محاولة جلب بيانات الطالب.', 'خطأ شبكة');
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').textContent = 'خطأ في الاتصال بالخادم عند تحميل البيانات.';
+            document.getElementById('error').style.display = 'block';
         }
     }
 
-    // دالة جلب رمز QR
-    async function fetchQRCode(id) {
+
+    function renderProfileInfo(student) {
+        document.getElementById('studentName').textContent = student.name;
+        document.getElementById('studentId').textContent = student.id;
+        document.getElementById('studentPhone').textContent = student.phone || 'غير متوفر';
+    }
+
+    // --- QR Code Functions ---
+    async function fetchQrCode(studentId) {
         try {
-            const response = await fetch(`/qr-code/${id}`);
+            const response = await fetch(`/qr-code/${studentId}`);
             if (response.ok) {
                 const data = await response.json();
                 document.getElementById('qrCodeImage').src = data.qrCodeUrl;
+                document.getElementById('qrCodeContainer').style.display = 'block';
             } else {
-                document.getElementById('qrCodeImage').alt = 'فشل توليد رمز QR';
+                console.error('فشل في توليد رمز QR');
             }
         } catch (error) {
-            console.error('QR Code error:', error);
+            console.error('خطأ في الاتصال بالخادم لتوليد رمز QR:', error);
         }
     }
-    
-    // دالة عرض وإدارة المواد والحصص - مُعدّلة للعرض
+
+
+    // --- Subject Management (SESSIONS) ---
+
+    // دالة عرض وإدارة المواد والحصص (مُعدلة لدعم النقر على الحصة)
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -614,178 +549,173 @@ html,body{
             subjectDiv.className = 'subject-card card';
             subjectDiv.id = `subject-${subject.name.replace(/\s/g, '-')}`;
             
-            // بناء قائمة الحصص المكتملة
-            let sessionsHtml = '';
-            if (subject.completedSessions > 0) {
-                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (الحصة الأخيرة هي القابلة للشطب):</div><ul class="sessions-list">';
-                for (let i = subject.completedSessions; i >= 1; i--) { 
-                    // جميع الحصص تظهر كقابلة للضغط
-                    const isLatestSession = (i === subject.completedSessions);
-                    
-                    sessionsHtml += `<li class="session-item" data-subject="${subject.name}" data-session-number="${i}" 
-                        title="${isLatestSession ? 'اضغط للشطب' : 'يجب شطب آخر حصة أولاً'}"
-                        data-latest="${isLatestSession ? 'true' : 'false'}"
-                        >
-                        الحصة رقم ${i} ${isLatestSession ? '(الأخيرة)' : ''}
-                    </li>`;
-                }
-                sessionsHtml += '</ul>';
-            } else {
-                 sessionsHtml = '<p class="no-completed-sessions">لا توجد حصص مكتملة حتى الآن.</p>';
+            // 1. بناء قائمة الحصص التفصيلية (✔ / ❍)
+            let sessionsHtml = '<ul class="sessions-list">'; 
+            
+            for (let i = 1; i <= subject.totalSessions; i++) {
+                const isSessionCompleted = i <= subject.completedSessions;
+                const icon = isSessionCompleted ? '✔' : '❍';
+                const statusClass = isSessionCompleted ? 'session-item status-completed' : 'session-item status-pending';
+                
+                // إضافة بيانات الحصة ورقمها للنقر
+                sessionsHtml += `<li class="${statusClass}"
+                    data-subject="${subject.name}"
+                    data-session-number="${i}"
+                    data-is-completed="${isSessionCompleted}"> 
+                    <span style="margin-left: 5px; font-size: 14px; font-weight: 700;">${icon}</span>
+                    الحصة ${i}
+                </li>`;
             }
+            sessionsHtml += '</ul>';
 
             subjectDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <strong style="font-size: 16px; color: #fff;">${subject.name}</strong>
+                    <strong style="font-size: 18px; color: #fff; border-right: 4px solid var(--success-color); padding-right: 10px;">${subject.name}</strong>
                     <span id="session-count-${subject.name.replace(/\s/g, '-')}" style="font-size: 14px; color: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'}; font-weight:700;">
                         ${subject.completedSessions} من ${subject.totalSessions} حصة
                     </span>
                 </div>
                 
-                <div class="progress-bar">
+                <div class="progress-bar" style="margin-bottom: 25px;">
                     <div class="progress-bar-fill" style="width: ${progressPercent}%; background: ${isCompleted ? 'var(--success-color)' : 'var(--accent-color)'};"></div>
                 </div>
                 
                 ${sessionsHtml}
                 
-                <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 15px;">
-                    <button class="action-btn mark-attended-btn" data-subject="${subject.name}" 
-                        ${isCompleted ? 'disabled' : ''}>
-                        تسجيل حصة جديدة
-                    </button>
-                </div>
-            `;
+                `;
             container.appendChild(subjectDiv);
         });
         
-        // ربط زر تسجيل حصة جديدة
-        container.querySelectorAll('.mark-attended-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const subjectName = button.getAttribute('data-subject');
-                updateSessionCount(studentId, subjectName, 'add');
-            });
-        });
-
-        // **الربط المُعدّل: شطب آخر حصة فقط (مع تنبيه عند محاولة شطب غير الأخيرة)**
+        // 2. ربط مستمع النقر بجميع عناصر الحصص
         container.querySelectorAll('.session-item').forEach(item => {
             item.addEventListener('click', () => {
                 const subjectName = item.getAttribute('data-subject');
-                
-                if (item.getAttribute('data-latest') === 'true') {
-                    // إذا كانت هي آخر حصة، نمرر الإجراء للخادم
-                    updateSessionCount(studentId, subjectName, 'subtract'); 
+                const sessionNumber = parseInt(item.getAttribute('data-session-number'));
+                const isCompleted = item.getAttribute('data-is-completed') === 'true';
+                const completedCount = subjects.find(s => s.name === subjectName).completedSessions;
+
+                // المنطق:
+                // 1. إذا كانت الحصة غير مكتملة وهي الحصة التالية مباشرة (completedCount + 1)، نسجلها (ADD).
+                // 2. إذا كانت الحصة مكتملة وهي آخر حصة تم تسجيلها حالياً (completedCount)، نشطبها (SUBTRACT).
+                // 3. منع النقر على أي حالة أخرى.
+
+                let action = null;
+                if (!isCompleted && sessionNumber === completedCount + 1) {
+                    // تسجيل الحصة التالية
+                    action = 'add';
+                } else if (isCompleted && sessionNumber === completedCount) {
+                    // شطب آخر حصة مسجلة
+                    action = 'subtract';
                 } else {
-                    // إذا لم تكن آخر حصة، نعرض تنبيهاً يوضح ضرورة التسلسل
-                    const clickedSessionNumber = parseInt(item.getAttribute('data-session-number'), 10);
-                    
-                    // البحث عن عدد الحصص المكتملة الحالي لإظهاره في التنبيه
-                    const currentSubject = subjects.find(s => s.name === subjectName);
-                    const latestSessionNumber = currentSubject ? currentSubject.completedSessions : 0;
-                    
-                    showCustomAlert(
-                        `لا يمكن شطب الحصة رقم **${clickedSessionNumber}** مباشرة. <br><br>يجب شطب آخر حصة تم تسجيلها بالتسلسل. الحصة الحالية القابلة للشطب هي **رقم ${latestSessionNumber}**.`, 
-                        'تنبيه: تسلسل الحصص'
-                    );
+                    // تنبيه عند محاولة تسجيل حصة ليست التالية أو شطب حصة ليست الأخيرة
+                    showCustomAlert('يجب تسجيل الحصص بالتسلسل (التالية) أو شطب آخر حصة تم تسجيلها.', 'إجراء غير مسموح');
+                    return;
                 }
+                
+                updateSessionCount(studentId, subjectName, action, sessionNumber);
             });
         });
     }
 
-    // دالة الإدارة لتسجيل/شطب الحصص
-    async function updateSessionCount(studentId, subjectName, action) {
-        
-        // تحديد رسالة التأكيد بناءً على الإجراء
-        let confirmMsg = action === 'add' 
-            ? `هل أنت متأكد من تسجيل **حصة مكتملة** لمادة **${subjectName}**؟`
-            : `هل أنت متأكد من **شطب/التراجع** عن آخر حصة مكتملة لمادة **${subjectName}**؟`;
+
+    // دالة تحديث عدد الحصص (مُعدلة لإرسال رقم الحصة)
+    async function updateSessionCount(studentId, subjectName, action, sessionNumber) {
+        const actionText = action === 'add' ? `تسجيل الحصة رقم ${sessionNumber}` : `شطب الحصة رقم ${sessionNumber}`;
+        const confirmMessage = action === 'add' ? 
+            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إضافتها لسجل الحضور.` :
+            `هل أنت متأكد من شطب الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إنقاص العداد وإضافتها لسجل الحضور كشطب.`;
 
         showCustomConfirm(
-            confirmMsg,
+            confirmMessage,
             async (isConfirmed) => {
                 if (!isConfirmed) return;
 
-                const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
-        
                 try {
+                    const endpoint = action === 'add' ? `/record-session-attended/${studentId}` : `/undo-session-attended/${studentId}`;
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ subjectName: subjectName })
+                        // إرسال رقم الحصة إلى الخادم
+                        body: JSON.stringify({ subjectName, sessionNumber }) 
                     });
-        
-                    const result = await response.json();
-        
+
                     if (response.ok) {
-                        showCustomAlert(result.message, 'نجاح');
-                        // إعادة جلب التفاصيل لتحديث العرض والتحقق من حالة التعطيل
-                        await fetchStudentDetails(studentId); 
+                        const result = await response.json();
+                        // إعادة تحميل البيانات لتحديث العرض (إعادة استدعاء الدالة المدمجة)
+                        fetchStudentDataAndAttendance(studentId); 
+                        showCustomAlert(`تم ${action === 'add' ? 'تسجيل' : 'شطب'} الحصة بنجاح.`, 'نجاح');
                     } else {
-                        showCustomAlert(`فشل الإجراء: ${result.message}`, 'خطأ في الإجراء');
+                        const error = await response.json();
+                        showCustomAlert(`فشل الإجراء: ${error.message}`, 'خطأ');
                     }
-        
                 } catch (error) {
-                    showCustomAlert('خطأ في الاتصال بالخادم.', 'خطأ شبكة');
+                    showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الإجراء.', 'خطأ شبكة');
                 }
             },
-            action === 'add' ? 'تسجيل حضور' : 'شطب حصة'
+            actionText
         );
     }
 
 
-    // دالة عرض سجل الأنشطة (تسجيل/شطب الحصص والحضور العام) 
-    function renderActivityLog(studentId, attendance) {
-        const tbody = document.getElementById('activityRecordsBody');
+    // --- Attendance History Functions ---
+    function formatTime(timestamp) {
+        if (!timestamp) return '—';
+        const date = new Date(timestamp);
+        // تنسيق الوقت (ساعة:دقيقة ص/م)
+        return date.toLocaleTimeString('ar-EG', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '—';
+        const date = new Date(timestamp);
+        // تنسيق التاريخ (يوم/شهر/سنة)
+        return date.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    }
+
+    // دالة عرض سجل الحضور (تستقبل البيانات المدمجة)
+    function renderAttendanceRecords(studentId, records) {
+        const tbody = document.getElementById('attendanceRecords');
+        const noMessage = document.getElementById('noAttendanceMessage');
         tbody.innerHTML = '';
         
-        const records = Object.entries(attendance).map(([id, record]) => ({
-            id: id,
-            ...record
-        }));
-        
-        // تصفية السجلات لإظهار فقط (Session Registered) و (Session Undone) و (Check-in)
-        const filteredRecords = records.filter(record => 
-            record.type === 'Session Registered' || 
-            record.type === 'Session Undone' ||
-            record.action === 'Check-in' 
-        );
-        
-        // الفرز حسب التاريخ (الأحدث أولاً)
-        filteredRecords.sort((a, b) => b.timestamp - a.timestamp);
-
-        if (filteredRecords.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="no-records">لا يوجد سجل أنشطة (حصص/حضور) بعد.</td></tr>`;
+        if (!records || Object.keys(records).length === 0) {
+            noMessage.style.display = 'block';
             return;
         }
 
-        filteredRecords.forEach(record => {
-            const date = new Date(record.timestamp).toLocaleString('ar-EG', {
-                year: 'numeric', month: 'numeric', day: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-            
-            let subjectName = record.subject || '-';
-            let sessionNumber = record.sessionNumber || '-';
-            let actionText = '';
+        noMessage.style.display = 'none';
 
-            if (record.type === 'Session Registered') {
-                actionText = `<span style="color: var(--success-color); font-weight: 600;">تسجيل حصة</span>`;
-            } else if (record.type === 'Session Undone') {
-                actionText = `<span style="color: var(--danger-color); font-weight: 600;">شطب حصة</span>`;
-            } else if (record.action === 'Check-in') {
-                // حالة تسجيل الحضور العام بواسطة QR
-                actionText = `<span style="color: var(--accent-color); font-weight: 600;">حضور عام (QR)</span>`;
-                subjectName = record.phase || 'N/A'; // نستخدم خانة المادة لعرض المرحلة
-                sessionNumber = `${record.year || 'N/A'} ${record.stream === 'عامة' ? '' : ' - ' + (record.stream || 'N/A')}`; // نستخدم خانة رقم الحصة لعرض السنة/الشعبة
+        // تحويل الكائن إلى مصفوفة وفرزها حسب التاريخ (الأحدث أولاً)
+        const sortedRecords = Object.keys(records).map(key => ({
+            ...records[key],
+            id: key,
+            timestamp: records[key].checkInTime || records[key].timestamp // استخدم وقت الدخول أو الطابع الزمني للفرز
+        })).sort((a, b) => b.timestamp - a.timestamp);
+
+        sortedRecords.forEach(record => {
+            // تجاهل سجلات الحصص هنا والتركيز على الدخول/الخروج
+            if (record.type === 'Session Registered' || record.type === 'Session Undone') {
+                return;
             }
 
+            const date = formatDate(record.checkInTime);
+            const checkIn = formatTime(record.checkInTime);
+            const checkOut = formatTime(record.checkOutTime);
 
             const row = document.createElement('tr');
             row.id = `attendance-row-${record.id}`;
             row.innerHTML = `
                 <td>${date}</td>
-                <td>${subjectName}</td>
-                <td>${actionText}</td>
-                <td>${sessionNumber}</td>
+                <td>${checkIn}</td>
+                <td>${checkOut}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteAttendanceRecord('${studentId}', '${record.id}')">حذف</button>
                 </td>
@@ -794,11 +724,11 @@ html,body{
         });
     }
 
-    // دالة حذف سجل الحضور (Check-in/Check-out/Session Log)
+    // دالة حذف سجل الحضور (Check-in/Check-out) (بدون تغيير)
     async function deleteAttendanceRecord(studentId, attendanceId) {
         
         showCustomConfirm(
-            'هل أنت متأكد من حذف سجل النشاط هذا؟ لا يمكن التراجع عن هذا الإجراء.',
+            'هل أنت متأكد من حذف سجل الحضور هذا؟ لا يمكن التراجع عن هذا الإجراء.',
             async (isConfirmed) => {
                 if (!isConfirmed) return;
                 
@@ -811,9 +741,7 @@ html,body{
                         const row = document.getElementById(`attendance-row-${attendanceId}`);
                         if (row) {
                             row.remove();
-                            showCustomAlert('تم حذف السجل بنجاح. (ملاحظة: إذا كان هذا سجل حصة، فقد تحتاج إلى تعديل عداد الحصص يدوياً).', 'نجاح');
-                            // يجب إعادة جلب التفاصيل لتحديث حالة الأزرار والعدادات
-                            await fetchStudentDetails(studentId); 
+                            showCustomAlert('تم حذف السجل بنجاح.', 'نجاح');
                         }
                     } else {
                         const error = await response.json();
