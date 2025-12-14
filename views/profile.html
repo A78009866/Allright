@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أكاديمية المعالي | ملف الطالب</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght=300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
 /* CSS styles */
@@ -18,6 +18,7 @@
   --accent-color: #3b82f6; 
   --danger-color: #ef4444;
   --success-color: #43cf66;
+  --undo-color: #ffc107; /* لون جديد للشطب/الحصة الأخيرة */
   --radius: 12px;
 }
 
@@ -183,6 +184,7 @@ html,body{
     gap: 5px;
 }
 .session-item {
+    /* Style for all sessions (to look clickable) */
     background: rgba(59, 130, 246, 0.15); 
     color: var(--accent-color);
     padding: 5px 8px;
@@ -195,6 +197,18 @@ html,body{
 .session-item:hover {
     background: rgba(59, 130, 246, 0.3);
 }
+
+/* Style for the LATEST session (the one that can be undone) */
+.session-item[data-latest="true"] {
+    background: var(--undo-color); /* Yellow background */
+    color: #1e1e1e; /* Dark text for contrast */
+    border-color: #ff9800;
+    font-weight: 600;
+}
+.session-item[data-latest="true"]:hover {
+    background: #e5b300; /* Darker yellow on hover */
+}
+
 .no-completed-sessions {
     font-size: 13px;
     color: var(--text-secondary);
@@ -425,7 +439,8 @@ html,body{
             </tbody>
         </table>
     </div>
-    </div>
+
+</div>
 
 <div class="modal-overlay" id="customAlertModal">
     <div class="modal-content small-modal">
@@ -522,13 +537,12 @@ html,body{
             // عرض وإدارة المواد
             renderSubjectManagement(id, student.subjects);
 
-            // عرض سجل الأنشطة (الحصص والحضور العام) - تغيير اسم الدالة
+            // عرض سجل الأنشطة (الحصص والحضور العام)
             renderActivityLog(id, attendance);
             
             
-            // **المنطق الجديد: التحقق من حالة التعطيل التلقائي**
+            // **منطق التحقق من حالة التعطيل التلقائي**
             const isActive = student.isActive;
-            // التحقق مما إذا كانت جميع المواد لديها 0 حصص مكتملة
             const allSessionsZero = student.subjects && student.subjects.every(s => s.completedSessions === 0);
             
             if (isActive && allSessionsZero) {
@@ -537,7 +551,6 @@ html,body{
                     async (isConfirmed) => {
                         if (isConfirmed) {
                             try {
-                                // افتراض أن هذا هو نقطة الاتصال لتعطيل حالة الطالب
                                 const deactivateResponse = await fetch(`/deactivate-student/${id}`, {
                                     method: 'POST', 
                                     headers: { 'Content-Type': 'application/json' }
@@ -545,7 +558,6 @@ html,body{
                                 
                                 if (deactivateResponse.ok) {
                                     showCustomAlert('تم تعطيل حالة الطالب بنجاح.', 'تم التعطيل');
-                                    // إعادة جلب التفاصيل لتحديث عرض الحالة
                                     fetchStudentDetails(id); 
                                 } else {
                                     const error = await deactivateResponse.json();
@@ -583,7 +595,7 @@ html,body{
         }
     }
     
-    // دالة عرض وإدارة المواد والحصص 
+    // دالة عرض وإدارة المواد والحصص - مُعدّلة للعرض
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -605,13 +617,13 @@ html,body{
             // بناء قائمة الحصص المكتملة
             let sessionsHtml = '';
             if (subject.completedSessions > 0) {
-                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (اضغط على حصة لشطبها):</div><ul class="sessions-list">';
-                for (let i = subject.completedSessions; i >= 1; i--) { // الترتيب التنازلي للحصص (الأحدث أولاً)
-                    // يجب أن يعمل زر الشطب فقط على آخر حصة (التي تساوي completedSessions)
+                sessionsHtml += '<div class="sessions-list-header">الحصص المكتملة (الحصة الأخيرة هي القابلة للشطب):</div><ul class="sessions-list">';
+                for (let i = subject.completedSessions; i >= 1; i--) { 
+                    // جميع الحصص تظهر كقابلة للضغط
                     const isLatestSession = (i === subject.completedSessions);
+                    
                     sessionsHtml += `<li class="session-item" data-subject="${subject.name}" data-session-number="${i}" 
                         title="${isLatestSession ? 'اضغط للشطب' : 'يجب شطب آخر حصة أولاً'}"
-                        style="${isLatestSession ? '' : 'opacity: 0.7; cursor: not-allowed; border-style: dashed;'}"
                         data-latest="${isLatestSession ? 'true' : 'false'}"
                         >
                         الحصة رقم ${i} ${isLatestSession ? '(الأخيرة)' : ''}
@@ -654,14 +666,26 @@ html,body{
             });
         });
 
-        // **الربط الجديد: شطب آخر حصة فقط**
+        // **الربط المُعدّل: شطب آخر حصة فقط (مع تنبيه عند محاولة شطب غير الأخيرة)**
         container.querySelectorAll('.session-item').forEach(item => {
             item.addEventListener('click', () => {
+                const subjectName = item.getAttribute('data-subject');
+                
                 if (item.getAttribute('data-latest') === 'true') {
-                    const subjectName = item.getAttribute('data-subject');
+                    // إذا كانت هي آخر حصة، نمرر الإجراء للخادم
                     updateSessionCount(studentId, subjectName, 'subtract'); 
                 } else {
-                    showCustomAlert('يمكن شطب آخر حصة مسجلة فقط.', 'تنبيه');
+                    // إذا لم تكن آخر حصة، نعرض تنبيهاً يوضح ضرورة التسلسل
+                    const clickedSessionNumber = parseInt(item.getAttribute('data-session-number'), 10);
+                    
+                    // البحث عن عدد الحصص المكتملة الحالي لإظهاره في التنبيه
+                    const currentSubject = subjects.find(s => s.name === subjectName);
+                    const latestSessionNumber = currentSubject ? currentSubject.completedSessions : 0;
+                    
+                    showCustomAlert(
+                        `لا يمكن شطب الحصة رقم **${clickedSessionNumber}** مباشرة. <br><br>يجب شطب آخر حصة تم تسجيلها بالتسلسل. الحصة الحالية القابلة للشطب هي **رقم ${latestSessionNumber}**.`, 
+                        'تنبيه: تسلسل الحصص'
+                    );
                 }
             });
         });
@@ -708,7 +732,7 @@ html,body{
     }
 
 
-    // دالة عرض سجل الأنشطة (تسجيل/شطب الحصص والحضور العام) - مُعدّلة
+    // دالة عرض سجل الأنشطة (تسجيل/شطب الحصص والحضور العام) 
     function renderActivityLog(studentId, attendance) {
         const tbody = document.getElementById('activityRecordsBody');
         tbody.innerHTML = '';
@@ -718,14 +742,14 @@ html,body{
             ...record
         }));
         
-        // 1. تصفية السجلات لإظهار فقط (Session Registered) و (Session Undone) و (Check-in)
+        // تصفية السجلات لإظهار فقط (Session Registered) و (Session Undone) و (Check-in)
         const filteredRecords = records.filter(record => 
             record.type === 'Session Registered' || 
             record.type === 'Session Undone' ||
             record.action === 'Check-in' 
         );
         
-        // 2. الفرز حسب التاريخ (الأحدث أولاً)
+        // الفرز حسب التاريخ (الأحدث أولاً)
         filteredRecords.sort((a, b) => b.timestamp - a.timestamp);
 
         if (filteredRecords.length === 0) {
@@ -784,14 +808,11 @@ html,body{
                     });
 
                     if (response.ok) {
-                        // بدلاً من إزالة الصف، الأفضل إعادة جلب البيانات
-                        // في حالة حذف سجل حصة، يجب تحديث عرض المواد أيضاً في حالة كان السجل المحذوف مرتبطاً بتسجيل حصة
-                        // ولكن بما أن حذف سجل الحضور لا يقوم بالتراجع عن زيادة العداد في قاعدة البيانات، سنكتفي بحذف الصف لتبسيط الإدارة.
                         const row = document.getElementById(`attendance-row-${attendanceId}`);
                         if (row) {
                             row.remove();
-                            showCustomAlert('تم حذف السجل بنجاح. (ملاحظة: إذا كان هذا سجل حصة، يجب تعديل عداد الحصص يدوياً إذا لزم الأمر).', 'نجاح');
-                            // يجب إعادة جلب التفاصيل لتحديث حالة الأزرار والعدادات (للتأكد من أننا نرى الحالة الصحيحة بعد الحذف)
+                            showCustomAlert('تم حذف السجل بنجاح. (ملاحظة: إذا كان هذا سجل حصة، فقد تحتاج إلى تعديل عداد الحصص يدوياً).', 'نجاح');
+                            // يجب إعادة جلب التفاصيل لتحديث حالة الأزرار والعدادات
                             await fetchStudentDetails(studentId); 
                         }
                     } else {
