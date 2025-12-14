@@ -164,6 +164,12 @@ html,body{
     display: flex;
     align-items: center;
     border: 1px solid var(--border-color);
+    cursor: pointer; /* لجعلها قابلة للنقر */
+    transition: background 0.2s;
+}
+
+.session-item:hover {
+    background: rgba(255,255,255,0.1);
 }
 
 .status-completed {
@@ -176,13 +182,7 @@ html,body{
     color: var(--text-secondary);
 }
 
-.sessions-list-header {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-}
-
-/* Action Buttons */
+/* Action Buttons (موجودة في الستايل القديم ولكنها محذوفة في HTML) */
 .action-btn{
   background:var(--accent-color);
   color:#fff;
@@ -476,7 +476,6 @@ html,body{
     // دالة جلب بيانات الطالب وسجل الحضور (مُعدلة لمطابقة مسار الخادم)
     async function fetchStudentDataAndAttendance(studentId) {
         try {
-            // **التصحيح الأول: تعديل المسار من /student/ إلى /student-details/**
             const response = await fetch(`/student-details/${studentId}`);
             document.getElementById('loading').style.display = 'none';
 
@@ -487,7 +486,7 @@ html,body{
 
                 renderProfileInfo(student);
                 renderSubjectManagement(studentId, student.subjects || []);
-                renderAttendanceRecords(studentId, attendance); // استخدام بيانات الحضور المدمجة
+                renderAttendanceRecords(studentId, attendance); 
 
                 document.getElementById('profileInfo').style.display = 'block';
                 document.getElementById('subjectManagementContainer').style.display = 'grid';
@@ -513,10 +512,8 @@ html,body{
     }
 
     // --- QR Code Functions ---
-    // دالة جلب رمز QR (مُعدلة لمطابقة مسار الخادم)
     async function fetchQrCode(studentId) {
         try {
-            // **التصحيح الثاني: تعديل المسار من /generate-qr/ إلى /qr-code/**
             const response = await fetch(`/qr-code/${studentId}`);
             if (response.ok) {
                 const data = await response.json();
@@ -533,7 +530,7 @@ html,body{
 
     // --- Subject Management (SESSIONS) ---
 
-    // دالة عرض وإدارة المواد والحصص (مُعدلة لعرض الحالة التفصيلية)
+    // دالة عرض وإدارة المواد والحصص (مُعدلة لدعم النقر على الحصة)
     function renderSubjectManagement(studentId, subjects) {
         const container = document.getElementById('subjectManagementContainer');
         container.innerHTML = '';
@@ -560,8 +557,11 @@ html,body{
                 const icon = isSessionCompleted ? '✔' : '❍';
                 const statusClass = isSessionCompleted ? 'session-item status-completed' : 'session-item status-pending';
                 
-                // تم إزالة خاصية النقر من الحصص الفردية لتجنب الالتباس
-                sessionsHtml += `<li class="${statusClass}"> 
+                // إضافة بيانات الحصة ورقمها للنقر
+                sessionsHtml += `<li class="${statusClass}"
+                    data-subject="${subject.name}"
+                    data-session-number="${i}"
+                    data-is-completed="${isSessionCompleted}"> 
                     <span style="margin-left: 5px; font-size: 14px; font-weight: 700;">${icon}</span>
                     الحصة ${i}
                 </li>`;
@@ -582,37 +582,48 @@ html,body{
                 
                 ${sessionsHtml}
                 
-                <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 20px;">
-                    <button class="action-btn mark-attended-btn" data-subject="${subject.name}" data-action="add"
-                        ${isCompleted ? 'disabled' : ''}>
-                        تسجيل الحصة التالية
-                    </button>
-                    <button class="action-btn undo-attended-btn" data-subject="${subject.name}" data-action="subtract"
-                        ${subject.completedSessions === 0 ? 'disabled' : ''} 
-                        style="background: var(--danger-color); color: #fff;">
-                        شطب آخر حصة (${subject.completedSessions > 0 ? `الحصة ${subject.completedSessions}` : ''})
-                    </button>
-                </div>
-            `;
+                `;
             container.appendChild(subjectDiv);
         });
         
-        // 2. ربط أزرار الإضافة/الشطب العامة (لزيادة/إنقاص العداد)
-        container.querySelectorAll('.mark-attended-btn, .undo-attended-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const subjectName = button.getAttribute('data-subject');
-                const action = button.getAttribute('data-action');
-                updateSessionCount(studentId, subjectName, action);
+        // 2. ربط مستمع النقر بجميع عناصر الحصص
+        container.querySelectorAll('.session-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const subjectName = item.getAttribute('data-subject');
+                const sessionNumber = parseInt(item.getAttribute('data-session-number'));
+                const isCompleted = item.getAttribute('data-is-completed') === 'true';
+                const completedCount = subjects.find(s => s.name === subjectName).completedSessions;
+
+                // المنطق:
+                // 1. إذا كانت الحصة غير مكتملة وهي الحصة التالية مباشرة (completedCount + 1)، نسجلها (ADD).
+                // 2. إذا كانت الحصة مكتملة وهي آخر حصة تم تسجيلها حالياً (completedCount)، نشطبها (SUBTRACT).
+                // 3. منع النقر على أي حالة أخرى.
+
+                let action = null;
+                if (!isCompleted && sessionNumber === completedCount + 1) {
+                    // تسجيل الحصة التالية
+                    action = 'add';
+                } else if (isCompleted && sessionNumber === completedCount) {
+                    // شطب آخر حصة مسجلة
+                    action = 'subtract';
+                } else {
+                    // تنبيه عند محاولة تسجيل حصة ليست التالية أو شطب حصة ليست الأخيرة
+                    showCustomAlert('يجب تسجيل الحصص بالتسلسل (التالية) أو شطب آخر حصة تم تسجيلها.', 'إجراء غير مسموح');
+                    return;
+                }
+                
+                updateSessionCount(studentId, subjectName, action, sessionNumber);
             });
         });
     }
 
-    // دالة تحديث عدد الحصص (بدون تغيير)
-    async function updateSessionCount(studentId, subjectName, action) {
-        const actionText = action === 'add' ? 'تسجيل حصة جديدة' : 'شطب آخر حصة';
+
+    // دالة تحديث عدد الحصص (مُعدلة لإرسال رقم الحصة)
+    async function updateSessionCount(studentId, subjectName, action, sessionNumber) {
+        const actionText = action === 'add' ? `تسجيل الحصة رقم ${sessionNumber}` : `شطب الحصة رقم ${sessionNumber}`;
         const confirmMessage = action === 'add' ? 
-            `هل أنت متأكد من ${actionText} للمادة: ${subjectName}؟` :
-            `هل أنت متأكد من ${actionText} للمادة: ${subjectName}؟ سيتم إنقاص العداد بواحد.`;
+            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إضافتها لسجل الحضور.` :
+            `هل أنت متأكد من شطب الحصة رقم ${sessionNumber} للمادة: ${subjectName}؟ سيتم إنقاص العداد وإضافتها لسجل الحضور كشطب.`;
 
         showCustomConfirm(
             confirmMessage,
@@ -624,7 +635,8 @@ html,body{
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ subjectName })
+                        // إرسال رقم الحصة إلى الخادم
+                        body: JSON.stringify({ subjectName, sessionNumber }) 
                     });
 
                     if (response.ok) {
@@ -685,10 +697,15 @@ html,body{
         const sortedRecords = Object.keys(records).map(key => ({
             ...records[key],
             id: key,
-            timestamp: records[key].checkInTime // استخدم وقت الدخول للفرز
+            timestamp: records[key].checkInTime || records[key].timestamp // استخدم وقت الدخول أو الطابع الزمني للفرز
         })).sort((a, b) => b.timestamp - a.timestamp);
 
         sortedRecords.forEach(record => {
+            // تجاهل سجلات الحصص هنا والتركيز على الدخول/الخروج
+            if (record.type === 'Session Registered' || record.type === 'Session Undone') {
+                return;
+            }
+
             const date = formatDate(record.checkInTime);
             const checkIn = formatTime(record.checkInTime);
             const checkOut = formatTime(record.checkOutTime);
