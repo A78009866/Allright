@@ -370,7 +370,8 @@ html,body{
     <div id="profileInfo" class="card profile-info" style="display: none;">
         <h2>البيانات الشخصية</h2>
         <p>الاسم: <strong id="studentName"></strong></p>
-       
+        <p>رقم الطالب: <strong id="studentId"></strong></p>
+        <p>رقم الهاتف: <strong id="studentPhone"></strong></p>
     </div>
 
     <div id="qrCodeContainer" class="card" style="display: none;">
@@ -641,7 +642,7 @@ html,body{
     async function updateSessionCount(studentId, subjectName, action, sessionNumber) {
         const actionText = action === 'add' ? `تسجيل الحصة رقم ${sessionNumber}` : `شطب الحصة رقم ${sessionNumber}`;
         const confirmMessage = action === 'add' ? 
-            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: ${subjectName}>؟ سيتم إضافتها لسجل الأنشطة.` :
+            `هل أنت متأكد من تسجيل الحصة رقم ${sessionNumber} للمادة: <strong>${subjectName}</strong>؟ سيتم إضافتها لسجل الأنشطة.` :
             `هل أنت متأكد من شطب الحصة رقم ${sessionNumber} للمادة: <strong>${subjectName}</strong>؟ سيتم إنقاص العداد وإضافتها لسجل الأنشطة كشطب.`;
 
         showCustomConfirm(
