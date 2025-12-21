@@ -310,5 +310,81 @@ app.delete('/student/:studentId', async (req, res) => {
     try { await studentsRef.child(req.params.studentId).remove(); await db.ref(`attendance/${req.params.studentId}`).remove(); res.json({message:'Deleted'}); }
     catch(e) { res.status(500).json({message: 'Error'}); }
 });
+// --- أضف هذا الكود في server.js قبل السطر الأخير app.listen ---
+
+// 1. مسار عرض صفحة الإحصائيات
+app.get('/stats.html', (req, res) => res.sendFile(path.join(VIEWS_PATH, 'stats.html')));
+
+// 2. API لجلب بيانات الإحصائيات الحقيقية
+app.get('/api/dashboard-stats', async (req, res) => {
+    if (!isFirebaseReady) return res.status(500).json({ message: 'Database not ready' });
+
+    try {
+        // جلب كل الطلاب
+        const studentsSnapshot = await studentsRef.once('value');
+        const students = studentsSnapshot.val() || {};
+
+        // جلب كل سجلات الحضور
+        const attendanceSnapshot = await db.ref('attendance').once('value');
+        const attendanceData = attendanceSnapshot.val() || {};
+
+        // --- معالجة البيانات ---
+        let totalStudents = 0;
+        let studentsByPhase = { "المرحلة الابتدائية": 0, "المرحلة المتوسطة": 0, "المرحلة الثانوية": 0 };
+        
+        // إحصائيات الطلاب
+        Object.values(students).forEach(student => {
+            if (student.isActive !== false) { // حساب الطلاب النشطين فقط
+                totalStudents++;
+                if (studentsByPhase[student.phase] !== undefined) {
+                    studentsByPhase[student.phase]++;
+                }
+            }
+        });
+
+        // إحصائيات الحصص والمدفوعات (من سجل الحضور)
+        let totalPaidSessions = 0;
+        let totalUnpaidSessions = 0;
+        let sessionsLast7Days = [0, 0, 0, 0, 0, 0, 0]; // [Today, Yesterday, ..., 6 days ago]
+        
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        Object.values(attendanceData).forEach(studentRecords => {
+            Object.values(studentRecords).forEach(record => {
+                // حساب المدفوع وغير المدفوع
+                if (record.type === 'Session Registered') {
+                    if (record.isPaid === true) totalPaidSessions++;
+                    else totalPaidSessions++; // افتراضاً نحسبها كإجمالي (أو يمكن فصلها إذا أردت حساب الديون)
+                    
+                    if (record.isPaid === false) totalUnpaidSessions++;
+                }
+
+                // حساب النشاط في آخر 7 أيام
+                if (record.timestamp) {
+                    const diffTime = today - new Date(record.timestamp).setHours(0,0,0,0);
+                    const diffDays = Math.floor(diffTime / oneDay);
+                    if (diffDays >= 0 && diffDays < 7) {
+                        sessionsLast7Days[diffDays]++;
+                    }
+                }
+            });
+        });
+
+        res.json({
+            totalStudents,
+            studentsByPhase,
+            totalPaidSessions,
+            totalUnpaidSessions,
+            activityLastWeek: sessionsLast7Days.reverse() // لعرضها من الأقدم للأحدث
+        });
+
+    } catch (error) {
+        console.error("Stats Error:", error);
+        res.status(500).json({ message: 'Error calculating stats' });
+    }
+});
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
