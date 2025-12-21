@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>أكاديمية المعالي</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles (محدثة لتحسين نافذة تسجيل الطلاب) */
+/* CSS styles (محدثة مع النافبار السفلي) */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
@@ -20,10 +20,11 @@
   --danger-color: #ff6347; 
   --success-color: #43cf66; 
   --nav-height: 72px;
+  --bottom-nav-height: 75px; /* ارتفاع النافبار السفلي */
   --radius: 12px;
 }
 
-*{box-sizing:border-box;}
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 
 html,body{
   height:100%;
@@ -38,12 +39,14 @@ html,body{
   overflow-x: hidden; 
   -webkit-font-smoothing:antialiased;
   direction: rtl;
+  padding-bottom: var(--bottom-nav-height); /* مساحة عشان النافبار السفلي ما يغطيش المحتوى */
 }
 
 .page{
   min-height:100vh;
   display:flex;
   flex-direction:column;
+  padding-bottom: 80px;
 }
 
 /* --- FLEXIBLE BUTTONS --- */
@@ -89,7 +92,7 @@ html,body{
 }
 
 
-/* --- NAVBAR - Glassy Effect --- */
+/* --- TOP NAVBAR --- */
 .navbar{
   height: var(--nav-height);
   display: flex;
@@ -135,7 +138,6 @@ html,body{
   margin-top: 2px;
 }
 
-/* --- Navbar Buttons Group --- */
 .nav-buttons {
     display: flex;
     align-items: center;
@@ -145,21 +147,25 @@ html,body{
 }
 
 .nav-buttons .btn-scan {
-    /* تطبيق الأنماط الجديدة */
     background: var(--drawer-bg); 
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px; 
+    gap: 6px;
+    font-size: 13px; 
     justify-content: center;
     white-space: nowrap; 
+}
+.nav-buttons .btn-scan svg {
+    width: 18px; 
+    height: 18px;
+    fill: currentColor;
 }
 .nav-buttons .btn-scan:hover {
     background: #29292c;
@@ -167,37 +173,98 @@ html,body{
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* زر التسجيل (+) */
-.nav-buttons .btn-register {
-    background: var(--accent-color); 
-    color: #fff;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); 
-    width: 40px; 
-    height: 40px; 
-    padding: 0; 
-    border-radius: 50%; 
-    transition: all 0.3s;
+/* --- BOTTOM NAVIGATION BAR --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--bottom-nav-height);
+    background: rgba(21, 21, 23, 0.95);
+    backdrop-filter: blur(15px);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end; /* لضبط المحاذاة مع الزر العائم */
+    padding-bottom: 12px; /* مسافة من الأسفل */
+    z-index: 2000;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
 }
-.nav-buttons .btn-register:hover {
+
+.nav-item {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.3s;
+    width: 60px;
+    padding-bottom: 5px;
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    transition: stroke 0.3s, transform 0.2s;
+}
+
+.nav-item span {
+    font-size: 11px;
+    font-family: "Tajawal", sans-serif;
+    font-weight: 500;
+}
+
+.nav-item.active {
+    color: var(--accent-color);
+}
+.nav-item.active svg {
+    stroke: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* الزر العائم في الوسط (زر الإضافة) */
+.fab-container {
+    position: relative;
+    top: -25px; /* رفع الزر للأعلى ليخرج من النافبار */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fab-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    border: 4px solid var(--bg); /* حدود بلون الخلفية لفصل الزر بصرياً */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.fab-btn:hover {
     background: #2563eb;
     transform: scale(1.05);
 }
 
-.nav-buttons .btn-register span {
-    display: none; 
-}
-.nav-buttons .btn-register svg {
-    width: 20px; 
-    height: 20px;
-}
-
-.nav-buttons svg {
-    width: 16px; 
-    height: 16px;
-    fill: none;
+.fab-btn svg {
+    width: 28px;
+    height: 28px;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 2.5;
+    fill: none;
 }
 
 
@@ -220,38 +287,26 @@ html,body{
     .brand-group .title .tag {
         display: none; 
     }
-    .nav-buttons .btn-scan {
-        padding: 6px 8px;
-        font-size: 11px;
-    }
-    .nav-buttons .btn-register {
-        width: 35px; 
-        height: 35px;
-    }
-    .nav-buttons .btn-register svg {
-        width: 18px; 
-        height: 18px;
-    }
 }
 
 
 /* HERO SECTION */
 .hero{
-  flex:1;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:20px;
   text-align: center;
+  margin-top: 10px;
 }
 .hero-content h1{
-  font-size: 1.8rem; 
-  margin-bottom: 10px;
+  font-size: 1.5rem; 
+  margin-bottom: 5px;
   color: #fff;
 }
 .hero-content p{
   color: var(--text-secondary);
-  line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 /* QR Scanner Modal/Overlay (UNCHANGED) */
@@ -271,7 +326,6 @@ html,body{
 }
 .qr-scanner-overlay button {
     margin-top: 15px;
-    /* تطبيق الأزرار المرنة هنا */
     padding: 10px 18px;
     border: none;
     border-radius: var(--radius);
@@ -449,6 +503,7 @@ html,body{
     display: none;
     align-items: center;
     justify-content: center;
+    padding-bottom: 50px; /* لرفع المودال قليلاً عن النافبار */
 }
 .modal-overlay.open {
     display: flex;
@@ -476,12 +531,12 @@ html,body{
     padding: 20px; 
     width: 95%; 
     max-width: 500px; 
-    max-height: 90vh;
+    max-height: 85vh; /* تقليل الارتفاع قليلا */
     overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     position: relative;
     text-align: right;
-    backdrop-filter: blur(15px); /* تأثير زجاجي قوي */
+    backdrop-filter: blur(15px); 
 }
 
 .modal-content h3 {
@@ -499,18 +554,17 @@ html,body{
     color: #e4e4e7;
     font-size: 14px;
 }
-/* --- حقول الإدخال والاختيار (INPUTS/SELECTS) المُحسَّنة (MODIFIED) --- */
 .modal-content input[type="text"], 
 .modal-content select, 
 .subject-selection-area input[type="number"] {
     width: 100%;
-    padding: 10px; /* زيادة التباعد الداخلي */
-    margin-bottom: 15px; /* زيادة التباعد السفلي */
+    padding: 10px; 
+    margin-bottom: 15px; 
     border: 1px solid var(--border-color);
-    border-radius: 8px; /* زيادة تقوس الحواف */
-    background: rgba(255, 255, 255, 0.05); /* خلفية داكنة فاتحة */
+    border-radius: 8px; 
+    background: rgba(255, 255, 255, 0.05); 
     color: var(--text-primary);
-    font-size: 15px; /* خط أكبر قليلاً */
+    font-size: 15px; 
     font-family: inherit;
     transition: border-color 0.2s, background 0.2s;
 }
@@ -520,10 +574,9 @@ html,body{
 .subject-selection-area input:focus {
     outline: none;
     border-color: var(--accent-color);
-    background: rgba(59, 130, 246, 0.1); /* خلفية زرقاء خفيفة عند التركيز */
+    background: rgba(59, 130, 246, 0.1); 
 }
 
-/* تنسيق خاص للـ Selects لإزالة المظهر الافتراضي */
 .modal-content select {
     appearance: none;
     -webkit-appearance: none;
@@ -545,7 +598,6 @@ html,body{
     margin-bottom: 0;
 }
 
-/* --- تنسيق منطقة اختيار المواد (محسن) --- */
 .subject-selection-area {
     margin-top: 20px;
     padding: 15px;
@@ -568,13 +620,12 @@ html,body{
 .subject-checkboxes {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* مسافة بين صفوف المواد */
-    max-height: 250px; /* شريط تمرير إذا كثرت المواد */
+    gap: 8px; 
+    max-height: 200px; /* تقليل الارتفاع قليلا لتناسب الشاشة */
     overflow-y: auto;
-    padding-left: 5px; /* مساحة للـ scrollbar */
+    padding-left: 5px; 
 }
 
-/* تنسيق شريط التمرير */
 .subject-checkboxes::-webkit-scrollbar { width: 4px; }
 .subject-checkboxes::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
@@ -583,16 +634,15 @@ html,body{
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.04); /* خلفية لكل صف */
+    background: rgba(255, 255, 255, 0.04); 
     border: 1px solid transparent;
     border-radius: 8px;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
-/* حالة التفعيل عند اختيار المادة */
 .subject-item-wrapper.active {
-    background: rgba(59, 130, 246, 0.1); /* لون أزرق خافت */
+    background: rgba(59, 130, 246, 0.1); 
     border-color: rgba(59, 130, 246, 0.4);
 }
 
@@ -608,7 +658,6 @@ html,body{
 }
 
 .subject-item-wrapper input[type="checkbox"] {
-    /* إخفاء التشيك بوكس الافتراضي واستخدام تصميم مخصص */
     appearance: none;
     -webkit-appearance: none;
     width: 18px;
@@ -648,7 +697,7 @@ html,body{
     padding: 6px 10px;
     font-size: 14px;
     text-align: center;
-    margin-bottom: 0 !important; /* إلغاء المارجن العام */
+    margin-bottom: 0 !important; 
     background: #000;
     border: 1px solid var(--border-color);
     color: var(--accent-color);
@@ -700,35 +749,53 @@ html,body{
       </div>
     </div>
 
-
     <div class="nav-buttons">
-      
       <button class="btn-style btn-scan" id="scanBtn">
-        <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
         مسح QR
-      </button>
-      
-      <button class="btn-style btn-primary btn-register" id="openRegisterModalBtn">
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        <span>تسجيل جديد</span>
       </button>
     </div>
 
   </header>
 
-  <div class="student-cards-section">
+  <main class="hero">
+    <div class="hero-content">
+      <h1>لوحة التحكم</h1>
+      <p>إدارة الطلاب وتسجيل الحضور</p>
+    </div>
+  </main> 
+
+  <div class="student-cards-section" id="homeSection">
       <h2>الطلاب المسجلون حاليًا</h2>
       <div class="cards-container" id="studentCardsContainer">
           <p id="loadingMessage" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل بيانات الطلاب...</p>
       </div>
   </div>
   
-  <main class="hero">
-    <div class="hero-content">
-      <h1>أكاديمية المعالي - لوحة التحكم</h1>
-      <p>لوحة التحكم الخاصة بالمدير لتسجيل الطلاب والتحقق من الحالة.</p>
-    </div>
-  </main> 
+  <nav class="bottom-nav">
+      
+      <button class="nav-item active" id="btnHome" onclick="switchTab('home')">
+          <svg viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>الرئيسية</span>
+      </button>
+
+      <div class="fab-container">
+          <button class="fab-btn" id="openRegisterModalBtn">
+              <svg viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+          </button>
+      </div>
+
+      <button class="nav-item" id="btnStats" onclick="switchTab('stats')">
+          <svg viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>البيانات</span>
+      </button>
+  </nav>
 
   <div class="modal-overlay" id="registrationModal">
     <div class="modal-content">
@@ -796,9 +863,6 @@ html,body{
     <button class="btn-style" style="background: var(--danger-color); color: white;" onclick="stopScannerAndClose()">إلغاء المسح</button>
   </div>
 
-  <footer>
-<h4></h4>
-  </footer>
 </div>
 
 <div id="custom-alert-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center;">
@@ -818,7 +882,7 @@ html,body{
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
-  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
+  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn'); // This now targets the FAB
   const registrationModal = document.getElementById('registrationModal');
   const scanBtn = document.getElementById('scanBtn'); 
   const qrScannerOverlay = document.getElementById('qrScannerOverlay'); 
@@ -836,6 +900,34 @@ html,body{
 
   let COURSES_DATA = {}; 
   let html5QrCode = null; 
+
+  // --- Tab Switching Logic (Visual Only for now) ---
+  function switchTab(tabName) {
+      const btnHome = document.getElementById('btnHome');
+      const btnStats = document.getElementById('btnStats');
+      
+      // Reset classes
+      btnHome.classList.remove('active');
+      btnStats.classList.remove('active');
+      
+      if (tabName === 'home') {
+          btnHome.classList.add('active');
+          // Here you would show the student list logic if it was hidden
+          // document.getElementById('homeSection').style.display = 'block';
+          showCustomAlert('أنت الآن في القائمة الرئيسية', 'الرئيسية');
+      } else if (tabName === 'stats') {
+          btnStats.classList.add('active');
+          // Hide home section or show stats logic
+          // document.getElementById('homeSection').style.display = 'none';
+          showCustomAlert('صفحة البيانات والإحصائيات قيد الإنشاء...', 'قريباً');
+          
+          // Revert to home for now since stats doesn't exist
+          setTimeout(() => {
+              btnStats.classList.remove('active');
+              btnHome.classList.add('active');
+          }, 1000);
+      }
+  }
 
   // --- Custom Alert/Confirmation Functions ---
   function showCustomConfirm(message, callback, title = 'تأكيد') {
@@ -1339,10 +1431,4 @@ html,body{
   
 </script>
 </body>
-
-  </html>
-
-
-
-
-
+</html>
