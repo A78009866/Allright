@@ -903,31 +903,22 @@ html,body{
 
   // --- Tab Switching Logic (Visual Only for now) ---
   function switchTab(tabName) {
-      const btnHome = document.getElementById('btnHome');
-      const btnStats = document.getElementById('btnStats');
-      
-      // Reset classes
-      btnHome.classList.remove('active');
-      btnStats.classList.remove('active');
-      
-      if (tabName === 'home') {
-          btnHome.classList.add('active');
-          // Here you would show the student list logic if it was hidden
-          // document.getElementById('homeSection').style.display = 'block';
-          showCustomAlert('أنت الآن في القائمة الرئيسية', 'الرئيسية');
-      } else if (tabName === 'stats') {
-          btnStats.classList.add('active');
-          // Hide home section or show stats logic
-          // document.getElementById('homeSection').style.display = 'none';
-          showCustomAlert('صفحة البيانات والإحصائيات قيد الإنشاء...', 'قريباً');
-          
-          // Revert to home for now since stats doesn't exist
-          setTimeout(() => {
-              btnStats.classList.remove('active');
-              btnHome.classList.add('active');
-          }, 1000);
-      }
-  }
+    const btnHome = document.getElementById('btnHome');
+    const btnStats = document.getElementById('btnStats');
+    
+    // إزالة الحالة النشطة من الجميع
+    btnHome.classList.remove('active');
+    btnStats.classList.remove('active');
+    
+    if (tabName === 'home') {
+        btnHome.classList.add('active');
+        // إذا كنا بالفعل في الرئيسية لا نفعل شيئاً، أو يمكن إعادة تحميل الصفحة
+    } else if (tabName === 'stats') {
+        btnStats.classList.add('active');
+        // الانتقال الفعلي لصفحة البيانات
+        window.location.href = '/stats.html';
+    }
+}
 
   // --- Custom Alert/Confirmation Functions ---
   function showCustomConfirm(message, callback, title = 'تأكيد') {
@@ -1432,3 +1423,4 @@ html,body{
 </script>
 </body>
 </html>
+
