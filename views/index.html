@@ -9,10 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* CSS styles (محدثة مع النافبار السفلي) */
+/* CSS styles */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
+  --card-bg: #1e1e24; /* لون جديد للبطاقات */
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
@@ -20,8 +21,8 @@
   --danger-color: #ff6347; 
   --success-color: #43cf66; 
   --nav-height: 72px;
-  --bottom-nav-height: 75px; /* ارتفاع النافبار السفلي */
-  --radius: 12px;
+  --bottom-nav-height: 75px;
+  --radius: 16px; /* زيادة الانحناء قليلاً */
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
@@ -32,14 +33,14 @@ html,body{
   font-family: "Tajawal", sans-serif;
   background-color: var(--bg);
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 25%);
+    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 99, 71, 0.03) 0%, transparent 25%);
   color: var(--text-primary);
   max-width: 100vw; 
   overflow-x: hidden; 
   -webkit-font-smoothing:antialiased;
   direction: rtl;
-  padding-bottom: var(--bottom-nav-height); /* مساحة عشان النافبار السفلي ما يغطيش المحتوى */
+  padding-bottom: var(--bottom-nav-height);
 }
 
 .page{
@@ -49,48 +50,24 @@ html,body{
   padding-bottom: 80px;
 }
 
-/* --- FLEXIBLE BUTTONS --- */
+/* --- BUTTONS --- */
 .btn-style { 
     padding: 10px 18px;
     border: none;
-    border-radius: var(--radius);
+    border-radius: 12px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
     font-family: "Tajawal", sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin: 0; 
 }
 
-.btn-primary {
-    background-color: var(--accent-color);
-    color: var(--text-primary);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-}
-.btn-primary:hover {
-    background-color: #2563eb;
-    transform: translateY(-1px);
-}
-.btn-primary.delete-action {
-    background-color: var(--danger-color);
-}
-.btn-primary.delete-action:hover {
-    background-color: #c54231;
-}
-
-.btn-secondary {
-    background-color: var(--drawer-bg);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-}
-.btn-secondary:hover {
-    background-color: #29292c;
-    color: var(--text-primary);
-}
-
+.btn-primary { background-color: var(--accent-color); color: var(--text-primary); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+.btn-primary:hover { background-color: #2563eb; transform: translateY(-1px); }
+.btn-secondary { background-color: var(--drawer-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
 /* --- TOP NAVBAR --- */
 .navbar{
@@ -108,639 +85,336 @@ html,body{
   position: relative;
   z-index: 1000;
 }
-.brand-group{
-  display:flex;
-  align-items:center;
-  gap:10px; 
-  flex-shrink: 0; 
-  order: 1; 
-}
-
-.brand-group img{
-  width:40px; 
-  height:40px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.brand-group .title .name{
-  font-weight: 800;
-  font-size: 16px; 
-  color: #fff;
-  line-height: 1.2;
-}
-
-.brand-group .title .tag{
-  font-size: 12px; 
-  color: var(--text-secondary);
-  font-weight: 400;
-  margin-top: 2px;
-}
-
-.nav-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px; 
-    order: 2; 
-    flex-shrink: 0;
-}
+.brand-group{ display:flex; align-items:center; gap:10px; flex-shrink: 0; }
+.brand-group img{ width:40px; height:40px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
+.brand-group .title .name{ font-weight: 800; font-size: 16px; color: #fff; line-height: 1.2; }
+.brand-group .title .tag{ font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
 
 .nav-buttons .btn-scan {
-    background: var(--drawer-bg); 
+    background: rgba(255,255,255,0.05); 
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex; align-items: center; gap: 6px; font-size: 13px;
+}
+.nav-buttons .btn-scan svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* --- SEARCH BAR SECTION (NEW) --- */
+.search-section {
+    padding: 10px 15px;
+    position: sticky;
+    top: 5px;
+    z-index: 900;
+}
+.search-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.search-input-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px; 
-    justify-content: center;
-    white-space: nowrap; 
 }
-.nav-buttons .btn-scan svg {
-    width: 18px; 
-    height: 18px;
-    fill: currentColor;
-}
-.nav-buttons .btn-scan:hover {
-    background: #29292c;
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-/* --- BOTTOM NAVIGATION BAR --- */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: var(--bottom-nav-height);
-    background: rgba(21, 21, 23, 0.95);
-    backdrop-filter: blur(15px);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end; /* لضبط المحاذاة مع الزر العائم */
-    padding-bottom: 12px; /* مسافة من الأسفل */
-    z-index: 2000;
-    padding-left: 20px;
-    padding-right: 20px;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
-}
-
-.nav-item {
-    background: none;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+.search-icon {
+    position: absolute;
+    right: 15px;
     color: var(--text-secondary);
-    cursor: pointer;
-    transition: color 0.3s;
-    width: 60px;
-    padding-bottom: 5px;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
 }
-
-.nav-item svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    transition: stroke 0.3s, transform 0.2s;
-}
-
-.nav-item span {
-    font-size: 11px;
-    font-family: "Tajawal", sans-serif;
-    font-weight: 500;
-}
-
-.nav-item.active {
-    color: var(--accent-color);
-}
-.nav-item.active svg {
-    stroke: var(--accent-color);
-    transform: translateY(-2px);
-}
-
-/* الزر العائم في الوسط (زر الإضافة) */
-.fab-container {
-    position: relative;
-    top: -25px; /* رفع الزر للأعلى ليخرج من النافبار */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.fab-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    border: 4px solid var(--bg); /* حدود بلون الخلفية لفصل الزر بصرياً */
+#searchInput {
+    width: 100%;
+    padding: 14px 45px 14px 15px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: rgba(30, 30, 36, 0.95);
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-}
-
-.fab-btn:hover {
-    background: #2563eb;
-    transform: scale(1.05);
-}
-
-.fab-btn svg {
-    width: 28px;
-    height: 28px;
-    stroke: currentColor;
-    stroke-width: 2.5;
-    fill: none;
-}
-
-
-/* Adjustments for smaller screens */
-@media (max-width: 600px) {
-    .navbar {
-        padding: 0 10px;
-        margin: 8px;
-    }
-    .brand-group {
-        gap: 8px;
-    }
-    .brand-group img {
-        width: 35px;
-        height: 35px;
-    }
-    .brand-group .title .name {
-        font-size: 14px;
-    }
-    .brand-group .title .tag {
-        display: none; 
-    }
-}
-
-
-/* HERO SECTION */
-.hero{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  text-align: center;
-  margin-top: 10px;
-}
-.hero-content h1{
-  font-size: 1.5rem; 
-  margin-bottom: 5px;
-  color: #fff;
-}
-.hero-content p{
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-/* QR Scanner Modal/Overlay (UNCHANGED) */
-.qr-scanner-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95);
-    z-index: 5000;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-.qr-scanner-overlay.active {
-    display: flex;
-}
-.qr-scanner-overlay button {
-    margin-top: 15px;
-    padding: 10px 18px;
-    border: none;
-    border-radius: var(--radius);
-    font-weight: 500;
-    cursor: pointer;
     font-family: "Tajawal", sans-serif;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--danger-color);
-    color: white;
-    font-size: 16px;
-    z-index: 5001;
+    font-size: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
-.qr-scanner-overlay button:hover {
-    background: #c54231;
+#searchInput:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background: rgba(40, 40, 45, 0.98);
 }
+#searchInput::placeholder { color: #666; }
 
-#reader {
-    width: 90%; 
-    max-width: 400px; 
-    border: 3px solid var(--accent-color);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-}
-#reader div { 
-    border: none !important;
-}
-
-.scan-message {
-    margin-bottom: 15px;
-    color: #fff;
-    font-size: 16px;
-}
-
-/* Student Cards Section */
+/* --- STUDENT CARDS (REDESIGNED) --- */
 .student-cards-section {
-  padding: 0 16px 20px 16px;
+  padding: 10px 16px 20px 16px;
   max-width: 1200px;
   margin: 0 auto;
 }
-.student-cards-section h2 {
-    font-size: 1.4rem; 
-    color: #fff;
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
-    padding-right: 5px;
-    border-right: 4px solid var(--accent-color);
+    padding: 0 5px;
 }
+.section-header h2 {
+    font-size: 1.2rem; 
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 600;
+}
+.count-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #fff;
+}
+
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
+
+/* تصميم البطاقة الجديد */
 .student-card {
-  background: var(--drawer-bg);
+  background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 15px;
+  border-radius: 18px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   cursor: pointer;
   position: relative; 
-  transition: transform 0.2s, box-shadow 0.2s; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 .student-card:hover { 
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(59, 130, 246, 0.3);
 }
-.student-card .name {
-  font-weight: 700;
-  font-size: 17px;
-  color: var(--accent-color);
-  border-bottom: 1px dashed rgba(255,255,255,0.1);
-  padding-bottom: 5px;
-}
-.student-card .details {
-  font-size: 13px;
-  color: var(--text-secondary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  line-height: 1.4;
-}
-.status-indicator {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 500;
-}
-.status-active {
-  background: rgba(67, 207, 102, 0.2);
-  color: #43cf66;
-}
-.status-inactive {
-  background: rgba(255, 99, 71, 0.2);
-  color: #ff6347;
-}
-.student-card .subjects {
-  font-size: 12px;
-  color: #e4e4e7;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* --- ACTION MENU --- */
-.action-menu {
+.student-card::before {
+    content: '';
     position: absolute;
-    top: 10px;
-    left: 10px; 
-    z-index: 10;
+    top: 0; right: 0; width: 4px; height: 100%;
+    background: var(--accent-color);
+    opacity: 0.5;
+    transition: opacity 0.3s;
 }
-.action-menu-toggle {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-    transition: color 0.2s;
-}
-.action-menu-toggle:hover {
-    color: var(--accent-color);
-}
+.student-card:hover::before { opacity: 1; }
 
-.action-menu-dropdown {
-    position: absolute;
-    left: 0; 
-    top: 35px;
-    background-color: var(--drawer-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    min-width: 150px;
-    display: none;
-    z-index: 20;
-    overflow: hidden;
-}
-.action-menu-dropdown.active {
-    display: block;
-}
-
-.action-menu-dropdown button {
-    width: 100%;
-    padding: 10px 15px;
-    text-align: right;
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    cursor: pointer;
-    font-family: "Tajawal", sans-serif;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-}
-.action-menu-dropdown button:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-.delete-action {
-    color: var(--danger-color); 
-}
-
-
-/* --- MODAL (Glassmorphism) --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(5px);
-    z-index: 3000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 50px; /* لرفع المودال قليلاً عن النافبار */
-}
-.modal-overlay.open {
-    display: flex;
-}
-.modal-close-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 2rem;
-    cursor: pointer;
-    line-height: 1;
-    transition: color 0.2s;
-}
-.modal-close-btn:hover {
-    color: var(--danger-color);
-}
-
-.modal-content {
-    background: rgba(21, 21, 23, 0.95); 
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
-    padding: 20px; 
-    width: 95%; 
-    max-width: 500px; 
-    max-height: 85vh; /* تقليل الارتفاع قليلا */
-    overflow-y: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    position: relative;
-    text-align: right;
-    backdrop-filter: blur(15px); 
-}
-
-.modal-content h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: var(--accent-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-bottom: 15px; 
-}
-.modal-content label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #e4e4e7;
-    font-size: 14px;
-}
-.modal-content input[type="text"], 
-.modal-content select, 
-.subject-selection-area input[type="number"] {
-    width: 100%;
-    padding: 10px; 
-    margin-bottom: 15px; 
-    border: 1px solid var(--border-color);
-    border-radius: 8px; 
-    background: rgba(255, 255, 255, 0.05); 
-    color: var(--text-primary);
-    font-size: 15px; 
-    font-family: inherit;
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.modal-content input:focus, 
-.modal-content select:focus, 
-.subject-selection-area input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    background: rgba(59, 130, 246, 0.1); 
-}
-
-.modal-content select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%2212%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23a1a1aa%22%20d%3D%22M7%2010l5%205%205-5z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: left 15px center;
-    cursor: pointer;
-}
-
-.name-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-.name-fields div {
-    margin-bottom: 12px;
-}
-.name-fields input {
-    margin-bottom: 0;
-}
-
-.subject-selection-area {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.subject-selection-header {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 700;
-}
-
-.subject-checkboxes {
-    display: flex;
-    flex-direction: column;
-    gap: 8px; 
-    max-height: 200px; /* تقليل الارتفاع قليلا لتناسب الشاشة */
-    overflow-y: auto;
-    padding-left: 5px; 
-}
-
-.subject-checkboxes::-webkit-scrollbar { width: 4px; }
-.subject-checkboxes::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-.subject-item-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.04); 
-    border: 1px solid transparent;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.subject-item-wrapper.active {
-    background: rgba(59, 130, 246, 0.1); 
-    border-color: rgba(59, 130, 246, 0.4);
-}
-
-.subject-item-wrapper:hover {
-    background: rgba(255, 255, 255, 0.07);
-}
-
-.subject-item-wrapper .subject-label-group {
+/* رأس البطاقة */
+.card-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    flex: 1;
 }
-
-.subject-item-wrapper input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--text-secondary);
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    top: 1px;
-    transition: all 0.2s;
-}
-
-.subject-item-wrapper input[type="checkbox"]:checked {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-.subject-item-wrapper input[type="checkbox"]:checked::after {
-    content: '✓';
-    color: var(--text-primary);
-    font-size: 14px;
-    position: absolute;
-    top: -2px;
-    left: 2px;
-    line-height: 1;
-}
-
-.subject-item-wrapper label {
-    margin-bottom: 0;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
+.student-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+.student-info {
+    flex: 1;
+    overflow: hidden;
+}
+.student-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.student-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.phase-tag {
+    background: rgba(255,255,255,0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
 }
 
-.subject-item-wrapper .session-count-input {
-    width: 90px;
-    padding: 6px 10px;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 0 !important; 
-    background: #000;
-    border: 1px solid var(--border-color);
-    color: var(--accent-color);
-    font-weight: bold;
-    height: 36px;
+/* جسم البطاقة */
+.card-body {
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.subjects-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    display: block;
+}
+.subject-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.subject-chip {
+    background: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+.more-subjects {
+    font-size: 10px;
+    color: var(--text-secondary);
+    padding: 4px;
 }
 
-.subject-item-wrapper .session-count-input:disabled {
-    background: transparent;
-    color: #555;
-    border-color: transparent;
-}
-
-/* --- تنسيق نتائج التسجيل --- */
-.modal-result h4 {
-    font-size: 1.1rem;
+/* حالة البطاقة */
+.status-badge {
+    position: absolute;
+    top: 18px;
+    left: 40px; /* لإفساح المجال لزر القائمة */
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
     font-weight: 700;
 }
-.modal-result img {
-    border: 3px solid var(--accent-color);
+.st-active { background: rgba(67, 207, 102, 0.15); color: #43cf66; border: 1px solid rgba(67, 207, 102, 0.2); }
+.st-inactive { background: rgba(255, 99, 71, 0.15); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.2); }
+
+/* شريط التقدم */
+.progress-wrapper {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.progress-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: var(--success-color);
+    border-radius: 2px;
+}
+.progress-text {
+    font-size: 10px;
+    color: var(--text-secondary);
+    width: 30px;
+    text-align: left;
 }
 
-
-/* --- Custom Alert/Confirm Styles (UNCHANGED) --- */
-#custom-alert-overlay {
-    background:rgba(0,0,0,0.7);
+/* Action Menu Update */
+.action-menu { position: absolute; top: 10px; left: 10px; z-index: 10; }
+.action-menu-toggle {
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
 }
-#custom-alert-box {
-    background:rgba(21, 21, 23, 0.95);
-    backdrop-filter: blur(10px);
-}
-#custom-alert-title {
-    color:var(--text-primary);
+.action-menu-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.action-menu-dropdown {
+    top: 30px; left: 0;
+    background: #252529;
+    border: 1px solid rgba(255,255,255,0.1);
+    /* بقية التنسيقات من السابق */
 }
 
+/* --- BOTTOM NAV (UNCHANGED) --- */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height);
+    background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px);
+    border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
+    align-items: flex-end; padding-bottom: 12px; z-index: 2000;
+    padding-left: 20px; padding-right: 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
+}
+.nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-secondary); cursor: pointer; width: 60px; padding-bottom: 5px; }
+.nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; }
+.nav-item span { font-size: 11px; font-weight: 500; }
+.nav-item.active { color: var(--accent-color); }
+.nav-item.active svg { stroke: var(--accent-color); }
 
+.fab-container { position: relative; top: -25px; display: flex; justify-content: center; align-items: center; }
+.fab-btn {
+    width: 60px; height: 60px; border-radius: 50%; background: var(--accent-color);
+    border: 4px solid var(--bg); color: #fff; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); cursor: pointer; transition: transform 0.2s;
+}
+.fab-btn:hover { transform: scale(1.05); }
+.fab-btn svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+
+/* --- MODAL (Keep Existing) --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 3000;
+    display: none; align-items: center; justify-content: center; padding-bottom: 50px;
+}
+.modal-overlay.open { display: flex; }
+.modal-content {
+    background: rgba(21, 21, 23, 0.95); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius); padding: 20px; width: 95%; max-width: 500px;
+    max-height: 85vh; overflow-y: auto; text-align: right; backdrop-filter: blur(15px);
+}
+/* ... (باقي تنسيقات المودال كما هي في الكود السابق) ... */
+.modal-close-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; color: var(--text-secondary); font-size: 2rem; cursor: pointer; }
+.modal-content h3 { margin-top: 0; font-size: 18px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+.modal-content label { display: block; margin-bottom: 6px; font-weight: 500; color: #e4e4e7; font-size: 14px; }
+.modal-content input[type="text"], .modal-content select, .subject-selection-area input[type="number"] {
+    width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border-color);
+    border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);
+}
+.name-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.subject-selection-area { margin-top: 20px; padding: 15px; border: 1px solid var(--border-color); border-radius: var(--radius); background: rgba(255, 255, 255, 0.02); }
+.subject-checkboxes { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
+.subject-item-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255, 255, 255, 0.04); border-radius: 8px; }
+.subject-item-wrapper input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+.subject-item-wrapper .session-count-input { width: 90px; padding: 6px; text-align: center; margin-bottom: 0 !important; background: #000; color: var(--accent-color); }
+/* QR & Alert Styles (Keep Existing) */
+.qr-scanner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+.qr-scanner-overlay.active { display: flex; }
+#reader { width: 90%; max-width: 400px; border: 3px solid var(--accent-color); border-radius: var(--radius); overflow: hidden; }
+#custom-alert-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center; }
+#custom-alert-box { background:rgba(21, 21, 23, 0.95); padding:25px; border-radius:var(--radius); width:350px; border:1px solid var(--border-color); text-align:center; }
+.action-menu-dropdown { position: absolute; left: 0; top: 35px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
+.action-menu-dropdown.active { display: block; }
+.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+.action-menu-dropdown button:hover { background-color: rgba(255, 255, 255, 0.05); }
+.delete-action { color: var(--danger-color); }
 </style>
 </head>
 <body>
 
 <div class="page">
   <header class="navbar">
-    
     <div class="brand-group">
       <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo">
       <div class="title">
@@ -748,51 +422,51 @@ html,body{
         <div class="tag">للتعليم والتطوير</div>
       </div>
     </div>
-
     <div class="nav-buttons">
       <button class="btn-style btn-scan" id="scanBtn">
-        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
         مسح QR
       </button>
     </div>
-
   </header>
 
-  <main class="hero">
-    <div class="hero-content">
-      <h1>لوحة التحكم</h1>
-      <p>إدارة الطلاب وتسجيل الحضور</p>
-    </div>
-  </main> 
+  <div class="search-section">
+      <div class="search-container">
+          <div class="search-input-wrapper">
+            <input type="text" id="searchInput" placeholder="بحث عن طالب أو مادة دراسية...">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+      </div>
+  </div>
 
   <div class="student-cards-section" id="homeSection">
-      <h2>الطلاب المسجلون حاليًا</h2>
+      <div class="section-header">
+        <h2>قائمة الطلاب</h2>
+        <span class="count-badge" id="studentCountBadge">0</span>
+      </div>
+      
       <div class="cards-container" id="studentCardsContainer">
-          <p id="loadingMessage" style="text-align: center; color: var(--text-secondary);">جارٍ تحميل بيانات الطلاب...</p>
+          <p id="loadingMessage" style="text-align: center; color: var(--text-secondary); margin-top:20px;">جارٍ تحميل البيانات...</p>
       </div>
   </div>
   
   <nav class="bottom-nav">
-      
       <button class="nav-item active" id="btnHome" onclick="switchTab('home')">
-          <svg viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           <span>الرئيسية</span>
       </button>
 
       <div class="fab-container">
           <button class="fab-btn" id="openRegisterModalBtn">
-              <svg viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
+              <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
           </button>
       </div>
 
       <button class="nav-item" id="btnStats" onclick="switchTab('stats')">
-          <svg viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
+          <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
           <span>البيانات</span>
       </button>
   </nav>
@@ -803,52 +477,24 @@ html,body{
       <h3>تسجيل طالب جديد</h3>
       <div id="registrationForm">
         <div class="name-fields">
-            <div>
-                <label for="studentName">الاسم:</label>
-                <input type="text" id="studentName" placeholder="الاسم" required>
-            </div>
-            <div>
-                <label for="studentLastName">اللقب:</label>
-                <input type="text" id="studentLastName" placeholder="اللقب" required>
-            </div>
+            <div><label for="studentName">الاسم:</label><input type="text" id="studentName" required></div>
+            <div><label for="studentLastName">اللقب:</label><input type="text" id="studentLastName" required></div>
         </div>
-        <label for="phaseSelect">المرحلة الدراسية:</label>
-        <select id="phaseSelect" required>
-            <option value="" disabled selected>اختر المرحلة</option>
-        </select>
-        <label for="yearSelect">السنة الدراسية:</label>
-        <select id="yearSelect" required disabled>
-            <option value="" disabled selected>اختر السنة</option>
-        </select>
-        <label for="streamSelect">الشعبة (التخصص):</label>
-        <select id="streamSelect" required disabled>
-            <option value="" disabled selected>اختر الشعبة</option>
-        </select>
-        
+        <label for="phaseSelect">المرحلة الدراسية:</label><select id="phaseSelect" required><option value="" disabled selected>اختر المرحلة</option></select>
+        <label for="yearSelect">السنة الدراسية:</label><select id="yearSelect" required disabled><option value="" disabled selected>اختر السنة</option></select>
+        <label for="streamSelect">الشعبة (التخصص):</label><select id="streamSelect" required disabled><option value="" disabled selected>اختر الشعبة</option></select>
         <div class="subject-selection-area">
           <label style="display:block; margin-bottom:10px; color:var(--accent-color);">تحديد المواد الدراسية:</label>
-          
-          <div class="subject-selection-header">
-              <span>اسم المادة</span>
-              <span>عدد الحصص المقررة</span>
-          </div>
-
-          <div id="subjectCheckboxes" class="subject-checkboxes">
-            <div style="text-align:center; padding:20px; color:var(--text-secondary);">
-                الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.
-            </div>
-          </div>
+          <div class="subject-selection-header" style="display:flex; justify-content:space-between; margin-bottom:5px; color:#888; font-size:12px;"><span>اسم المادة</span><span>عدد الحصص</span></div>
+          <div id="subjectCheckboxes" class="subject-checkboxes"><div style="text-align:center; padding:20px; color:var(--text-secondary);">الرجاء اختيار المرحلة أولاً.</div></div>
         </div>
-        
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px;">
             <button id="registerButton" class="btn-style btn-primary">تسجيل الطالب</button>
         </div>
       </div>
-      
       <div class="modal-result" id="modalResult" style="display:none;">
         <h4 id="resultMessage"></h4>
-        <img id="qrCodeImage" src="" alt="QR Code" style="max-width:200px; height:auto; margin: 15px auto; display:block;">
-        
+        <img id="qrCodeImage" src="" alt="QR Code" style="max-width:200px; margin: 15px auto; display:block;">
         <div style="display:flex; justify-content:center; gap:10px;">
             <button class="btn-style btn-secondary" onclick="closeRegistrationModal()">إغلاق</button>
             <button class="btn-style btn-primary" onclick="window.print()">طباعة رمز QR</button>
@@ -858,16 +504,16 @@ html,body{
   </div>
 
   <div class="qr-scanner-overlay" id="qrScannerOverlay">
-    <p class="scan-message">امسح رمز QR الخاص بالطالب لتسجيل الدخول.</p>
+    <p class="scan-message" style="color:#fff; margin-bottom:15px;">امسح رمز QR الخاص بالطالب</p>
     <div id="reader"></div> 
-    <button class="btn-style" style="background: var(--danger-color); color: white;" onclick="stopScannerAndClose()">إلغاء المسح</button>
+    <button class="btn-style" style="background: var(--danger-color); color: white; margin-top:15px;" onclick="stopScannerAndClose()">إلغاء</button>
   </div>
 
 </div>
 
-<div id="custom-alert-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center;">
-    <div id="custom-alert-box" style="background:rgba(21, 21, 23, 0.95); padding:25px; border-radius:var(--radius); width:350px; max-width:90%; border:1px solid var(--border-color); text-align:center; backdrop-filter: blur(10px);">
-        <h3 id="custom-alert-title" style="margin-top:0; font-size:1.2rem; color:var(--text-primary);">تنبيه</h3>
+<div id="custom-alert-overlay">
+    <div id="custom-alert-box">
+        <h3 id="custom-alert-title" style="margin-top:0; color:var(--text-primary);">تنبيه</h3>
         <p id="custom-alert-message" style="color:var(--text-secondary); margin-bottom:20px;"></p>
         <div id="custom-alert-actions" style="display:flex; justify-content:center; gap:10px;">
             <button id="custom-alert-ok" class="btn-style btn-primary" style="width:100px;">حسناً</button>
@@ -876,23 +522,23 @@ html,body{
     </div>
 </div>
 
-
-
 <script>
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
-  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn'); // This now targets the FAB
+  const searchInput = document.getElementById('searchInput'); // Search Input
+  const studentCountBadge = document.getElementById('studentCountBadge');
+  
+  // Registration Vars
+  const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
   const registrationModal = document.getElementById('registrationModal');
   const scanBtn = document.getElementById('scanBtn'); 
   const qrScannerOverlay = document.getElementById('qrScannerOverlay'); 
-
   const phaseSelect = document.getElementById('phaseSelect');
   const yearSelect = document.getElementById('yearSelect');
   const streamSelect = document.getElementById('streamSelect');
   const subjectCheckboxes = document.getElementById('subjectCheckboxes');
   const registerButton = document.getElementById('registerButton');
-  
   const registrationForm = document.getElementById('registrationForm');
   const modalResult = document.getElementById('modalResult');
   const qrCodeImage = document.getElementById('qrCodeImage');
@@ -900,27 +546,38 @@ html,body{
 
   let COURSES_DATA = {}; 
   let html5QrCode = null; 
+  let ALL_STUDENTS = []; // Store raw student data for search
 
-  // --- Tab Switching Logic (Visual Only for now) ---
+  // --- Search Functionality ---
+  searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      
+      const cards = document.querySelectorAll('.student-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+          const name = card.dataset.name.toLowerCase();
+          const subjects = card.dataset.subjects.toLowerCase();
+          
+          if (name.includes(term) || subjects.includes(term)) {
+              card.style.display = 'flex';
+              visibleCount++;
+          } else {
+              card.style.display = 'none';
+          }
+      });
+      
+      // Update badge count based on search results? 
+      // Or keep total? Let's keep total for now, or update to show filtered count:
+      // studentCountBadge.textContent = visibleCount; 
+  });
+
+  // --- Tab Switching ---
   function switchTab(tabName) {
-    const btnHome = document.getElementById('btnHome');
-    const btnStats = document.getElementById('btnStats');
-    
-    // إزالة الحالة النشطة من الجميع
-    btnHome.classList.remove('active');
-    btnStats.classList.remove('active');
-    
-    if (tabName === 'home') {
-        btnHome.classList.add('active');
-        // إذا كنا بالفعل في الرئيسية لا نفعل شيئاً، أو يمكن إعادة تحميل الصفحة
-    } else if (tabName === 'stats') {
-        btnStats.classList.add('active');
-        // الانتقال الفعلي لصفحة البيانات
-        window.location.href = '/stats.html';
-    }
-}
+    if (tabName === 'stats') window.location.href = '/stats.html';
+  }
 
-  // --- Custom Alert/Confirmation Functions ---
+  // --- Alert System ---
   function showCustomConfirm(message, callback, title = 'تأكيد') {
       const overlay = document.getElementById('custom-alert-overlay');
       const msg = document.getElementById('custom-alert-message');
@@ -930,28 +587,13 @@ html,body{
       
       alertTitle.textContent = title;
       msg.innerHTML = message;
-      
-      // Configure for Confirmation
       cancelBtn.style.display = 'inline-flex';
       okBtn.textContent = 'تأكيد الحذف';
-      okBtn.classList.remove('btn-primary');
-      okBtn.classList.add('delete-action'); 
-
+      okBtn.className = 'btn-style btn-primary delete-action'; 
       overlay.style.display = 'flex';
       
-      okBtn.onclick = () => {
-          overlay.style.display = 'none';
-          okBtn.classList.remove('delete-action');
-          okBtn.classList.add('btn-primary');
-          callback(true);
-      };
-      
-      cancelBtn.onclick = () => {
-          overlay.style.display = 'none';
-          okBtn.classList.remove('delete-action');
-          okBtn.classList.add('btn-primary');
-          callback(false);
-      };
+      okBtn.onclick = () => { overlay.style.display = 'none'; callback(true); };
+      cancelBtn.onclick = () => { overlay.style.display = 'none'; callback(false); };
   }
 
   function showCustomAlert(message, title = 'تنبيه') {
@@ -963,473 +605,243 @@ html,body{
       
       alertTitle.textContent = title;
       msg.innerHTML = message;
-
-      // Configure for Alert
       cancelBtn.style.display = 'none';
       okBtn.textContent = 'حسناً';
-      okBtn.classList.remove('delete-action');
-      okBtn.classList.add('btn-primary');
-
+      okBtn.className = 'btn-style btn-primary';
       overlay.style.display = 'flex';
-      
-      okBtn.onclick = () => {
-          overlay.style.display = 'none';
-      };
+      okBtn.onclick = () => { overlay.style.display = 'none'; };
   }
-  
-  // إغلاق قائمة الإجراءات عند النقر في أي مكان آخر
+
   document.addEventListener('click', (e) => {
-      if (!e.target.closest('.action-menu') && document.querySelector('#custom-alert-overlay').style.display !== 'flex') {
-          document.querySelectorAll('.action-menu-dropdown.active').forEach(d => {
-              d.classList.remove('active');
-          });
+      if (!e.target.closest('.action-menu')) {
+          document.querySelectorAll('.action-menu-dropdown.active').forEach(d => d.classList.remove('active'));
       }
   });
 
-
-  // --- QR Scanner Functions ---
-
-  async function onScanSuccess(decodedText, decodedResult) {
+  // --- QR Scanner ---
+  async function onScanSuccess(decodedText) {
     await stopScannerAndClose(); 
-    
     const studentId = decodedText.trim(); 
-    
-    if (studentId) {
-        window.location.href = `/profile.html?id=${studentId}`;
-    } else {
-        showCustomAlert('تم مسح كود غير صالح. الرجاء المحاولة مرة أخرى.', 'خطأ في المسح');
-    }
+    if (studentId) window.location.href = `/profile.html?id=${studentId}`;
+    else showCustomAlert('كود غير صالح', 'خطأ');
   }
 
   async function startScanner() {
     qrScannerOverlay.classList.add('active');
-    
-    if (!html5QrCode) {
-        html5QrCode = new Html5Qrcode("reader");
-    }
-
-    const config = { 
-        fps: 10, 
-        qrbox: {width: 250, height: 250},
-        videoConstraints: { 
-            facingMode: "environment", 
-            width: { ideal: 1280, min: 640 }, 
-            height: { ideal: 720, min: 480 } 
-        }
-    };
-
-    try {
-        await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
-    } catch (err) {
-        console.error("Failed to start QR scanner:", err);
-        showCustomAlert('فشل في تشغيل الكاميرا. تأكد من إعطاء إذن الوصول وأنك تستخدم HTTPS أو localhost.', 'خطأ في الكاميرا');
-        stopScannerAndClose();
-    }
+    if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+    try { await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess); }
+    catch (err) { showCustomAlert('تأكد من إذن الكاميرا وHTTPS'); stopScannerAndClose(); }
   }
 
   async function stopScannerAndClose() {
     qrScannerOverlay.classList.remove('active');
-    if (html5QrCode && html5QrCode.isScanning) {
-        try {
-            await html5QrCode.stop();
-        } catch (err) {
-            console.warn("Error stopping the scanner:", err);
-        }
-    }
+    if (html5QrCode && html5QrCode.isScanning) await html5QrCode.stop();
   }
-
   scanBtn.addEventListener('click', startScanner);
 
-
-  // --- Modal Toggles ---
-  openRegisterModalBtn.addEventListener('click', () => {
-    openRegistrationModal();
-    populatePhases(); 
-  });
+  // --- Modal Logic ---
+  openRegisterModalBtn.addEventListener('click', () => { openRegistrationModal(); populatePhases(); });
+  function openRegistrationModal() { registrationModal.classList.add('open'); registrationForm.style.display = 'block'; modalResult.style.display = 'none'; }
+  function closeRegistrationModal() { registrationModal.classList.remove('open'); document.getElementById('studentName').value = ''; document.getElementById('studentLastName').value = ''; phaseSelect.value = ''; yearSelect.disabled = true; streamSelect.disabled = true; subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة...'; }
   
-  function openRegistrationModal() {
-    registrationModal.classList.add('open');
-    registrationForm.style.display = 'block';
-    modalResult.style.display = 'none';
-  }
-
-  function closeRegistrationModal() {
-    registrationModal.classList.remove('open');
-    // إعادة تعيين النموذج
-    document.getElementById('studentName').value = '';
-    document.getElementById('studentLastName').value = '';
-    phaseSelect.value = '';
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    yearSelect.disabled = true;
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
-  }
-  
-
-  // --- Dynamic Registration Form Logic ---
-  
+  // --- Form Population (Phases/Years/Streams) ---
   function populatePhases() {
     phaseSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة</option>';
-    for (const phaseName in COURSES_DATA) {
-        const option = document.createElement('option');
-        option.value = phaseName;
-        option.textContent = phaseName;
-        phaseSelect.appendChild(option);
-    }
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    yearSelect.disabled = true;
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+    for (const phase in COURSES_DATA) { const opt = document.createElement('option'); opt.value = phase; opt.textContent = phase; phaseSelect.appendChild(opt); }
   }
-
   phaseSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    
-    if (selectedPhase && COURSES_DATA[selectedPhase]) {
-        for (const yearName in COURSES_DATA[selectedPhase]) {
-            const option = document.createElement('option');
-            option.value = yearName;
-            option.textContent = yearName;
-            yearSelect.appendChild(option);
-        }
-        yearSelect.disabled = false;
-    } else {
-        yearSelect.disabled = true;
-    }
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة والسنة والشعبة أولاً لعرض المواد المتاحة.';
+      yearSelect.innerHTML = '<option value="" disabled selected>اختر السنة</option>';
+      if (phaseSelect.value) { for (const y in COURSES_DATA[phaseSelect.value]) { const opt = document.createElement('option'); opt.value = y; opt.textContent = y; yearSelect.appendChild(opt); } yearSelect.disabled = false; }
   });
-
   yearSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    const selectedYear = yearSelect.value;
-    
-    streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
-    streamSelect.disabled = true;
-    subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
-    
-    if (selectedPhase && selectedYear && COURSES_DATA[selectedPhase][selectedYear]) {
-        const streams = COURSES_DATA[selectedPhase][selectedYear];
-        const streamNames = Object.keys(streams);
-
-        if (streamNames.length > 1 || (streamNames.length === 1 && streamNames[0] !== 'عامة')) {
-            for (const streamName of streamNames) {
-                const option = document.createElement('option');
-                option.value = streamName;
-                option.textContent = streamName;
-                streamSelect.appendChild(option);
-            }
-            streamSelect.disabled = false;
-        } else if (streamNames.includes('عامة')) {
-            streamSelect.value = 'عامة';
-            streamSelect.disabled = true;
-            populateSubjects(streams['عامة']);
-        }
-    }
+      streamSelect.innerHTML = '<option value="" disabled selected>اختر الشعبة</option>';
+      const streams = COURSES_DATA[phaseSelect.value][yearSelect.value];
+      const sNames = Object.keys(streams);
+      if (sNames.length > 1 || (sNames.length === 1 && sNames[0] !== 'عامة')) {
+          sNames.forEach(s => { const opt = document.createElement('option'); opt.value = s; opt.textContent = s; streamSelect.appendChild(opt); });
+          streamSelect.disabled = false;
+      } else { streamSelect.value = 'عامة'; populateSubjects(streams['عامة']); streamSelect.disabled = true; }
   });
+  streamSelect.addEventListener('change', () => { populateSubjects(COURSES_DATA[phaseSelect.value][yearSelect.value][streamSelect.value]); });
 
-  streamSelect.addEventListener('change', () => {
-    const selectedPhase = phaseSelect.value;
-    const selectedYear = yearSelect.value;
-    const selectedStream = streamSelect.value;
-
-    if (selectedPhase && selectedYear && selectedStream && COURSES_DATA[selectedPhase][selectedYear][selectedStream]) {
-        const subjects = COURSES_DATA[selectedPhase][selectedYear][selectedStream];
-        populateSubjects(subjects);
-    } else {
-        subjectCheckboxes.innerHTML = 'الرجاء اختيار الشعبة لعرض المواد المتاحة.';
-    }
-  });
-
-  function populateSubjects(subjectsArray) {
-    subjectCheckboxes.innerHTML = '';
-    if (subjectsArray.length === 0) {
-        subjectCheckboxes.innerHTML = 'لا توجد مواد متاحة لهذه الشعبة.';
-        return;
-    }
-
-    subjectsArray.forEach(subject => {
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.className = 'subject-item-wrapper';
-        
-        const uniqueId = `sub-${subject.replace(/\s|\/|\(|\)/g, '-')}`;
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = uniqueId;
-        checkbox.name = 'subject-checkbox'; 
-        checkbox.value = subject;
-        
-        const label = document.createElement('label');
-        label.htmlFor = uniqueId;
-        label.textContent = subject;
-        
-        // Group checkbox and label
-        const labelGroup = document.createElement('div');
-        labelGroup.className = 'subject-label-group';
-        labelGroup.appendChild(checkbox);
-        labelGroup.appendChild(label);
-
-
-        const sessionInput = document.createElement('input');
-        sessionInput.type = 'number';
-        sessionInput.min = '1';
-        sessionInput.placeholder = 'عدد الحصص الكلي';
-        sessionInput.className = 'session-count-input';
-        sessionInput.id = `count-${uniqueId}`;
-        sessionInput.disabled = true; 
-        
-        checkbox.addEventListener('change', (e) => {
-            sessionInput.disabled = !e.target.checked;
-            if (e.target.checked) {
-                sessionInput.value = 1; 
-                sessionInput.focus();
-            } else {
-                sessionInput.value = '';
-            }
-        });
-        
-        checkboxWrapper.appendChild(labelGroup);
-        checkboxWrapper.appendChild(sessionInput); 
-        subjectCheckboxes.appendChild(checkboxWrapper);
-    });
-  }
-
-
-  // --- Registration logic ---
-  registerButton.addEventListener('click', async () => {
-    const name = document.getElementById('studentName').value.trim();
-    const lastName = document.getElementById('studentLastName').value.trim();
-    const phase = phaseSelect.value;
-    const year = yearSelect.value;
-    const stream = streamSelect.value === 'عامة' || streamSelect.value === '' ? 'عامة' : streamSelect.value;
-    
-    try {
-        const selectedSubjects = Array.from(document.querySelectorAll('#subjectCheckboxes input[name="subject-checkbox"]:checked'))
-                                    .map(checkbox => {
-                                        const subjectName = checkbox.value;
-                                        const uniqueId = `sub-${subjectName.replace(/\s|\/|\(|\)/g, '-')}`;
-                                        const countInput = document.getElementById(`count-${uniqueId}`);
-                                        const sessionCount = parseInt(countInput.value, 10);
-                                        
-                                        if (!sessionCount || sessionCount < 1) {
-                                            showCustomAlert(`الرجاء تحديد عدد الحصص الكلي لمادة ${subjectName}. يجب أن يكون العدد 1 أو أكثر.`, 'خطأ في الإدخال');
-                                            throw new Error('Missing session count'); 
-                                        }
-                                        
-                                        return {
-                                            name: subjectName,
-                                            sessionCount: sessionCount
-                                        };
-                                    });
-
-        if (!name || !lastName || !phase || !year || !stream || selectedSubjects.length === 0) {
-            showCustomAlert('الرجاء تعبئة جميع الحقول واختيار مادة واحدة على الأقل مع تحديد عدد الحصص.', 'بيانات غير مكتملة');
-            return;
-        }
-        
-        registrationForm.style.display = 'none';
-        resultMessage.textContent = 'جارٍ تسجيل الطالب...';
-        resultMessage.style.color = '#fff';
-        modalResult.style.display = 'block';
-        qrCodeImage.style.display = 'none';
-
-        
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                lastName: lastName,
-                phase: phase,
-                year: year,
-                stream: stream,
-                subjects: selectedSubjects 
-            })
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            resultMessage.textContent = `تم تسجيل الطالب ${name} ${lastName} بنجاح!`;
-            resultMessage.style.color = '#43cf66';
-            qrCodeImage.src = result.qrCodeUrl;
-            qrCodeImage.style.display = 'block';
-            fetchStudentCards(); 
-        } else {
-            resultMessage.textContent = `فشل التسجيل: ${result.message}`;
-            resultMessage.style.color = '#ff6347';
-        }
-
-    } catch (error) {
-        if (error.message !== 'Missing session count') {
-            console.error('Network or internal registration error:', error);
-            resultMessage.textContent = 'خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.';
-            resultMessage.style.color = '#ff6347';
-        }
-        registrationForm.style.display = 'block';
-        modalResult.style.display = 'none';
-    }
-  });
-
-
-  // --- Student Cards Display Logic ---
-  
-  // دالة حذف الطالب
-  async function deleteStudent(studentId, studentName) {
-      try {
-          const response = await fetch(`/student/${studentId}`, {
-              method: 'DELETE'
+  function populateSubjects(subs) {
+      subjectCheckboxes.innerHTML = '';
+      subs.forEach(sub => {
+          const div = document.createElement('div'); div.className = 'subject-item-wrapper';
+          const uid = `sub-${sub.replace(/\s/g,'-')}`;
+          div.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <input type="checkbox" id="${uid}" value="${sub}" name="subj">
+                <label for="${uid}" style="margin:0; cursor:pointer; color:#fff;">${sub}</label>
+            </div>
+            <input type="number" min="1" value="1" disabled class="session-count-input" id="c-${uid}">
+          `;
+          div.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+              const inp = document.getElementById(`c-${uid}`); inp.disabled = !e.target.checked;
+              if(e.target.checked) inp.focus();
           });
-
-          if (response.ok) {
-              showCustomAlert(`تم حذف الطالب <strong>${studentName}</strong> بنجاح.`, 'نجاح');
-              fetchStudentCards(); // تحديث القائمة
-          } else {
-              const error = await response.json();
-              showCustomAlert(`فشل الحذف: ${error.message}`, 'خطأ في الحذف');
-          }
-      } catch (error) {
-          showCustomAlert('خطأ في الاتصال بالخادم عند محاولة الحذف.', 'خطأ شبكة');
-      }
+          subjectCheckboxes.appendChild(div);
+      });
   }
 
-  async function fetchStudentCards() {
-      loadingMessage.style.display = 'block';
-      studentCardsContainer.innerHTML = ''; 
+  // --- Register Action ---
+  registerButton.addEventListener('click', async () => {
+      const name = document.getElementById('studentName').value.trim();
+      const last = document.getElementById('studentLastName').value.trim();
+      const phase = phaseSelect.value;
+      const year = yearSelect.value;
+      const stream = streamSelect.disabled ? 'عامة' : streamSelect.value;
+      
+      const subs = Array.from(document.querySelectorAll('input[name="subj"]:checked')).map(cb => ({
+          name: cb.value, sessionCount: document.getElementById(`c-${cb.id}`).value
+      }));
 
+      if (!name || !last || !phase || !year || subs.length === 0) return showCustomAlert('أكمل البيانات');
+      
       try {
-          const response = await fetch('/students');
-          const students = await response.json();
+          registrationForm.style.display = 'none'; resultMessage.textContent = 'جارٍ التسجيل...'; modalResult.style.display = 'block';
+          const res = await fetch('/register', {
+              method: 'POST', headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ name, lastName: last, phase, year, stream, subjects: subs })
+          });
+          const data = await res.json();
+          if (res.ok) {
+              resultMessage.textContent = 'تم التسجيل بنجاح!'; resultMessage.style.color = '#43cf66';
+              qrCodeImage.src = data.qrCodeUrl; qrCodeImage.style.display = 'block';
+              fetchStudentCards();
+          } else { throw new Error(data.message); }
+      } catch (e) {
+          registrationForm.style.display = 'block'; modalResult.style.display = 'none';
+          showCustomAlert('خطأ: ' + e.message);
+      }
+  });
 
+  // --- Delete Student ---
+  async function deleteStudent(id, name) {
+      try {
+          const res = await fetch(`/student/${id}`, { method: 'DELETE' });
+          if(res.ok) { showCustomAlert(`تم حذف ${name}`); fetchStudentCards(); }
+      } catch(e) { showCustomAlert('فشل الحذف'); }
+  }
+
+  // --- NEW: Generate Student Cards ---
+  async function fetchStudentCards() {
+      loadingMessage.style.display = 'block'; studentCardsContainer.innerHTML = '';
+      try {
+          const res = await fetch('/students');
+          const data = await res.json();
           loadingMessage.style.display = 'none';
+          
+          const students = Object.values(data).sort((a,b) => b.registeredAt - a.registeredAt);
+          studentCountBadge.textContent = students.length;
 
-          if (Object.keys(students).length === 0) {
-              studentCardsContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">لم يتم تسجيل أي طالب بعد.</p>';
+          if (students.length === 0) {
+              studentCardsContainer.innerHTML = '<p style="text-align:center; color:#777; width:100%;">لا يوجد طلاب مسجلين.</p>';
               return;
           }
-          
-          const studentArray = Object.values(students);
-          studentArray.sort((a, b) => b.registeredAt - a.registeredAt); // فرز الأحدث أولا
 
-          for (const student of studentArray) {
-              const id = student.id;
-              
+          students.forEach(std => {
               const card = document.createElement('div');
               card.className = 'student-card';
               
-              const statusClass = student.isActive ? 'status-active' : 'status-inactive';
-              const totalCompleted = student.subjects ? student.subjects.reduce((sum, s) => sum + s.completedSessions, 0) : 0;
-              const totalRequired = student.subjects ? student.subjects.reduce((sum, s) => sum + s.totalSessions, 0) : 0;
-              const statusText = totalCompleted < totalRequired ? 'نشط' : 'مكتمل الحصص'; 
+              // Prepare Data
+              const initials = std.name.split(' ').map(n=>n[0]).join('').substring(0,2);
+              const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
               
-              let detailsText = `${student.phase || 'غير محدد'} | ${student.year || 'غير محدد'}`;
-              if (student.stream && student.stream !== 'عامة') {
-                  detailsText += ` | ${student.stream}`;
-              }
+              // Add data attributes for search
+              card.dataset.name = std.name;
+              card.dataset.subjects = subjectNames;
               
-              const subjectSummary = student.subjects 
-                                        ? student.subjects.map(s => `${s.name} (${s.completedSessions}/${s.totalSessions})`).join(' | ') 
-                                        : 'لا توجد مواد';
+              // Status Logic
+              const totalReq = std.subjects ? std.subjects.reduce((a,b)=>a+parseInt(b.totalSessions),0) : 0;
+              const totalDone = std.subjects ? std.subjects.reduce((a,b)=>a+b.completedSessions,0) : 0;
+              const isActive = totalDone < totalReq;
+              const statusClass = isActive ? 'st-active' : 'st-inactive';
+              const statusText = isActive ? 'نشط' : 'منتهي';
+              
+              // Subjects Chips (Show max 3)
+              let subjectsHtml = '';
+              if(std.subjects && std.subjects.length > 0) {
+                  std.subjects.slice(0, 3).forEach(s => {
+                      subjectsHtml += `<span class="subject-chip">${s.name}</span>`;
+                  });
+                  if(std.subjects.length > 3) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 3}</span>`;
+              } else { subjectsHtml = '<span class="more-subjects">لا توجد مواد</span>'; }
 
-
-              // بناء بطاقة الطالب مع قائمة الإجراءات
-              const actionMenuHTML = `
-                <div class="action-menu">
-                    <button class="action-menu-toggle" aria-expanded="false" aria-controls="menu-${id}">•••</button>
-                    <div class="action-menu-dropdown" id="menu-${id}">
-                        <button class="delete-action" data-student-id="${id}">حذف الطالب</button>
-                    </div>
-                </div>
-              `;
+              // Progress Width
+              const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
               card.innerHTML = `
-                  ${actionMenuHTML} 
-                  <div class="name">${student.name}</div>
-                  <div class="details">
-                      <span>${detailsText.trim().replace(/\|\s*\|/g, ' | ').trim()}</span>
-                      <span class="status-indicator ${statusClass}">${statusText}</span>
+                  <div class="action-menu">
+                      <button class="action-menu-toggle">⋮</button>
+                      <div class="action-menu-dropdown">
+                          <button class="delete-action" onclick="confirmDelete('${std.id}', '${std.name}')">حذف الطالب</button>
+                      </div>
                   </div>
-                  <div class="subjects"><strong>ملخص الحصص:</strong> ${subjectSummary}</div>
+                  
+                  <span class="status-badge ${statusClass}">${statusText}</span>
+
+                  <div class="card-header">
+                      <div class="student-avatar">${initials}</div>
+                      <div class="student-info">
+                          <div class="student-name">${std.name}</div>
+                          <div class="student-meta">
+                              <span class="phase-tag">${std.year}</span>
+                              ${std.stream !== 'عامة' ? `<span>• ${std.stream}</span>` : ''}
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="card-body">
+                      <span class="subjects-label">المواد المسجلة:</span>
+                      <div class="subject-chips">${subjectsHtml}</div>
+                      
+                      <div class="progress-wrapper">
+                          <div class="progress-bar-bg">
+                              <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+                          </div>
+                          <div class="progress-text">${Math.round(progressPercent)}%</div>
+                      </div>
+                  </div>
               `;
-              
-              
-              // 1. Profile Click Listener
+
+              // Event Listeners
               card.addEventListener('click', (e) => {
-                  if (!e.target.closest('.action-menu') && !e.target.closest('.modal-overlay')) {
-                      window.location.href = `/profile.html?id=${id}`;
+                  if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action')) {
+                      window.location.href = `/profile.html?id=${std.id}`;
                   }
               });
-              
-              // 2. Action Menu Toggle Listener
-              const toggleButton = card.querySelector('.action-menu-toggle');
-              const dropdown = card.querySelector('.action-menu-dropdown');
-              
-              toggleButton.addEventListener('click', (e) => {
-                  e.stopPropagation(); 
-                  
-                  document.querySelectorAll('.action-menu-dropdown.active').forEach(d => {
-                      if (d !== dropdown) d.classList.remove('active');
-                  });
-                  dropdown.classList.toggle('active');
-              });
 
-              // 3. Delete Button Listener
-              const deleteButton = card.querySelector('.delete-action');
-              deleteButton.addEventListener('click', (e) => {
-                  e.stopPropagation(); 
-                  dropdown.classList.remove('active'); 
-                  
-                  showCustomConfirm(
-                      `هل أنت متأكد من حذف الطالب <strong>${student.name}</strong> وسجل حضوره بالكامل؟`,
-                      (isConfirmed) => {
-                          if (isConfirmed) {
-                              deleteStudent(id, student.name);
-                          }
-                      },
-                      'تأكيد حذف الطالب'
-                  );
+              // Action Menu
+              const toggle = card.querySelector('.action-menu-toggle');
+              const menu = card.querySelector('.action-menu-dropdown');
+              toggle.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  document.querySelectorAll('.action-menu-dropdown').forEach(m => { if(m!==menu) m.classList.remove('active'); });
+                  menu.classList.toggle('active');
               });
 
               studentCardsContainer.appendChild(card);
-          }
-          
-      } catch (error) {
-          console.error('Error fetching student cards:', error);
-          loadingMessage.textContent = 'فشل في تحميل بيانات الطلاب.';
-      }
+          });
+
+      } catch (e) { console.error(e); }
   }
 
-  // --- Initial Load ---
-  async function initialLoad() {
-    try {
-        const response = await fetch('/courses');
-        COURSES_DATA = await response.json();
-        
-        fetchStudentCards();
-    } catch (error) {
-        console.error('Initial load failed:', error);
-    }
+  window.confirmDelete = function(id, name) {
+      // Helper to avoid event bubbling issues with inline onclick
+      showCustomConfirm(`حذف ${name}؟`, (yes) => { if(yes) deleteStudent(id, name); });
   }
 
-  initialLoad();
-  // أضف هذا الكود في index.html
-window.onload = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('action') === 'openModal') {
-        openRegistrationModal();
-        populatePhases();
-    }
-};
+  // --- Init ---
+  async function init() {
+      try {
+          const res = await fetch('/courses');
+          COURSES_DATA = await res.json();
+          fetchStudentCards();
+      } catch (e) {}
+  }
+  init();
 
 </script>
 </body>
 </html>
-
-
