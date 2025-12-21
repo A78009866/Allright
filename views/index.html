@@ -13,7 +13,7 @@
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
-  --card-bg: #1e1e24; /* لون جديد للبطاقات */
+  --card-bg: #1e1e24;
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
@@ -22,7 +22,7 @@
   --success-color: #43cf66; 
   --nav-height: 72px;
   --bottom-nav-height: 75px;
-  --radius: 16px; /* زيادة الانحناء قليلاً */
+  --radius: 16px;
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
@@ -102,313 +102,229 @@ html,body{
 }
 .nav-buttons .btn-scan svg { width: 18px; height: 18px; fill: currentColor; }
 
-/* --- SEARCH BAR SECTION (NEW) --- */
-.search-section {
-    padding: 10px 15px;
-    position: sticky;
-    top: 5px;
-    z-index: 900;
-}
-.search-container {
-    position: relative;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-.search-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-.search-icon {
-    position: absolute;
-    right: 15px;
-    color: var(--text-secondary);
-    width: 20px;
-    height: 20px;
-    pointer-events: none;
-}
+/* --- SEARCH BAR --- */
+.search-section { padding: 10px 15px; position: sticky; top: 5px; z-index: 900; }
+.search-container { position: relative; max-width: 1200px; margin: 0 auto; }
+.search-input-wrapper { position: relative; display: flex; align-items: center; }
+.search-icon { position: absolute; right: 15px; color: var(--text-secondary); width: 20px; height: 20px; pointer-events: none; }
 #searchInput {
-    width: 100%;
-    padding: 14px 45px 14px 15px;
-    border-radius: 14px;
-    border: 1px solid var(--border-color);
-    background: rgba(30, 30, 36, 0.95);
-    color: #fff;
-    font-family: "Tajawal", sans-serif;
-    font-size: 15px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
+    width: 100%; padding: 14px 45px 14px 15px; border-radius: 14px;
+    border: 1px solid var(--border-color); background: rgba(30, 30, 36, 0.95);
+    color: #fff; font-family: "Tajawal", sans-serif; font-size: 15px;
+    backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: all 0.3s ease;
 }
-#searchInput:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    background: rgba(40, 40, 45, 0.98);
-}
-#searchInput::placeholder { color: #666; }
+#searchInput:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(40, 40, 45, 0.98); }
 
-/* --- STUDENT CARDS (REDESIGNED) --- */
-.student-cards-section {
-  padding: 10px 16px 20px 16px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 0 5px;
-}
-.section-header h2 {
-    font-size: 1.2rem; 
-    color: var(--text-secondary);
-    margin: 0;
-    font-weight: 600;
-}
-.count-badge {
-    background: rgba(255,255,255,0.1);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 12px;
-    color: #fff;
-}
+/* --- STUDENT CARDS --- */
+.student-cards-section { padding: 10px 16px 20px 16px; max-width: 1200px; margin: 0 auto; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+.section-header h2 { font-size: 1.2rem; color: var(--text-secondary); margin: 0; font-weight: 600; }
+.count-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #fff; }
+.cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-
-/* تصميم البطاقة الجديد */
 .student-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  cursor: pointer;
-  position: relative; 
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 18px;
+  display: flex; flex-direction: column; gap: 12px; cursor: pointer; position: relative; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
 }
-.student-card:hover { 
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    border-color: rgba(59, 130, 246, 0.3);
-}
-.student-card::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; width: 4px; height: 100%;
-    background: var(--accent-color);
-    opacity: 0.5;
-    transition: opacity 0.3s;
-}
+.student-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
+.student-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--accent-color); opacity: 0.5; transition: opacity 0.3s; }
 .student-card:hover::before { opacity: 1; }
 
-/* رأس البطاقة */
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+.card-header { display: flex; align-items: center; gap: 12px; }
 .student-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 20px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px;
+    flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
-.student-info {
-    flex: 1;
-    overflow: hidden;
-}
-.student-name {
-    font-weight: 700;
-    font-size: 16px;
-    color: #fff;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.student-meta {
-    font-size: 12px;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.phase-tag {
-    background: rgba(255,255,255,0.06);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-}
+.student-info { flex: 1; overflow: hidden; }
+.student-name { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.student-meta { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.phase-tag { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
 
-/* جسم البطاقة */
-.card-body {
-    padding-top: 8px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-}
-.subjects-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-bottom: 6px;
-    display: block;
-}
-.subject-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-.subject-chip {
-    background: rgba(59, 130, 246, 0.1);
-    color: #93c5fd;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
-    border: 1px solid rgba(59, 130, 246, 0.15);
-}
-.more-subjects {
-    font-size: 10px;
-    color: var(--text-secondary);
-    padding: 4px;
-}
-
-/* حالة البطاقة */
-.status-badge {
-    position: absolute;
-    top: 18px;
-    left: 40px; /* لإفساح المجال لزر القائمة */
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-weight: 700;
-}
+.card-body { padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
+.subjects-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+.subject-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.subject-chip { background: rgba(59, 130, 246, 0.1); color: #93c5fd; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid rgba(59, 130, 246, 0.15); }
+.more-subjects { font-size: 10px; color: var(--text-secondary); padding: 4px; }
+.status-badge { position: absolute; top: 18px; left: 40px; font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; }
 .st-active { background: rgba(67, 207, 102, 0.15); color: #43cf66; border: 1px solid rgba(67, 207, 102, 0.2); }
 .st-inactive { background: rgba(255, 99, 71, 0.15); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.2); }
+.progress-wrapper { margin-top: 12px; display: flex; align-items: center; gap: 8px; }
+.progress-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--success-color); border-radius: 2px; }
+.progress-text { font-size: 10px; color: var(--text-secondary); width: 30px; text-align: left; }
 
-/* شريط التقدم */
-.progress-wrapper {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.progress-bar-bg {
-    flex: 1;
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    overflow: hidden;
-}
-.progress-bar-fill {
-    height: 100%;
-    background: var(--success-color);
-    border-radius: 2px;
-}
-.progress-text {
-    font-size: 10px;
-    color: var(--text-secondary);
-    width: 30px;
-    text-align: left;
-}
-
-/* Action Menu Update */
+/* Action Menu */
 .action-menu { position: absolute; top: 10px; left: 10px; z-index: 10; }
-.action-menu-toggle {
-    color: var(--text-secondary);
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background 0.2s;
-}
+.action-menu-toggle { color: var(--text-secondary); background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; border-radius: 50%; transition: background 0.2s; }
 .action-menu-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.action-menu-dropdown {
-    top: 30px; left: 0;
-    background: #252529;
-    border: 1px solid rgba(255,255,255,0.1);
-    /* بقية التنسيقات من السابق */
-}
+.action-menu-dropdown { position: absolute; left: 0; top: 35px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
+.action-menu-dropdown.active { display: block; }
+.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+.action-menu-dropdown button:hover { background-color: rgba(255, 255, 255, 0.05); }
+.delete-action { color: var(--danger-color); }
 
-/* --- BOTTOM NAV (UNCHANGED) --- */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height);
-    background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px);
-    border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
-    align-items: flex-end; padding-bottom: 12px; z-index: 2000;
-    padding-left: 20px; padding-right: 20px;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
-}
+/* --- BOTTOM NAV --- */
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 12px; z-index: 2000; padding-left: 20px; padding-right: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.4); }
 .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-secondary); cursor: pointer; width: 60px; padding-bottom: 5px; }
 .nav-item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; }
 .nav-item span { font-size: 11px; font-weight: 500; }
 .nav-item.active { color: var(--accent-color); }
 .nav-item.active svg { stroke: var(--accent-color); }
-
 .fab-container { position: relative; top: -25px; display: flex; justify-content: center; align-items: center; }
-.fab-btn {
-    width: 60px; height: 60px; border-radius: 50%; background: var(--accent-color);
-    border: 4px solid var(--bg); color: #fff; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); cursor: pointer; transition: transform 0.2s;
-}
+.fab-btn { width: 60px; height: 60px; border-radius: 50%; background: var(--accent-color); border: 4px solid var(--bg); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5); cursor: pointer; transition: transform 0.2s; }
 .fab-btn:hover { transform: scale(1.05); }
 .fab-btn svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-
-/* --- MODAL (Keep Existing) --- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 3000;
-    display: none; align-items: center; justify-content: center; padding-bottom: 50px;
-}
+/* --- MODAL --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; padding-bottom: 50px; }
 .modal-overlay.open { display: flex; }
-.modal-content {
-    background: rgba(21, 21, 23, 0.95); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius); padding: 20px; width: 95%; max-width: 500px;
-    max-height: 85vh; overflow-y: auto; text-align: right; backdrop-filter: blur(15px);
-}
-/* ... (باقي تنسيقات المودال كما هي في الكود السابق) ... */
+.modal-content { background: rgba(21, 21, 23, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 20px; width: 95%; max-width: 500px; max-height: 85vh; overflow-y: auto; text-align: right; backdrop-filter: blur(15px); }
 .modal-close-btn { position: absolute; top: 10px; left: 10px; background: none; border: none; color: var(--text-secondary); font-size: 2rem; cursor: pointer; }
 .modal-content h3 { margin-top: 0; font-size: 18px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
 .modal-content label { display: block; margin-bottom: 6px; font-weight: 500; color: #e4e4e7; font-size: 14px; }
-.modal-content input[type="text"], .modal-content select, .subject-selection-area input[type="number"] {
-    width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border-color);
-    border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary);
-}
+.modal-content input[type="text"], .modal-content select, .subject-selection-area input[type="number"] { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
 .name-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .subject-selection-area { margin-top: 20px; padding: 15px; border: 1px solid var(--border-color); border-radius: var(--radius); background: rgba(255, 255, 255, 0.02); }
 .subject-checkboxes { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
 .subject-item-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255, 255, 255, 0.04); border-radius: 8px; }
 .subject-item-wrapper input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
 .subject-item-wrapper .session-count-input { width: 90px; padding: 6px; text-align: center; margin-bottom: 0 !important; background: #000; color: var(--accent-color); }
-/* QR & Alert Styles (Keep Existing) */
+
+/* --- NEW PRINTABLE STUDENT CARD STYLES --- */
+.printable-card-container {
+    background: #fff;
+    color: #000;
+    width: 320px;
+    margin: 10px auto;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-family: "Tajawal", sans-serif;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.printable-card-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.pc-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.pc-logo { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+.pc-title h4 { margin: 0; font-size: 16px; color: #111; font-weight: 800; }
+.pc-title span { font-size: 11px; color: #666; }
+
+.pc-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.pc-student-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a1d;
+    margin: 5px 0;
+}
+
+.pc-info-row {
+    font-size: 13px;
+    color: #444;
+    background: #f8f9fa;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    border: 1px solid #eee;
+}
+
+.pc-qr-box {
+    margin: 15px 0;
+    padding: 10px;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.pc-qr-box img {
+    width: 140px;
+    height: 140px;
+    display: block;
+}
+
+.pc-footer {
+    font-size: 10px;
+    color: #888;
+    margin-top: 10px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 8px;
+    width: 100%;
+}
+
+/* --- PRINT MEDIA QUERY (THE MAGIC) --- */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #modalResult, #modalResult * {
+        visibility: visible;
+    }
+    #modalResult {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: white; /* Ensure clean background */
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+    }
+    .printable-card-container {
+        border: 2px solid #000; /* High contrast for print */
+        box-shadow: none;
+        transform: scale(1.1); /* Slightly larger for print */
+    }
+    /* Hide buttons in print mode */
+    .print-hide {
+        display: none !important;
+    }
+    .modal-content {
+        border: none;
+        background: none;
+    }
+    /* Ensure colors print correctly */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/* QR & Alert Styles */
 .qr-scanner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .qr-scanner-overlay.active { display: flex; }
 #reader { width: 90%; max-width: 400px; border: 3px solid var(--accent-color); border-radius: var(--radius); overflow: hidden; }
 #custom-alert-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center; }
 #custom-alert-box { background:rgba(21, 21, 23, 0.95); padding:25px; border-radius:var(--radius); width:350px; border:1px solid var(--border-color); text-align:center; }
-.action-menu-dropdown { position: absolute; left: 0; top: 35px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
-.action-menu-dropdown.active { display: block; }
-.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; }
-.action-menu-dropdown button:hover { background-color: rgba(255, 255, 255, 0.05); }
-.delete-action { color: var(--danger-color); }
+
 </style>
 </head>
 <body>
@@ -473,9 +389,10 @@ html,body{
 
   <div class="modal-overlay" id="registrationModal">
     <div class="modal-content">
-      <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
-      <h3>تسجيل طالب جديد</h3>
+      <button class="modal-close-btn print-hide" onclick="closeRegistrationModal()">&times;</button>
+      
       <div id="registrationForm">
+        <h3>تسجيل طالب جديد</h3>
         <div class="name-fields">
             <div><label for="studentName">الاسم:</label><input type="text" id="studentName" required></div>
             <div><label for="studentLastName">اللقب:</label><input type="text" id="studentLastName" required></div>
@@ -492,14 +409,47 @@ html,body{
             <button id="registerButton" class="btn-style btn-primary">تسجيل الطالب</button>
         </div>
       </div>
-      <div class="modal-result" id="modalResult" style="display:none;">
-        <h4 id="resultMessage"></h4>
-        <img id="qrCodeImage" src="" alt="QR Code" style="max-width:200px; margin: 15px auto; display:block;">
-        <div style="display:flex; justify-content:center; gap:10px;">
+
+      <div class="modal-result" id="modalResult" style="display:none; text-align: center;">
+        <h3 class="print-hide" style="color: var(--success-color); border-bottom:none;">تم تسجيل الطالب بنجاح!</h3>
+        
+        <div class="printable-card-container" id="printableCard">
+            <div class="pc-header">
+                <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo" class="pc-logo">
+                <div class="pc-title">
+                    <h4>أكاديمية المعالي</h4>
+                    <span>للتعليم والتطوير</span>
+                </div>
+            </div>
+            
+            <div class="pc-body">
+                <div class="pc-student-name" id="cardStudentName">اسم الطالب هنا</div>
+                <div class="pc-info-row">
+                    <span id="cardPhase">الطور</span> - <span id="cardYear">السنة</span>
+                </div>
+                <div class="pc-info-row" id="cardStreamRow">
+                    <span id="cardStream">الشعبة</span>
+                </div>
+                
+                <div class="pc-qr-box">
+                    <img id="qrCodeImage" src="" alt="QR Code">
+                </div>
+            </div>
+            
+            <div class="pc-footer">
+                بطاقة طالب مدرسية • يرجى إظهار هذه البطاقة عند الدخول
+            </div>
+        </div>
+
+        <div class="print-hide" style="display:flex; justify-content:center; gap:10px; margin-top: 20px;">
             <button class="btn-style btn-secondary" onclick="closeRegistrationModal()">إغلاق</button>
-            <button class="btn-style btn-primary" onclick="window.print()">طباعة رمز QR</button>
+            <button class="btn-style btn-primary" onclick="window.print()">
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px; margin-left:5px; fill:none; stroke:currentColor; stroke-width:2;"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                طباعة البطاقة
+            </button>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -526,7 +476,7 @@ html,body{
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
-  const searchInput = document.getElementById('searchInput'); // Search Input
+  const searchInput = document.getElementById('searchInput'); 
   const studentCountBadge = document.getElementById('studentCountBadge');
   
   // Registration Vars
@@ -542,34 +492,29 @@ html,body{
   const registrationForm = document.getElementById('registrationForm');
   const modalResult = document.getElementById('modalResult');
   const qrCodeImage = document.getElementById('qrCodeImage');
-  const resultMessage = document.getElementById('resultMessage');
+  // Card Fields
+  const cardStudentName = document.getElementById('cardStudentName');
+  const cardPhase = document.getElementById('cardPhase');
+  const cardYear = document.getElementById('cardYear');
+  const cardStream = document.getElementById('cardStream');
+  const cardStreamRow = document.getElementById('cardStreamRow');
 
   let COURSES_DATA = {}; 
   let html5QrCode = null; 
-  let ALL_STUDENTS = []; // Store raw student data for search
 
   // --- Search Functionality ---
   searchInput.addEventListener('input', (e) => {
       const term = e.target.value.toLowerCase();
-      
       const cards = document.querySelectorAll('.student-card');
-      let visibleCount = 0;
-
       cards.forEach(card => {
           const name = card.dataset.name.toLowerCase();
           const subjects = card.dataset.subjects.toLowerCase();
-          
           if (name.includes(term) || subjects.includes(term)) {
               card.style.display = 'flex';
-              visibleCount++;
           } else {
               card.style.display = 'none';
           }
       });
-      
-      // Update badge count based on search results? 
-      // Or keep total? Let's keep total for now, or update to show filtered count:
-      // studentCountBadge.textContent = visibleCount; 
   });
 
   // --- Tab Switching ---
@@ -698,21 +643,40 @@ html,body{
 
       if (!name || !last || !phase || !year || subs.length === 0) return showCustomAlert('أكمل البيانات');
       
+      const registerBtnOriginalText = registerButton.textContent;
+      registerButton.textContent = 'جارٍ الحفظ...';
+      registerButton.disabled = true;
+
       try {
-          registrationForm.style.display = 'none'; resultMessage.textContent = 'جارٍ التسجيل...'; modalResult.style.display = 'block';
           const res = await fetch('/register', {
               method: 'POST', headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({ name, lastName: last, phase, year, stream, subjects: subs })
           });
           const data = await res.json();
           if (res.ok) {
-              resultMessage.textContent = 'تم التسجيل بنجاح!'; resultMessage.style.color = '#43cf66';
-              qrCodeImage.src = data.qrCodeUrl; qrCodeImage.style.display = 'block';
+              // Populate Card
+              cardStudentName.textContent = `${name} ${last}`;
+              cardPhase.textContent = phase;
+              cardYear.textContent = year;
+              if (stream !== 'عامة') {
+                  cardStream.textContent = stream;
+                  cardStreamRow.style.display = 'block';
+              } else {
+                  cardStreamRow.style.display = 'none';
+              }
+              qrCodeImage.src = data.qrCodeUrl;
+              
+              // Switch Views
+              registrationForm.style.display = 'none'; 
+              modalResult.style.display = 'block';
+              
               fetchStudentCards();
           } else { throw new Error(data.message); }
       } catch (e) {
-          registrationForm.style.display = 'block'; modalResult.style.display = 'none';
           showCustomAlert('خطأ: ' + e.message);
+      } finally {
+        registerButton.textContent = registerBtnOriginalText;
+        registerButton.disabled = false;
       }
   });
 
@@ -724,7 +688,7 @@ html,body{
       } catch(e) { showCustomAlert('فشل الحذف'); }
   }
 
-  // --- NEW: Generate Student Cards ---
+  // --- Generate Student Cards ---
   async function fetchStudentCards() {
       loadingMessage.style.display = 'block'; studentCardsContainer.innerHTML = '';
       try {
@@ -748,7 +712,6 @@ html,body{
               const initials = std.name.split(' ').map(n=>n[0]).join('').substring(0,2);
               const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
               
-              // Add data attributes for search
               card.dataset.name = std.name;
               card.dataset.subjects = subjectNames;
               
@@ -759,7 +722,7 @@ html,body{
               const statusClass = isActive ? 'st-active' : 'st-inactive';
               const statusText = isActive ? 'نشط' : 'منتهي';
               
-              // Subjects Chips (Show max 3)
+              // Subjects Chips
               let subjectsHtml = '';
               if(std.subjects && std.subjects.length > 0) {
                   std.subjects.slice(0, 3).forEach(s => {
@@ -768,7 +731,7 @@ html,body{
                   if(std.subjects.length > 3) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 3}</span>`;
               } else { subjectsHtml = '<span class="more-subjects">لا توجد مواد</span>'; }
 
-              // Progress Width
+              // Progress
               const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
               card.innerHTML = `
@@ -805,14 +768,12 @@ html,body{
                   </div>
               `;
 
-              // Event Listeners
               card.addEventListener('click', (e) => {
                   if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action')) {
                       window.location.href = `/profile.html?id=${std.id}`;
                   }
               });
 
-              // Action Menu
               const toggle = card.querySelector('.action-menu-toggle');
               const menu = card.querySelector('.action-menu-dropdown');
               toggle.addEventListener('click', (e) => {
@@ -828,7 +789,6 @@ html,body{
   }
 
   window.confirmDelete = function(id, name) {
-      // Helper to avoid event bubbling issues with inline onclick
       showCustomConfirm(`حذف ${name}؟`, (yes) => { if(yes) deleteStudent(id, name); });
   }
 
