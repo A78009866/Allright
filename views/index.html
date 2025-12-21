@@ -6,6 +6,7 @@
 <title>أكاديمية المعالي</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -192,7 +193,7 @@ html,body{
 .subject-item-wrapper input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
 .subject-item-wrapper .session-count-input { width: 90px; padding: 6px; text-align: center; margin-bottom: 0 !important; background: #000; color: var(--accent-color); }
 
-/* --- NEW PRINTABLE STUDENT CARD STYLES --- */
+/* --- PRINTABLE STUDENT CARD STYLES --- */
 .printable-card-container {
     background: #fff;
     color: #000;
@@ -276,48 +277,6 @@ html,body{
     width: 100%;
 }
 
-/* --- PRINT MEDIA QUERY (THE MAGIC) --- */
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    #modalResult, #modalResult * {
-        visibility: visible;
-    }
-    #modalResult {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        background: white; /* Ensure clean background */
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
-    }
-    .printable-card-container {
-        border: 2px solid #000; /* High contrast for print */
-        box-shadow: none;
-        transform: scale(1.1); /* Slightly larger for print */
-    }
-    /* Hide buttons in print mode */
-    .print-hide {
-        display: none !important;
-    }
-    .modal-content {
-        border: none;
-        background: none;
-    }
-    /* Ensure colors print correctly */
-    * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-}
-
 /* QR & Alert Styles */
 .qr-scanner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; }
 .qr-scanner-overlay.active { display: flex; }
@@ -389,7 +348,7 @@ html,body{
 
   <div class="modal-overlay" id="registrationModal">
     <div class="modal-content">
-      <button class="modal-close-btn print-hide" onclick="closeRegistrationModal()">&times;</button>
+      <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
       
       <div id="registrationForm">
         <h3>تسجيل طالب جديد</h3>
@@ -411,7 +370,7 @@ html,body{
       </div>
 
       <div class="modal-result" id="modalResult" style="display:none; text-align: center;">
-        <h3 class="print-hide" style="color: var(--success-color); border-bottom:none;">تم تسجيل الطالب بنجاح!</h3>
+        <h3 style="color: var(--success-color); border-bottom:none;">تم تسجيل الطالب بنجاح!</h3>
         
         <div class="printable-card-container" id="printableCard">
             <div class="pc-header">
@@ -441,11 +400,11 @@ html,body{
             </div>
         </div>
 
-        <div class="print-hide" style="display:flex; justify-content:center; gap:10px; margin-top: 20px;">
+        <div style="display:flex; justify-content:center; gap:10px; margin-top: 20px;">
             <button class="btn-style btn-secondary" onclick="closeRegistrationModal()">إغلاق</button>
-            <button class="btn-style btn-primary" onclick="window.print()">
-                <svg viewBox="0 0 24 24" style="width:18px; height:18px; margin-left:5px; fill:none; stroke:currentColor; stroke-width:2;"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
-                طباعة البطاقة
+            <button class="btn-style btn-primary" onclick="downloadCardImage(this)">
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px; margin-left:5px; fill:none; stroke:currentColor; stroke-width:2;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                حفظ البطاقة
             </button>
         </div>
       </div>
@@ -680,6 +639,35 @@ html,body{
       }
   });
 
+  // --- Download Card as Image ---
+  function downloadCardImage(btnElement) {
+      const element = document.getElementById('printableCard');
+      const originalContent = btnElement.innerHTML;
+
+      btnElement.innerHTML = 'جارٍ الحفظ...';
+      btnElement.disabled = true;
+
+      html2canvas(element, {
+          scale: 3, 
+          useCORS: true, 
+          backgroundColor: "#ffffff",
+          allowTaint: true
+      }).then(canvas => {
+          const link = document.createElement('a');
+          const studentName = document.getElementById('cardStudentName').innerText;
+          link.download = `بطاقة-${studentName}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+
+          btnElement.innerHTML = originalContent;
+          btnElement.disabled = false;
+      }).catch(err => {
+          showCustomAlert("فشل حفظ البطاقة");
+          btnElement.innerHTML = originalContent;
+          btnElement.disabled = false;
+      });
+  }
+
   // --- Delete Student ---
   async function deleteStudent(id, name) {
       try {
@@ -708,21 +696,18 @@ html,body{
               const card = document.createElement('div');
               card.className = 'student-card';
               
-              // Prepare Data
               const initials = std.name.split(' ').map(n=>n[0]).join('').substring(0,2);
               const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
               
               card.dataset.name = std.name;
               card.dataset.subjects = subjectNames;
               
-              // Status Logic
               const totalReq = std.subjects ? std.subjects.reduce((a,b)=>a+parseInt(b.totalSessions),0) : 0;
               const totalDone = std.subjects ? std.subjects.reduce((a,b)=>a+b.completedSessions,0) : 0;
               const isActive = totalDone < totalReq;
               const statusClass = isActive ? 'st-active' : 'st-inactive';
               const statusText = isActive ? 'نشط' : 'منتهي';
               
-              // Subjects Chips
               let subjectsHtml = '';
               if(std.subjects && std.subjects.length > 0) {
                   std.subjects.slice(0, 3).forEach(s => {
@@ -731,7 +716,6 @@ html,body{
                   if(std.subjects.length > 3) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 3}</span>`;
               } else { subjectsHtml = '<span class="more-subjects">لا توجد مواد</span>'; }
 
-              // Progress
               const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
               card.innerHTML = `
@@ -792,7 +776,6 @@ html,body{
       showCustomConfirm(`حذف ${name}؟`, (yes) => { if(yes) deleteStudent(id, name); });
   }
 
-  // --- Init ---
   async function init() {
       try {
           const res = await fetch('/courses');
