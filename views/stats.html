@@ -105,8 +105,8 @@ body{
             <span class="lbl">إجمالي الطلاب</span>
         </div>
         <div class="stat-box">
-            <span class="val" id="paymentRate" style="color: var(--success-color);">0%</span>
-            <span class="lbl">نسبة سداد الحصص</span>
+            <span class="val" id="totalRevenue" style="color: var(--success-color);">0 دج</span>
+            <span class="lbl">إجمالي المداخيل</span>
         </div>
     </div>
 
@@ -142,7 +142,6 @@ body{
 </nav>
 
 <script>
-    // عند الضغط على زر الإضافة من هنا، نعود للرئيسية ونفتح نافذة التسجيل
     function addNewStudent() {
         window.location.href = '/index.html?action=register';
     }
@@ -152,18 +151,21 @@ body{
             const response = await fetch('/api/dashboard-stats');
             const data = await response.json();
 
-            // تحديث الأرقام
+            // 1. تحديث عدد الطلاب
             document.getElementById('totalStudents').textContent = data.totalStudents;
             
-            const totalSess = data.totalPaidSessions + data.totalUnpaidSessions;
-            const rate = totalSess > 0 ? Math.round((data.totalPaidSessions / totalSess) * 100) : 0;
-            document.getElementById('paymentRate').textContent = rate + '%';
+            // 2. حساب وعرض المداخيل (40 دج للحصة)
+            const PRICE_PER_SESSION = 40; // سعر الحصة
+            const totalRevenue = data.totalPaidSessions * PRICE_PER_SESSION;
+            
+            // استخدام toLocaleString لإضافة الفواصل للأرقام الكبيرة (مثل 1,000)
+            document.getElementById('totalRevenue').textContent = totalRevenue.toLocaleString() + ' دج';
 
-            // إعدادات الخطوط الافتراضية لـ Chart.js
+            // إعدادات الخطوط الافتراضية
             Chart.defaults.color = '#a1a1aa';
             Chart.defaults.font.family = 'Tajawal';
 
-            // 1. الرسم الخطي (النشاط الأسبوعي)
+            // الرسم البياني الخطي
             const days = ['6 أيام', '5 أيام', '4 أيام', '3 أيام', 'أمس', 'اليوم'].reverse();
             new Chart(document.getElementById('lineChart'), {
                 type: 'line',
@@ -188,7 +190,7 @@ body{
                 }
             });
 
-            // 2. الرسم الدائري (توزيع المراحل)
+            // الرسم البياني الدائري
             new Chart(document.getElementById('doughnutChart'), {
                 type: 'doughnut',
                 data: {
