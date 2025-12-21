@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>أكاديمية المعالي | الإحصائيات</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
+/* المتغيرات التصميمية المتطابقة مع index.html */
 :root{
   --bg: #0b0b0c;
   --drawer-bg: #151517;
@@ -15,6 +17,8 @@
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
   --accent-color: #3b82f6; 
+  --success-color: #43cf66;
+  --nav-height: 72px;
   --bottom-nav-height: 75px;
   --radius: 12px;
 }
@@ -22,41 +26,49 @@
 body{
   margin:0; font-family: "Tajawal", sans-serif;
   background-color: var(--bg); color: var(--text-primary);
-  padding-bottom: 100px; direction: rtl;
+  padding-bottom: var(--bottom-nav-height);
+  direction: rtl;
 }
 
-/* Header */
+/* التنسيق العلوي (Navbar) */
 .navbar{
-  height: 72px; display: flex; align-items: center; justify-content: center;
+  height: var(--nav-height); display: flex; align-items: center; justify-content: center;
   margin: 10px; border-radius: var(--radius);
   background: rgba(26, 26, 29, 0.85); backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
 }
-.navbar h1 { font-size: 18px; margin: 0; font-weight: 700; color: #fff; }
+.navbar h1 { font-size: 18px; margin: 0; font-weight: 700; color: var(--accent-color); }
 
-/* Dashboard Cards */
+/* حاويات البيانات */
 .container { padding: 15px; max-width: 1200px; margin: 0 auto; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+
+.stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+}
 .stat-box {
     background: var(--drawer-bg); border: 1px solid var(--border-color);
-    padding: 15px; border-radius: var(--radius); text-align: center;
+    padding: 20px; border-radius: var(--radius); text-align: center;
 }
-.stat-box .val { font-size: 24px; font-weight: 800; display: block; color: var(--accent-color); }
-.stat-box .lbl { font-size: 11px; color: var(--text-secondary); margin-top: 5px; }
+.stat-box .val { font-size: 26px; font-weight: 800; display: block; margin-bottom: 5px; }
+.stat-box .lbl { font-size: 12px; color: var(--text-secondary); }
 
 .chart-card {
     background: var(--drawer-bg); border: 1px solid var(--border-color);
     padding: 15px; border-radius: var(--radius); margin-bottom: 20px;
 }
-.chart-title { font-size: 14px; font-weight: 700; margin-bottom: 20px; color: var(--text-secondary); border-right: 3px solid var(--accent-color); padding-right: 8px; }
+.chart-title { 
+    font-size: 14px; font-weight: 700; margin-bottom: 15px; 
+    color: var(--text-secondary); border-right: 4px solid var(--accent-color); padding-right: 10px; 
+}
 
-/* Bottom Nav (نفس تصميم الهوم بالضبط) */
+/* النافبار السفلي (مطابق تماماً لـ index.html) */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height);
     background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px);
     border-top: 1px solid var(--border-color); display: flex;
     justify-content: space-around; align-items: flex-end; padding-bottom: 12px; z-index: 2000;
 }
+
 .nav-item {
     background: none; border: none; display: flex; flex-direction: column;
     align-items: center; gap: 5px; color: var(--text-secondary);
@@ -66,7 +78,7 @@ body{
 .nav-item span { font-size: 11px; font-weight: 500; }
 .nav-item.active { color: var(--accent-color); }
 
-/* FAB Button */
+/* الزر العائم (FAB) */
 .fab-container { position: relative; top: -25px; display: flex; justify-content: center; align-items: center; }
 .fab-btn {
     width: 60px; height: 60px; border-radius: 50%; background: var(--accent-color);
@@ -81,27 +93,35 @@ body{
 <body>
 
 <header class="navbar">
-    <h1>إحصائيات الأكاديمية</h1>
+    <h1>مركز البيانات والتحليلات</h1>
 </header>
+
+<div id="loader">جاري جلب البيانات من السيرفر...</div>
 
 <div class="container" id="mainContent" style="display:none;">
     <div class="stats-grid">
-        <div class="stat-box"><span class="val" id="totalS">0</span><span class="lbl">طالب مسجل</span></div>
-        <div class="stat-box"><span class="val" id="payR" style="color:#43cf66">0%</span><span class="lbl">نسبة التحصيل</span></div>
+        <div class="stat-box">
+            <span class="val" id="totalStudents">0</span>
+            <span class="lbl">إجمالي الطلاب</span>
+        </div>
+        <div class="stat-box">
+            <span class="val" id="paymentRate" style="color: var(--success-color);">0%</span>
+            <span class="lbl">نسبة سداد الحصص</span>
+        </div>
     </div>
 
     <div class="chart-card">
-        <div class="chart-title">حركة الطلاب (أسبوعي)</div>
+        <div class="chart-title">نشاط الحصص (آخر 7 أيام)</div>
         <canvas id="lineChart"></canvas>
     </div>
 
     <div class="chart-card">
-        <div class="chart-title">توزيع المراحل</div>
-        <div style="max-width: 220px; margin: 0 auto;"><canvas id="pieChart"></canvas></div>
+        <div class="chart-title">توزيع الطلاب حسب المرحلة</div>
+        <div style="max-width: 250px; margin: 0 auto;">
+            <canvas id="doughnutChart"></canvas>
+        </div>
     </div>
 </div>
-
-<div id="loader">جارٍ جلب البيانات الحقيقية...</div>
 
 <nav class="bottom-nav">
     <a href="/index.html" class="nav-item">
@@ -110,7 +130,7 @@ body{
     </a>
 
     <div class="fab-container">
-        <button class="fab-btn" onclick="goToAdd()">
+        <button class="fab-btn" onclick="addNewStudent()">
             <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
         </button>
     </div>
@@ -122,43 +142,80 @@ body{
 </nav>
 
 <script>
-    // وظيفة زر الإضافة: العودة للهوم وفتح المودال
-    function goToAdd() {
-        window.location.href = '/index.html?action=openModal';
+    // عند الضغط على زر الإضافة من هنا، نعود للرئيسية ونفتح نافذة التسجيل
+    function addNewStudent() {
+        window.location.href = '/index.html?action=register';
     }
 
-    async function loadStats() {
+    async function fetchRealData() {
         try {
-            const res = await fetch('/api/dashboard-stats');
-            const data = await res.json();
-            document.getElementById('totalS').textContent = data.totalStudents;
+            const response = await fetch('/api/dashboard-stats');
+            const data = await response.json();
+
+            // تحديث الأرقام
+            document.getElementById('totalStudents').textContent = data.totalStudents;
             
+            const totalSess = data.totalPaidSessions + data.totalUnpaidSessions;
+            const rate = totalSess > 0 ? Math.round((data.totalPaidSessions / totalSess) * 100) : 0;
+            document.getElementById('paymentRate').textContent = rate + '%';
+
+            // إعدادات الخطوط الافتراضية لـ Chart.js
             Chart.defaults.color = '#a1a1aa';
             Chart.defaults.font.family = 'Tajawal';
 
+            // 1. الرسم الخطي (النشاط الأسبوعي)
+            const days = ['6 أيام', '5 أيام', '4 أيام', '3 أيام', 'أمس', 'اليوم'].reverse();
             new Chart(document.getElementById('lineChart'), {
                 type: 'line',
                 data: {
-                    labels: ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'],
-                    datasets: [{ label:'نشاط', data: data.activityLastWeek, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.05)' }]
+                    labels: days,
+                    datasets: [{
+                        label: 'عدد الحصص المسجلة',
+                        data: data.activityLastWeek,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
                 },
-                options: { plugins: { legend: { display: false } } }
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
             });
 
-            new Chart(document.getElementById('pieChart'), {
+            // 2. الرسم الدائري (توزيع المراحل)
+            new Chart(document.getElementById('doughnutChart'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(data.studentsByPhase),
-                    datasets: [{ data: Object.values(data.studentsByPhase), backgroundColor: ['#3b82f6', '#43cf66', '#f59e0b'], borderWidth: 0 }]
+                    datasets: [{
+                        data: Object.values(data.studentsByPhase),
+                        backgroundColor: ['#3b82f6', '#43cf66', '#f59e0b', '#ef4444', '#a855f7'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
                 },
-                options: { plugins: { legend: { position: 'bottom' } } }
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    cutout: '70%'
+                }
             });
 
             document.getElementById('loader').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
-        } catch (e) { document.getElementById('loader').textContent = 'حدث خطأ'; }
+
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('loader').textContent = 'فشل الاتصال بالسيرفر. تأكد من تشغيل المشروع.';
+        }
     }
-    loadStats();
+
+    fetchRealData();
 </script>
 </body>
 </html>
