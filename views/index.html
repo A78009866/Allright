@@ -1419,8 +1419,17 @@ html,body{
   }
 
   initialLoad();
-  
+  // أضف هذا الكود في index.html
+window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'openModal') {
+        openRegistrationModal();
+        populatePhases();
+    }
+};
+
 </script>
 </body>
 </html>
+
 
