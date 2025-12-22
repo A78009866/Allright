@@ -87,13 +87,25 @@ html,body{
 }
 
 .student-info-group { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 280px; }
+
+/* Updated avatar container: supports image + initials fallback */
 .student-avatar-lg {
     width: 80px; height: 80px; border-radius: 20px;
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #fff; display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 32px; flex-shrink: 0;
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    position: relative; overflow: hidden;
 }
+.student-avatar-lg img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.avatar-letters {
+    position: absolute; inset: 0; display:flex; align-items:center; justify-content:center;
+    font-weight: 800; font-size: 32px; color: #fff;
+}
+
+/* profile text */
 .profile-text h2 { margin: 0 0 5px 0; color: #fff; font-size: 22px; }
 .meta-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .meta-badge {
@@ -222,7 +234,12 @@ tr:last-child td { border-bottom: none; }
         
         <div class="profile-header-card">
             <div class="student-info-group">
-                <div class="student-avatar-lg" id="avatarLetters"></div>
+                <!-- Avatar now supports image (with fallback to initials) -->
+                <div class="student-avatar-lg" id="studentAvatar">
+                    <img id="avatarImg" src="" alt="avatar" style="display:none;">
+                    <div id="avatarLetters" class="avatar-letters"></div>
+                </div>
+
                 <div class="profile-text">
                     <h2 id="studentName"></h2>
                     <div class="meta-badges">
@@ -331,6 +348,9 @@ tr:last-child td { border-bottom: none; }
     let currentStudent = null;
     let confirmCallback = null;
 
+    // Default icon requested to be used
+    const DEFAULT_ICON = 'https://res.cloudinary.com/duixjs8az/image/upload/v1766404501/post_media/1766404500962-44bd283ec63956d10ff8fbe4859ba3b6.jpg';
+
     // --- Init ---
     document.addEventListener('DOMContentLoaded', () => {
         if (!studentId) {
@@ -378,9 +398,28 @@ tr:last-child td { border-bottom: none; }
         document.getElementById('studentStream').textContent = streamText;
         if(!streamText) document.getElementById('studentStream').style.display = 'none';
 
-        // Avatar Initials
-        const initials = student.name.split(' ').map(n=>n[0]).join('').substring(0,2);
-        document.getElementById('avatarLetters').textContent = initials;
+        // Avatar: set image if available, otherwise show initials.
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarLetters = document.getElementById('avatarLetters');
+        const initials = (student.name || '').split(' ').map(n=>n[0] || '').join('').substring(0,2) || 'ط';
+
+        // prefer student-provided avatarUrl, otherwise use DEFAULT_ICON
+        const src = student.avatarUrl || DEFAULT_ICON;
+        avatarImg.style.display = 'none';
+        avatarLetters.style.display = 'flex';
+        avatarLetters.textContent = initials;
+
+        // set image and handle load/error
+        avatarImg.src = src;
+        avatarImg.onload = () => {
+            avatarImg.style.display = 'block';
+            avatarLetters.style.display = 'none';
+        };
+        avatarImg.onerror = () => {
+            avatarImg.style.display = 'none';
+            avatarLetters.style.display = 'flex';
+            avatarLetters.textContent = initials;
+        };
     }
 
     function renderSubjects(subjects) {
@@ -388,7 +427,7 @@ tr:last-child td { border-bottom: none; }
         grid.innerHTML = '';
         
         subjects.forEach(sub => {
-            const progress = (sub.completedSessions / sub.totalSessions) * 100;
+            const progress = sub.totalSessions > 0 ? (sub.completedSessions / sub.totalSessions) * 100 : 0;
             const isFinished = sub.completedSessions >= sub.totalSessions;
             
             // Generate Bubbles
@@ -413,7 +452,7 @@ tr:last-child td { border-bottom: none; }
                 </div>
                 
                 <div class="progress-container">
-                    <div class="progress-fill" style="width: ${progress}%"></div>
+                    <div class="progress-fill" style="width: ${Math.round(progress)}%"></div>
                 </div>
                 
                 <ul class="sessions-list">
@@ -552,7 +591,10 @@ tr:last-child td { border-bottom: none; }
                 body: JSON.stringify(body)
             });
             if(res.ok) fetchData();
-            else alert((await res.json()).message);
+            else {
+                const err = await res.json().catch(()=>({message:'خطأ'}));
+                alert(err.message || 'خطأ');
+            }
         } catch(e) { alert('Network Error'); }
     }
 
