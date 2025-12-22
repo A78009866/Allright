@@ -116,113 +116,83 @@ html,body{
 }
 #searchInput:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(40, 40, 45, 0.98); }
 
-/* --- LEVEL FILTERS --- */
-.level-filters { display:flex; gap:8px; justify-content:center; align-items:center; margin-top:10px; flex-wrap:wrap; }
-.level-btn {
+/* --- LEVEL FILTERS (new) --- */
+.level-filters { margin-top: 12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.level-filter-btn {
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
     padding: 8px 12px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
-    background: rgba(255,255,255,0.02);
-    color: var(--text-secondary);
-    cursor: pointer;
     font-weight: 600;
-    transition: all 0.15s ease;
+    cursor: pointer;
+    transition: all 0.18s ease;
 }
-.level-btn.active {
-    background: linear-gradient(90deg, rgba(59,130,246,0.14), rgba(99,102,241,0.08));
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(59,130,246,0.12);
-    border-color: rgba(59,130,246,0.28);
-}
+.level-filter-btn.active { background: linear-gradient(90deg,var(--accent-color), #2563eb); color: #fff; border-color: rgba(59,130,246,0.35); box-shadow: 0 6px 18px rgba(37,99,235,0.18); transform: translateY(-2px); }
 
 /* --- STUDENT CARDS --- */
-.student-cards-section { padding: 10px 12px 20px 12px; max-width: none; margin: 0 auto; width: 100%; }
-.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+.student-cards-section { padding: 10px 16px 20px 16px; max-width: none; margin: 0; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 10px; }
 .section-header h2 { font-size: 1.2rem; color: var(--text-secondary); margin: 0; font-weight: 600; }
 .count-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #fff; }
+.cards-container { display: flex; flex-direction: column; gap: 14px; padding: 0 10px; }
 
-/* Make cards stack vertically and take full width */
-.cards-container { display: flex; flex-direction: column; gap: 16px; width: 100%; }
-
-/* Updated card style: full width, nicer layout */
+/* Full-width, enhanced card */
 .student-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.04);
   border-radius: 14px;
-  padding: 16px;
+  padding: 18px;
   display: flex;
   gap: 16px;
   align-items: center;
   cursor: pointer;
   position: relative;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s;
-  overflow: hidden;
-  width: 100%;
+  transition: transform 0.25s cubic-bezier(.2,.9,.2,1), box-shadow 0.25s;
+  width: calc(100% - 20px);
+  margin-inline: auto;
 }
-.student-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.5); border-color: rgba(59, 130, 246, 0.22); }
-.student-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(180deg, #3b82f6, #2563eb); opacity: 0.6; transition: opacity 0.3s; border-top-right-radius: 14px; border-bottom-right-radius: 14px; }
-.student-card:hover::before { opacity: 1; }
+.student-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.45); border-color: rgba(59, 130, 246, 0.25); }
+.student-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(180deg, #3b82f6, #2563eb); opacity: 0.85; border-top-right-radius: 14px; border-bottom-right-radius: 14px; }
 
-.card-header { display: flex; align-items: center; gap: 12px; min-width: 260px; flex-shrink: 0; justify-content: center; }
+/* Avatar as image */
 .student-avatar {
-    width: 64px; height: 64px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #6b9bff);
-    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 22px;
-    flex-shrink: 0; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);
-    border: 2px solid rgba(255,255,255,0.03);
+    width: 72px; height: 72px; border-radius: 14px; overflow: hidden; flex-shrink: 0;
+    display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg,#3b82f6,#2563eb);
+    box-shadow: 0 8px 20px rgba(37,99,235,0.18);
 }
+.student-avatar img { width: 100%; height: 100%; object-fit: cover; display:block; }
 
-/* student-avatar icon styles: ensure svg fills nicely */
-.student-avatar svg { width: 40px; height: 40px; display:block; fill: #fff; }
-
-.student-info { flex: 1 1 auto; min-width: 0; }
-.student-name { font-weight: 800; font-size: 18px; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Card content flows */
+.student-info { flex: 1; overflow: hidden; display:flex; flex-direction:column; gap:6px; }
+.student-name { font-weight: 800; font-size: 18px; color: #fff; margin-bottom: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .student-meta { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; flex-wrap:wrap; }
+.phase-tag { background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 8px; font-size: 12px; color:#cfe8ff; border: 1px solid rgba(59,130,246,0.08); font-weight:700; }
 
-.phase-tag { background: rgba(255,255,255,0.04); padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; color:#e6eefc; border: 1px solid rgba(59,130,246,0.08); }
-
-.card-body { padding-top: 6px; display:flex; flex-direction:column; gap:10px; width: 100%; }
+.card-body { padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.03); display:flex; gap:12px; align-items:center; width:100%; justify-content:space-between; margin-top:8px; }
 .subjects-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; display: block; }
-.subject-chips { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
-.subject-chip { background: rgba(59, 130, 246, 0.08); color: #cfe8ff; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid rgba(59, 130, 246, 0.12); }
-.more-subjects { font-size: 12px; color: var(--text-secondary); padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.02); }
+.subject-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items:center; }
+.subject-chip { background: rgba(59, 130, 246, 0.08); color: #93c5fd; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.12); }
+.more-subjects { font-size: 12px; color: var(--text-secondary); padding: 4px; }
 
-.status-badge { position: absolute; top: 12px; left: 16px; font-size: 11px; padding: 6px 10px; border-radius: 12px; font-weight: 800; letter-spacing: .4px; }
-.st-active { background: linear-gradient(90deg, rgba(67,207,102,0.12), rgba(67,207,102,0.06)); color: #43cf66; border: 1px solid rgba(67, 207, 102, 0.15); }
-.st-inactive { background: linear-gradient(90deg, rgba(255,99,71,0.08), rgba(255,99,71,0.03)); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.12); }
+.status-badge { position: absolute; top: 14px; left: 18px; font-size: 11px; padding: 6px 10px; border-radius: 999px; font-weight: 800; }
+.st-active { background: rgba(67, 207, 102, 0.12); color: #43cf66; border: 1px solid rgba(67, 207, 102, 0.18); }
+.st-inactive { background: rgba(255, 99, 71, 0.12); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.18); }
 
-.progress-wrapper { margin-top: 6px; display: flex; align-items: center; gap: 10px; }
-.progress-bar-bg { flex: 1; height: 8px; background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #43cf66, #2fb850); border-radius: 999px; transition: width 0.6s ease; }
-.progress-text { font-size: 12px; color: var(--text-secondary); width: 44px; text-align: left; }
+.progress-wrapper { margin-top: 8px; display: flex; align-items: center; gap: 10px; width: 260px; max-width: 40%; }
+.progress-bar-bg { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg,var(--success-color), #2fbf55); border-radius: 999px; }
+.progress-text { font-size: 12px; color: var(--text-secondary); width: 42px; text-align: left; }
 
-/* Action Menu - make the three dots clear and visible */
-.action-menu { position: absolute; top: 12px; right: 12px; z-index: 10; }
-.action-menu-toggle {
-    color: var(--text-secondary);
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    width: 40px;
-    height: 40px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.12s ease;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    padding: 6px;
-}
-.action-menu-toggle svg { width: 14px; height: 14px; fill: currentColor; opacity: 0.95; }
-.action-menu-toggle:hover {
-    background: linear-gradient(90deg, rgba(59,130,246,0.12), rgba(99,102,241,0.06));
-    color: #fff;
-    transform: translateY(-2px);
-}
-.action-menu-dropdown { position: absolute; right: 0; top: 48px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0,0,0,0.6); min-width: 180px; display: none; z-index: 20; padding: 6px; }
+/* Action Menu */
+.action-menu { position: absolute; top: 10px; left: 10px; z-index: 10; }
+.action-menu-toggle { color: var(--text-secondary); background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; border-radius: 50%; transition: background 0.2s; }
+.action-menu-toggle:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.action-menu-dropdown { position: absolute; left: 0; top: 35px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
 .action-menu-dropdown.active { display: block; }
-.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; border-radius: 8px; }
+.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; }
 .action-menu-dropdown button:hover { background-color: rgba(255, 255, 255, 0.03); }
-.delete-action { color: var(--danger-color); font-weight: 700; }
+.delete-action { color: var(--danger-color); }
 
 /* --- BOTTOM NAV --- */
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 12px; z-index: 2000; padding-left: 20px; padding-right: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.4); }
@@ -342,15 +312,12 @@ html,body{
 #custom-alert-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center; }
 #custom-alert-box { background:rgba(21, 21, 23, 0.95); padding:25px; border-radius:var(--radius); width:350px; border:1px solid var(--border-color); text-align:center; }
 
-/* Responsive adjustments */
-@media (max-width: 800px) {
-  .card-header { min-width: 120px; }
-  .student-card { flex-direction: column; align-items: flex-start; padding: 14px; }
-  .student-avatar { width: 56px; height: 56px; font-size: 20px; }
-  .progress-text { width: 40px; font-size: 11px; }
-  .action-menu { top: 10px; right: 8px; }
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .student-avatar { width: 58px; height: 58px; }
+  .student-name { font-size: 16px; }
+  .progress-wrapper { width: 120px; max-width: 40%; }
 }
-
 </style>
 </head>
 <body>
@@ -382,14 +349,10 @@ html,body{
             </svg>
           </div>
 
-          <!-- Level filters (ابتدائي متوسط ثانوي) -->
-          <div class="level-filters" id="levelFilters">
-              <button class="level-btn active" data-level="">الكل</button>
-              <button class="level-btn" data-level="ابتدائي">ابتدائي</button>
-              <button class="level-btn" data-level="متوسط">متوسط</button>
-              <button class="level-btn" data-level="ثانوي">ثانوي</button>
+          <!-- Level filters added under search -->
+          <div class="level-filters" id="levelFilters" aria-label="تصفية حسب المستوى">
+            <!-- Buttons will be populated by JS -->
           </div>
-
       </div>
   </div>
 
@@ -513,7 +476,7 @@ html,body{
   const loadingMessage = document.getElementById('loadingMessage');
   const searchInput = document.getElementById('searchInput'); 
   const studentCountBadge = document.getElementById('studentCountBadge');
-  const levelFilters = document.getElementById('levelFilters');
+  const levelFiltersContainer = document.getElementById('levelFilters');
 
   // Registration Vars
   const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
@@ -535,43 +498,51 @@ html,body{
   const cardStream = document.getElementById('cardStream');
   const cardStreamRow = document.getElementById('cardStreamRow');
 
+  // Icon URL provided by user (used as default avatar)
+  const DEFAULT_ICON = "https://res.cloudinary.com/duixjs8az/image/upload/v1766404501/post_media/1766404500962-44bd283ec63956d10ff8fbe4859ba3b6.jpg";
+
   let COURSES_DATA = {}; 
   let html5QrCode = null; 
-  let levelFilter = ''; // '' means all
+  let selectedLevelFilter = 'كل المستويات';
 
-  // --- Search & Level Filtering ---
-  function applyFilters() {
-      const term = searchInput.value.trim().toLowerCase();
+  // --- Level Filters Setup ---
+  const LEVEL_BUTTONS = ['كل المستويات', 'مبتدئ', 'متوسط', 'متقدم'];
+  function renderLevelFilters() {
+      levelFiltersContainer.innerHTML = '';
+      LEVEL_BUTTONS.forEach(lbl => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'level-filter-btn' + (lbl === selectedLevelFilter ? ' active' : '');
+          btn.textContent = lbl;
+          btn.dataset.level = lbl;
+          btn.addEventListener('click', () => {
+              document.querySelectorAll('.level-filter-btn').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              selectedLevelFilter = btn.dataset.level;
+              filterCards();
+          });
+          levelFiltersContainer.appendChild(btn);
+      });
+  }
+  renderLevelFilters();
+
+  // --- Search + Filter Functionality ---
+  function filterCards() {
+      const term = (searchInput.value || '').toLowerCase();
       const cards = document.querySelectorAll('.student-card');
-      let visibleCount = 0;
       cards.forEach(card => {
           const name = (card.dataset.name || '').toLowerCase();
           const subjects = (card.dataset.subjects || '').toLowerCase();
-          const phase = (card.dataset.phase || '');
-          const matchesTerm = (name.includes(term) || subjects.includes(term));
-          const matchesLevel = !levelFilter || phase === levelFilter;
-          if (matchesTerm && matchesLevel) {
-              card.style.display = 'flex';
-              visibleCount++;
-          } else {
-              card.style.display = 'none';
-          }
+          const level = (card.dataset.level || '').toLowerCase();
+
+          const matchesSearch = !term || name.includes(term) || subjects.includes(term);
+          const matchesLevel = selectedLevelFilter === 'كل المستويات' || (level && level.includes(selectedLevelFilter.toLowerCase()));
+          
+          card.style.display = (matchesSearch && matchesLevel) ? 'flex' : 'none';
       });
-      studentCountBadge.textContent = visibleCount;
   }
 
-  searchInput.addEventListener('input', applyFilters);
-
-  // Level buttons
-  levelFilters.addEventListener('click', (e) => {
-      const btn = e.target.closest('.level-btn');
-      if (!btn) return;
-      // toggle active class
-      document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      levelFilter = btn.dataset.level || '';
-      applyFilters();
-  });
+  searchInput.addEventListener('input', () => filterCards());
 
   // --- Tab Switching ---
   function switchTab(tabName) {
@@ -782,7 +753,6 @@ html,body{
           loadingMessage.style.display = 'none';
           
           const students = Object.values(data).sort((a,b) => b.registeredAt - a.registeredAt);
-          // don't update badge here directly — applyFilters will update based on visible
           studentCountBadge.textContent = students.length;
 
           if (students.length === 0) {
@@ -794,15 +764,20 @@ html,body{
               const card = document.createElement('div');
               card.className = 'student-card';
               
-              const initials = std.name.split(' ').map(n=>n[0]).join('').substring(0,2);
+              // Determine avatar (photo or default icon)
+              const avatarUrl = std.photo || std.avatarUrl || DEFAULT_ICON;
+              // Determine level label - read many possible keys (flexible)
+              const levelLabel = (std.level && String(std.level)) || std.levelLabel || std.levelName || std.tier || std.levelText || '';
+              const normalizedLevel = levelLabel ? String(levelLabel) : '';
+
               const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
               
               card.dataset.name = std.name;
               card.dataset.subjects = subjectNames;
-              card.dataset.phase = std.phase || (std.level || '');
+              card.dataset.level = normalizedLevel;
 
-              const totalReq = std.subjects ? std.subjects.reduce((a,b)=>a+parseInt(b.totalSessions || b.sessionCount || 0),0) : 0;
-              const totalDone = std.subjects ? std.subjects.reduce((a,b)=>a+(b.completedSessions || 0),0) : 0;
+              const totalReq = std.subjects ? std.subjects.reduce((a,b)=>a+parseInt(b.totalSessions||b.sessionCount||0,10),0) : 0;
+              const totalDone = std.subjects ? std.subjects.reduce((a,b)=>a+(parseInt(b.completedSessions||b.done||0,10)),0) : 0;
               const isActive = totalDone < totalReq;
               const statusClass = isActive ? 'st-active' : 'st-inactive';
               const statusText = isActive ? 'نشط' : 'منتهي';
@@ -815,18 +790,12 @@ html,body{
                   if(std.subjects.length > 4) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 4}</span>`;
               } else { subjectsHtml = '<span class="more-subjects">لا توجد مواد</span>'; }
 
-              const progressPercent = totalReq > 0 ? Math.min(100, (totalDone / totalReq) * 100) : 0;
+              const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
+              // Build card content using avatar image
               card.innerHTML = `
                   <div class="action-menu">
-                      <button class="action-menu-toggle" aria-label="خيارات">
-                        <!-- clearer three dots icon -->
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-                          <circle cx="12" cy="5" r="1.6"></circle>
-                          <circle cx="12" cy="12" r="1.6"></circle>
-                          <circle cx="12" cy="19" r="1.6"></circle>
-                        </svg>
-                      </button>
+                      <button class="action-menu-toggle">⋮</button>
                       <div class="action-menu-dropdown">
                           <button class="delete-action" onclick="confirmDelete('${std.id}', '${std.name}')">حذف الطالب</button>
                       </div>
@@ -834,39 +803,47 @@ html,body{
                   
                   <span class="status-badge ${statusClass}">${statusText}</span>
 
-                  <div class="card-header">
-                      <div class="student-avatar" title="طالب">
-                        <!-- student icon -->
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                          <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.86 0-7 3.14-7 7h2.5c0-2.485 2.015-4.5 4.5-4.5s4.5 2.015 4.5 4.5H19c0-3.86-3.14-7-7-7z"/>
-                        </svg>
-                      </div>
+                  <div class="student-avatar" aria-hidden="true">
+                      <img crossorigin="anonymous" src="${avatarUrl}" alt="${std.name}">
                   </div>
 
                   <div class="student-info">
-                      <div class="student-name">${std.name}</div>
-                      <div class="student-meta">
-                          <span class="phase-tag">${std.phase || std.level || std.year || ''}</span>
-                          ${std.stream && std.stream !== 'عامة' ? `<span>• ${std.stream}</span>` : ''}
-                          <span style="color:var(--text-secondary); font-weight:600;">${std.year ? 'سنة ' + std.year : ''}</span>
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                        <div style="flex:1; min-width:0;">
+                          <div class="student-name">${std.name}</div>
+                          <div class="student-meta">
+                              <span class="phase-tag">${std.year || ''}</span>
+                              ${std.stream && std.stream !== 'عامة' ? `<span>• ${std.stream}</span>` : ''}
+                              ${normalizedLevel ? `<span style="margin-inline-start:6px; color:var(--text-secondary); font-weight:600;">${normalizedLevel}</span>` : ''}
+                          </div>
+                        </div>
+                        <div style="text-align:left; min-width:120px;">
+                          <div style="font-size:12px; color:var(--text-secondary);">تفاصيل</div>
+                        </div>
                       </div>
 
                       <div class="card-body">
-                          <span class="subjects-label">المواد المسجلة:</span>
-                          <div class="subject-chips">${subjectsHtml}</div>
-                          
-                          <div class="progress-wrapper">
-                              <div class="progress-bar-bg">
-                                  <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+                          <div style="display:flex; flex-direction:column; gap:8px;">
+                            <span class="subjects-label">المواد المسجلة:</span>
+                            <div class="subject-chips">${subjectsHtml}</div>
+                          </div>
+
+                          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                              <div class="progress-wrapper" title="التقدم">
+                                  <div class="progress-bar-bg">
+                                      <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+                                  </div>
+                                  <div class="progress-text">${Math.round(progressPercent)}%</div>
                               </div>
-                              <div class="progress-text">${Math.round(progressPercent)}%</div>
+                              <button class="btn-style btn-secondary" style="padding:6px 10px; font-size:13px;">عرض الملف</button>
                           </div>
                       </div>
                   </div>
               `;
 
               card.addEventListener('click', (e) => {
-                  if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action')) {
+                  // avoid navigation when clicking the menu or delete button
+                  if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action') && !e.target.closest('.btn-secondary')) {
                       window.location.href = `/profile.html?id=${std.id}`;
                   }
               });
@@ -882,10 +859,10 @@ html,body{
               studentCardsContainer.appendChild(card);
           });
 
-          // After rendering, apply active filters and counts
-          applyFilters();
+          // Ensure filters applied after cards are created
+          filterCards();
 
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error(e); loadingMessage.style.display = 'none'; studentCardsContainer.innerHTML = '<p style="text-align:center; color:#777; width:100%;">فشل تحميل البيانات.</p>'; }
   }
 
   window.confirmDelete = function(id, name) {
@@ -898,7 +875,7 @@ html,body{
           COURSES_DATA = await res.json();
           fetchStudentCards();
       } catch (e) {
-          // Even if /courses fails, still attempt to fetch students
+          // still attempt to fetch students even if courses fail
           fetchStudentCards();
       }
   }
