@@ -116,55 +116,107 @@ html,body{
 }
 #searchInput:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(40, 40, 45, 0.98); }
 
-/* --- STUDENT CARDS --- */
+/* --- STUDENT CARDS SECTION --- */
 .student-cards-section { padding: 10px 16px 20px 16px; max-width: 1200px; margin: 0 auto; }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
 .section-header h2 { font-size: 1.2rem; color: var(--text-secondary); margin: 0; font-weight: 600; }
 .count-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #fff; }
-.cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+/* --- NEW CARD STYLES (UPDATED) --- */
+.cards-container { 
+    display: flex; 
+    flex-direction: column; /* جعل البطاقات تحت بعضها */
+    gap: 16px; 
+}
 
 .student-card {
-  background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 18px;
-  display: flex; flex-direction: column; gap: 12px; cursor: pointer; position: relative; 
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
+    width: 100%; /* عرض كامل */
+    background: linear-gradient(145deg, #1e1e24 0%, #17171a 100%);
+    border: 1px solid var(--border-color); 
+    border-radius: 20px; 
+    padding: 20px;
+    display: flex; 
+    flex-direction: column; 
+    gap: 14px; 
+    cursor: pointer; 
+    position: relative; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-.student-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
-.student-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--accent-color); opacity: 0.5; transition: opacity 0.3s; }
-.student-card:hover::before { opacity: 1; }
 
-.card-header { display: flex; align-items: center; gap: 12px; }
+.student-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
+
+/* الخط الجانبي الملون */
+.student-card::before { 
+    content: ''; position: absolute; top: 0; right: 0; width: 5px; height: 100%; 
+    background: linear-gradient(to bottom, var(--accent-color), #1d4ed8);
+    opacity: 1; 
+}
+
+.card-header { display: flex; align-items: center; gap: 15px; padding-left: 30px; /* مساحة لحالة الطالب */ }
+
 .student-avatar {
-    width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px;
-    flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    width: 65px; 
+    height: 65px; 
+    border-radius: 50%; /* دائرية */
+    background: #000;
+    flex-shrink: 0; 
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); /* إطار مضيء */
+    overflow: hidden;
+    border: 2px solid rgba(59, 130, 246, 0.3);
 }
-.student-info { flex: 1; overflow: hidden; }
-.student-name { font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.student-meta { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-.phase-tag { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
 
-.card-body { padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
-.subjects-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; display: block; }
-.subject-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.subject-chip { background: rgba(59, 130, 246, 0.1); color: #93c5fd; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid rgba(59, 130, 246, 0.15); }
-.more-subjects { font-size: 10px; color: var(--text-secondary); padding: 4px; }
-.status-badge { position: absolute; top: 18px; left: 40px; font-size: 10px; padding: 3px 8px; border-radius: 12px; font-weight: 700; }
+.student-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.student-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+.student-name { font-weight: 800; font-size: 17px; color: #fff; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.student-meta { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.phase-tag { background: rgba(255,255,255,0.06); padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+
+.card-body { padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+.card-stats-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.subjects-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.completion-text { font-size: 11px; color: var(--accent-color); font-weight: 700; }
+
+.subject-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.subject-chip { background: rgba(59, 130, 246, 0.08); color: #bfdbfe; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid rgba(59, 130, 246, 0.1); }
+.more-subjects { font-size: 11px; color: var(--text-secondary); padding: 5px; }
+
+.status-badge { position: absolute; top: 20px; left: 20px; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 700; z-index: 5; }
 .st-active { background: rgba(67, 207, 102, 0.15); color: #43cf66; border: 1px solid rgba(67, 207, 102, 0.2); }
 .st-inactive { background: rgba(255, 99, 71, 0.15); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.2); }
-.progress-wrapper { margin-top: 12px; display: flex; align-items: center; gap: 8px; }
-.progress-bar-bg { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: var(--success-color); border-radius: 2px; }
-.progress-text { font-size: 10px; color: var(--text-secondary); width: 30px; text-align: left; }
+
+.progress-wrapper { display: flex; align-items: center; gap: 8px; }
+.progress-bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--success-color); border-radius: 3px; transition: width 0.5s ease; }
 
 /* Action Menu */
-.action-menu { position: absolute; top: 10px; left: 10px; z-index: 10; }
-.action-menu-toggle { color: var(--text-secondary); background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; border-radius: 50%; transition: background 0.2s; }
-.action-menu-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.action-menu-dropdown { position: absolute; left: 0; top: 35px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
+.action-menu { position: absolute; top: 10px; left: 10px; z-index: 10; display: none; } /* مخفي افتراضيا يمكن إظهاره */
+.action-menu-toggle { color: var(--text-secondary); background: transparent; border: none; font-size: 20px; cursor: pointer; padding: 5px; }
+.action-menu-dropdown { position: absolute; left: 0; top: 30px; background-color: var(--drawer-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.5); min-width: 150px; display: none; z-index: 20; }
 .action-menu-dropdown.active { display: block; }
-.action-menu-dropdown button { width: 100%; padding: 10px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+.action-menu-dropdown button { width: 100%; padding: 12px 15px; text-align: right; background: none; border: none; color: var(--text-primary); cursor: pointer; font-size: 14px; }
 .action-menu-dropdown button:hover { background-color: rgba(255, 255, 255, 0.05); }
 .delete-action { color: var(--danger-color); }
+
+/* زر الثلاث نقاط يظهر في مكان خاص */
+.card-options-btn {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 22px;
+    padding: 5px 10px;
+    cursor: pointer;
+    z-index: 8;
+}
 
 /* --- BOTTOM NAV --- */
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-nav-height); background: rgba(21, 21, 23, 0.95); backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 12px; z-index: 2000; padding-left: 20px; padding-right: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.4); }
@@ -676,7 +728,7 @@ html,body{
       } catch(e) { showCustomAlert('فشل الحذف'); }
   }
 
-  // --- Generate Student Cards ---
+  // --- Generate Student Cards (UPDATED) ---
   async function fetchStudentCards() {
       loadingMessage.style.display = 'block'; studentCardsContainer.innerHTML = '';
       try {
@@ -696,7 +748,6 @@ html,body{
               const card = document.createElement('div');
               card.className = 'student-card';
               
-              const initials = std.name.split(' ').map(n=>n[0]).join('').substring(0,2);
               const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
               
               card.dataset.name = std.name;
@@ -710,60 +761,68 @@ html,body{
               
               let subjectsHtml = '';
               if(std.subjects && std.subjects.length > 0) {
-                  std.subjects.slice(0, 3).forEach(s => {
+                  std.subjects.slice(0, 4).forEach(s => {
                       subjectsHtml += `<span class="subject-chip">${s.name}</span>`;
                   });
-                  if(std.subjects.length > 3) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 3}</span>`;
+                  if(std.subjects.length > 4) subjectsHtml += `<span class="more-subjects">+${std.subjects.length - 4}</span>`;
               } else { subjectsHtml = '<span class="more-subjects">لا توجد مواد</span>'; }
 
               const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
+              // رابط الصورة المطلوب
+              const avatarSrc = "https://res.cloudinary.com/duixjs8az/image/upload/v1766404501/post_media/1766404500962-44bd283ec63956d10ff8fbe4859ba3b6.jpg";
+
               card.innerHTML = `
-                  <div class="action-menu">
-                      <button class="action-menu-toggle">⋮</button>
-                      <div class="action-menu-dropdown">
-                          <button class="delete-action" onclick="confirmDelete('${std.id}', '${std.name}')">حذف الطالب</button>
-                      </div>
+                  <button class="card-options-btn action-menu-toggle">⋮</button>
+                  <div class="action-menu-dropdown">
+                        <button class="delete-action" onclick="confirmDelete('${std.id}', '${std.name}')">حذف الطالب</button>
                   </div>
                   
                   <span class="status-badge ${statusClass}">${statusText}</span>
 
                   <div class="card-header">
-                      <div class="student-avatar">${initials}</div>
+                      <div class="student-avatar">
+                          <img src="${avatarSrc}" alt="Avatar">
+                      </div>
                       <div class="student-info">
                           <div class="student-name">${std.name}</div>
                           <div class="student-meta">
                               <span class="phase-tag">${std.year}</span>
-                              ${std.stream !== 'عامة' ? `<span>• ${std.stream}</span>` : ''}
+                              ${std.stream !== 'عامة' ? `<span> • ${std.stream}</span>` : ''}
                           </div>
                       </div>
                   </div>
 
                   <div class="card-body">
-                      <span class="subjects-label">المواد المسجلة:</span>
+                      <div class="card-stats-row">
+                          <span class="subjects-label">المواد المسجلة:</span>
+                          <span class="completion-text">${Math.round(progressPercent)}% مكتمل</span>
+                      </div>
+                      
                       <div class="subject-chips">${subjectsHtml}</div>
                       
                       <div class="progress-wrapper">
                           <div class="progress-bar-bg">
                               <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
                           </div>
-                          <div class="progress-text">${Math.round(progressPercent)}%</div>
                       </div>
                   </div>
               `;
 
               card.addEventListener('click', (e) => {
-                  if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action')) {
+                  if(!e.target.closest('.card-options-btn') && !e.target.closest('.action-menu-dropdown')) {
                       window.location.href = `/profile.html?id=${std.id}`;
                   }
               });
 
-              const toggle = card.querySelector('.action-menu-toggle');
-              const menu = card.querySelector('.action-menu-dropdown');
-              toggle.addEventListener('click', (e) => {
+              // Toggle Menu
+              const toggleBtn = card.querySelector('.action-menu-toggle');
+              const dropdown = card.querySelector('.action-menu-dropdown');
+              
+              toggleBtn.addEventListener('click', (e) => {
                   e.stopPropagation();
-                  document.querySelectorAll('.action-menu-dropdown').forEach(m => { if(m!==menu) m.classList.remove('active'); });
-                  menu.classList.toggle('active');
+                  document.querySelectorAll('.action-menu-dropdown').forEach(d => { if(d !== dropdown) d.classList.remove('active'); });
+                  dropdown.classList.toggle('active');
               });
 
               studentCardsContainer.appendChild(card);
