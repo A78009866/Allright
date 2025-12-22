@@ -18,9 +18,9 @@
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
   --border-color: rgba(255,255,255,0.08);
-  --accent-color: #3b82f6; 
-  --danger-color: #ff6347; 
-  --success-color: #43cf66; 
+  --accent-color: #3b82f6;
+  --danger-color: #ff6347;
+  --success-color: #43cf66;
   --nav-height: 72px;
   --bottom-nav-height: 75px;
   --radius: 16px;
@@ -33,12 +33,12 @@ html,body{
   margin:0;
   font-family: "Tajawal", sans-serif;
   background-color: var(--bg);
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(255, 99, 71, 0.03) 0%, transparent 25%);
   color: var(--text-primary);
-  max-width: 100vw; 
-  overflow-x: hidden; 
+  max-width: 100vw;
+  overflow-x: hidden;
   -webkit-font-smoothing:antialiased;
   direction: rtl;
   padding-bottom: var(--bottom-nav-height);
@@ -52,7 +52,7 @@ html,body{
 }
 
 /* --- BUTTONS --- */
-.btn-style { 
+.btn-style {
     padding: 10px 18px;
     border: none;
     border-radius: 12px;
@@ -76,10 +76,10 @@ html,body{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px; 
-  margin: 10px; 
+  padding: 0 15px;
+  margin: 10px;
   border-radius: var(--radius);
-  background: rgba(26, 26, 29, 0.85); 
+  background: rgba(26, 26, 29, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -92,7 +92,7 @@ html,body{
 .brand-group .title .tag{ font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
 
 .nav-buttons .btn-scan {
-    background: rgba(255,255,255,0.05); 
+    background: rgba(255,255,255,0.05);
     color: var(--text-secondary);
     border: 1px solid var(--border-color);
     padding: 8px 12px;
@@ -116,26 +116,20 @@ html,body{
 }
 #searchInput:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); background: rgba(40, 40, 45, 0.98); }
 
-/* --- TABS (replaces previous simple buttons) --- */
-.level-tabs { display:flex; gap:8px; justify-content:center; margin-top:10px; }
-.tab-btn {
+/* --- LEVEL FILTERS --- */
+.level-filters { display:flex; gap:8px; justify-content:center; margin-top:10px; }
+.level-button {
   padding: 8px 14px;
-  background: transparent;
+  background: rgba(255,255,255,0.03);
   color: var(--text-secondary);
-  border: none;
-  border-bottom: 2px solid transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 700;
-  border-radius: 6px 6px 0 0;
-  transition: color 0.15s, background 0.12s, transform 0.08s;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, transform 0.08s;
 }
-.tab-btn:hover { transform: translateY(-2px); color: #fff; }
-.tab-btn.active {
-  color: #fff; 
-  background: linear-gradient(90deg, rgba(59,130,246,0.12), rgba(99,102,241,0.04));
-  border-bottom-color: var(--accent-color);
-  box-shadow: 0 6px 18px rgba(59,130,246,0.07);
-}
+.level-button:hover { transform: translateY(-2px); }
+.level-button.active { background: linear-gradient(90deg, rgba(59,130,246,0.18), rgba(99,102,241,0.08)); color: var(--accent-color); border-color: rgba(59,130,246,0.35); }
 
 /* --- STUDENT CARDS --- */
 .student-cards-section { padding: 10px 16px 20px 16px; max-width: 1200px; margin: 0 auto; }
@@ -350,13 +344,6 @@ html,body{
             </svg>
           </div>
 
-          <!-- Tabs that filter students by level -->
-          <div class="level-tabs" id="levelTabs" role="tablist" aria-label="مستويات الطلاب">
-            <button role="tab" aria-selected="true" class="tab-btn active" data-level="all">الكل</button>
-            <button role="tab" class="tab-btn" data-level="ابتدائي">ابتدائي</button>
-            <button role="tab" class="tab-btn" data-level="متوسط">متوسط</button>
-            <button role="tab" class="tab-btn" data-level="ثانوي">ثانوي</button>
-          </div>
       </div>
   </div>
 
@@ -365,12 +352,12 @@ html,body{
         <h2>قائمة الطلاب</h2>
         <span class="count-badge" id="studentCountBadge">0</span>
       </div>
-      
+
       <div class="cards-container" id="studentCardsContainer">
           <p id="loadingMessage" style="text-align: center; color: var(--text-secondary); margin-top:20px;">جارٍ تحميل البيانات...</p>
       </div>
   </div>
-  
+
   <nav class="bottom-nav">
       <button class="nav-item active" id="btnHome" onclick="switchTab('home')">
           <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -392,7 +379,7 @@ html,body{
   <div class="modal-overlay" id="registrationModal">
     <div class="modal-content">
       <button class="modal-close-btn" onclick="closeRegistrationModal()">&times;</button>
-      
+
       <div id="registrationForm">
         <h3>تسجيل طالب جديد</h3>
         <div class="name-fields">
@@ -414,7 +401,7 @@ html,body{
 
       <div class="modal-result" id="modalResult" style="display:none; text-align: center;">
         <h3 style="color: var(--success-color); border-bottom:none;">تم تسجيل الطالب بنجاح!</h3>
-        
+
         <div class="printable-card-container" id="printableCard">
             <div class="pc-header">
                 <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo" class="pc-logo">
@@ -423,7 +410,7 @@ html,body{
                     <span>للتعليم والتطوير</span>
                 </div>
             </div>
-            
+
             <div class="pc-body">
                 <div class="pc-student-name" id="cardStudentName">اسم الطالب هنا</div>
                 <div class="pc-info-row">
@@ -432,12 +419,12 @@ html,body{
                 <div class="pc-info-row" id="cardStreamRow">
                     <span id="cardStream">الشعبة</span>
                 </div>
-                
+
                 <div class="pc-qr-box">
                     <img id="qrCodeImage" src="" alt="QR Code">
                 </div>
             </div>
-            
+
             <div class="pc-footer">
                 بطاقة طالب مدرسية • يرجى إظهار هذه البطاقة عند الدخول
             </div>
@@ -457,7 +444,7 @@ html,body{
 
   <div class="qr-scanner-overlay" id="qrScannerOverlay">
     <p class="scan-message" style="color:#fff; margin-bottom:15px;">امسح رمز QR الخاص بالطالب</p>
-    <div id="reader"></div> 
+    <div id="reader"></div>
     <button class="btn-style" style="background: var(--danger-color); color: white; margin-top:15px;" onclick="stopScannerAndClose()">إلغاء</button>
   </div>
 
@@ -478,14 +465,14 @@ html,body{
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
   const loadingMessage = document.getElementById('loadingMessage');
-  const searchInput = document.getElementById('searchInput'); 
+  const searchInput = document.getElementById('searchInput');
   const studentCountBadge = document.getElementById('studentCountBadge');
-  
+
   // Registration Vars
   const openRegisterModalBtn = document.getElementById('openRegisterModalBtn');
   const registrationModal = document.getElementById('registrationModal');
-  const scanBtn = document.getElementById('scanBtn'); 
-  const qrScannerOverlay = document.getElementById('qrScannerOverlay'); 
+  const scanBtn = document.getElementById('scanBtn');
+  const qrScannerOverlay = document.getElementById('qrScannerOverlay');
   const phaseSelect = document.getElementById('phaseSelect');
   const yearSelect = document.getElementById('yearSelect');
   const streamSelect = document.getElementById('streamSelect');
@@ -494,7 +481,7 @@ html,body{
   const registrationForm = document.getElementById('registrationForm');
   const modalResult = document.getElementById('modalResult');
   const qrCodeImage = document.getElementById('qrCodeImage');
-  const levelTabs = document.getElementById('levelTabs');
+  const levelFilters = document.getElementById('levelFilters');
 
   // Card Fields
   const cardStudentName = document.getElementById('cardStudentName');
@@ -503,8 +490,8 @@ html,body{
   const cardStream = document.getElementById('cardStream');
   const cardStreamRow = document.getElementById('cardStreamRow');
 
-  let COURSES_DATA = {}; 
-  let html5QrCode = null; 
+  let COURSES_DATA = {};
+  let html5QrCode = null;
   let currentLevelFilter = 'all';
 
   // default avatar/icon supplied by user
@@ -524,42 +511,23 @@ html,body{
       updateVisibleCount();
   });
 
-  // --- Tabs (level) Functionality ---
-  levelTabs.addEventListener('click', (e) => {
-      const btn = e.target.closest('.tab-btn');
+  // --- Level filter logic ---
+  levelFilters.addEventListener('click', (e) => {
+      const btn = e.target.closest('.level-button');
       if(!btn) return;
-      // visually mark active
-      levelTabs.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      // set active class
+      levelFilters.querySelectorAll('.level-button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      btn.setAttribute('aria-selected','true');
-
       currentLevelFilter = btn.dataset.level || 'all';
       applyLevelFilter();
   });
 
-  // support keyboard navigation for tabs (Arrow keys)
-  levelTabs.addEventListener('keydown', (e) => {
-      const focusable = Array.from(levelTabs.querySelectorAll('.tab-btn'));
-      const idx = focusable.indexOf(document.activeElement);
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          const prev = focusable[(idx - 1 + focusable.length) % focusable.length];
-          prev.focus();
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          const next = focusable[(idx + 1) % focusable.length];
-          next.focus();
-      } else if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          document.activeElement.click();
-      }
-  });
-
   function applyLevelFilter() {
       const cards = document.querySelectorAll('.student-card');
-      const term = searchInput.value.toLowerCase();
       cards.forEach(card => {
           const matchesLevel = (currentLevelFilter === 'all') || ((card.dataset.level || '').toLowerCase() === currentLevelFilter.toLowerCase());
+          // also respect search term
+          const term = searchInput.value.toLowerCase();
           const name = (card.dataset.name || '').toLowerCase();
           const subjects = (card.dataset.subjects || '').toLowerCase();
           const matchesText = name.includes(term) || subjects.includes(term);
@@ -575,7 +543,7 @@ html,body{
       studentCountBadge.textContent = visible;
   }
 
-  // --- Tab Switching --- (bottom nav)
+  // --- Tab Switching ---
   function switchTab(tabName) {
     if (tabName === 'stats') window.location.href = '/stats.html';
   }
@@ -587,14 +555,14 @@ html,body{
       const alertTitle = document.getElementById('custom-alert-title');
       const okBtn = document.getElementById('custom-alert-ok');
       const cancelBtn = document.getElementById('custom-alert-cancel');
-      
+
       alertTitle.textContent = title;
       msg.innerHTML = message;
       cancelBtn.style.display = 'inline-flex';
       okBtn.textContent = 'تأكيد الحذف';
-      okBtn.className = 'btn-style btn-primary delete-action'; 
+      okBtn.className = 'btn-style btn-primary delete-action';
       overlay.style.display = 'flex';
-      
+
       okBtn.onclick = () => { overlay.style.display = 'none'; callback(true); };
       cancelBtn.onclick = () => { overlay.style.display = 'none'; callback(false); };
   }
@@ -605,7 +573,7 @@ html,body{
       const alertTitle = document.getElementById('custom-alert-title');
       const okBtn = document.getElementById('custom-alert-ok');
       const cancelBtn = document.getElementById('custom-alert-cancel');
-      
+
       alertTitle.textContent = title;
       msg.innerHTML = message;
       cancelBtn.style.display = 'none';
@@ -623,8 +591,8 @@ html,body{
 
   // --- QR Scanner ---
   async function onScanSuccess(decodedText) {
-    await stopScannerAndClose(); 
-    const studentId = decodedText.trim(); 
+    await stopScannerAndClose();
+    const studentId = decodedText.trim();
     if (studentId) window.location.href = `/profile.html?id=${studentId}`;
     else showCustomAlert('كود غير صالح', 'خطأ');
   }
@@ -646,7 +614,7 @@ html,body{
   openRegisterModalBtn.addEventListener('click', () => { openRegistrationModal(); populatePhases(); });
   function openRegistrationModal() { registrationModal.classList.add('open'); registrationForm.style.display = 'block'; modalResult.style.display = 'none'; }
   function closeRegistrationModal() { registrationModal.classList.remove('open'); document.getElementById('studentName').value = ''; document.getElementById('studentLastName').value = ''; phaseSelect.value = ''; yearSelect.disabled = true; streamSelect.disabled = true; subjectCheckboxes.innerHTML = 'الرجاء اختيار المرحلة...'; }
-  
+
   // --- Form Population (Phases/Years/Streams) ---
   function populatePhases() {
     phaseSelect.innerHTML = '<option value="" disabled selected>اختر المرحلة</option>';
@@ -694,13 +662,13 @@ html,body{
       const phase = phaseSelect.value;
       const year = yearSelect.value;
       const stream = streamSelect.disabled ? 'عامة' : streamSelect.value;
-      
+
       const subs = Array.from(document.querySelectorAll('input[name="subj"]:checked')).map(cb => ({
           name: cb.value, sessionCount: document.getElementById(`c-${cb.id}`).value
       }));
 
       if (!name || !last || !phase || !year || subs.length === 0) return showCustomAlert('أكمل البيانات');
-      
+
       const registerBtnOriginalText = registerButton.textContent;
       registerButton.textContent = 'جارٍ الحفظ...';
       registerButton.disabled = true;
@@ -723,11 +691,11 @@ html,body{
                   cardStreamRow.style.display = 'none';
               }
               qrCodeImage.src = data.qrCodeUrl;
-              
+
               // Switch Views
-              registrationForm.style.display = 'none'; 
+              registrationForm.style.display = 'none';
               modalResult.style.display = 'block';
-              
+
               fetchStudentCards();
           } else { throw new Error(data.message); }
       } catch (e) {
@@ -747,8 +715,8 @@ html,body{
       btnElement.disabled = true;
 
       html2canvas(element, {
-          scale: 3, 
-          useCORS: true, 
+          scale: 3,
+          useCORS: true,
           backgroundColor: "#ffffff",
           allowTaint: true
       }).then(canvas => {
@@ -782,7 +750,7 @@ html,body{
           const res = await fetch('/students');
           const data = await res.json();
           loadingMessage.style.display = 'none';
-          
+
           const students = Object.values(data).sort((a,b) => b.registeredAt - a.registeredAt);
           // Show total (before filtering)
           studentCountBadge.textContent = students.length;
@@ -795,13 +763,14 @@ html,body{
           students.forEach(std => {
               const card = document.createElement('div');
               card.className = 'student-card';
-              
-              // Prefer common fields for level; try different keys
-              const level = std.phase || std.level || std.stage || (std.year && mapYearToLevel(std.year)) || '';
+
+              // Prefer known property names for level. fallback to empty string.
+              const level = std.phase || std.level || std.stage || '';
               const nameFull = std.name || `${std.firstName || ''} ${std.lastName || ''}`.trim() || 'طالب';
 
               const subjectNames = std.subjects ? std.subjects.map(s => s.name).join(' ') : '';
-              
+
+              // expose dataset for filtering & search
               card.dataset.name = nameFull;
               card.dataset.subjects = subjectNames;
               card.dataset.level = level;
@@ -811,7 +780,8 @@ html,body{
               const isActive = totalReq === 0 ? false : (totalDone < totalReq);
               const statusClass = isActive ? 'st-active' : 'st-inactive';
               const statusText = isActive ? 'نشط' : 'منتهي';
-              
+
+              // minimal subject display
               let subjectsHtml = '';
               if(std.subjects && std.subjects.length > 0) {
                   subjectsHtml = `<span style="font-size:12px; color:var(--text-secondary);">${std.subjects.slice(0,2).map(s => s.name).join('، ')}</span>`;
@@ -819,6 +789,7 @@ html,body{
 
               const progressPercent = totalReq > 0 ? (totalDone / totalReq) * 100 : 0;
 
+              // build card inner HTML with icon instead of initials
               card.innerHTML = `
                   <div class="action-menu">
                       <button class="action-menu-toggle">⋮</button>
@@ -826,7 +797,7 @@ html,body{
                           <button class="delete-action" onclick="confirmDelete('${std.id}', '${nameFull}')">حذف الطالب</button>
                       </div>
                   </div>
-                  
+
                   <div class="student-avatar">
                       <img src="${std.avatarUrl || DEFAULT_ICON}" alt="avatar">
                   </div>
@@ -834,7 +805,7 @@ html,body{
                   <div class="student-info">
                       <div class="student-name">${nameFull}</div>
                       <div class="student-meta">
-                          <span class="phase-tag">${level || (std.year || '')}</span>
+                          <span class="phase-tag">${level || std.year || ''}</span>
                           ${std.stream && std.stream !== 'عامة' ? `<span>• ${std.stream}</span>` : ''}
                       </div>
                       <div style="display:flex; justify-content:flex-end; gap:10px; align-items:center;">
@@ -853,6 +824,7 @@ html,body{
                   </div>
               `;
 
+              // click behaviors
               card.addEventListener('click', (e) => {
                   if(!e.target.closest('.action-menu') && !e.target.closest('.delete-action')) {
                       window.location.href = `/profile.html?id=${std.id}`;
@@ -870,28 +842,17 @@ html,body{
               studentCardsContainer.appendChild(card);
           });
 
-          // ensure default tab is 'الكل'
-          const defaultTab = levelTabs.querySelector('[data-level="all"]');
-          if (defaultTab) {
-            levelTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            defaultTab.classList.add('active');
-            defaultTab.setAttribute('aria-selected','true');
+          // After rendering, apply any active level filter
+          // Default: set 'الكل' as active
+          const activeBtn = levelFilters.querySelector('[data-level="all"]');
+          if(activeBtn) {
+            levelFilters.querySelectorAll('.level-button').forEach(b => b.classList.remove('active'));
+            activeBtn.classList.add('active');
             currentLevelFilter = 'all';
           }
           applyLevelFilter();
 
       } catch (e) { console.error(e); loadingMessage.style.display = 'none'; }
-  }
-
-  // attempt to map ambiguous year values to levels (simple heuristic)
-  function mapYearToLevel(year) {
-    if (!year) return '';
-    const y = String(year);
-    // very simple rules — adjust as needed for your data
-    if (y.includes('ابتد')) return 'ابتدائي';
-    if (y.includes('متوس') || y.match(/[4-6]|متوسط/)) return 'متوسط';
-    if (y.includes('ثان') || y.match(/[7-12]|ثانوي/)) return 'ثانوي';
-    return '';
   }
 
   window.confirmDelete = function(id, name) {
