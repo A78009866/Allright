@@ -385,62 +385,54 @@ app.get('/api/dashboard-stats', async (req, res) => {
         res.status(500).json({ message: 'Error calculating stats' });
     }
 });
-// --- Login API ---
-app.post('/api/login', (req, res) => {
-    const { password } = req.body;
-    const correctPassword = process.env.ADMIN_PASSWORD;
-
-    if (!correctPassword) {
-        return res.status(500).json({ success: false, message: 'Server Config Error' });
-    }
-
-    if (password === correctPassword) {
-        res.json({ success: true });
-    } else {
-        res.status(401).json({ success: false, message: 'كلمة المرور غير صحيحة' });
-    }
-});
-// --- Change Password API ---
-app.post('/api/change-password', (req, res) => {
+// البحث عن مسار تغيير كلمة المرور واستبداله بهذا المنطق
+app.post('/api/change-password', async (req, res) => {
     const { oldPassword, newPassword } = req.body;
-    const currentPassword = process.env.ADMIN_PASSWORD;
-
-    // 1. التحقق من كلمة المرور القديمة
-    if (oldPassword !== currentPassword) {
-        return res.status(401).json({ success: false, message: 'كلمة المرور الحالية غير صحيحة' });
-    }
-
-    if (!newPassword || newPassword.length < 4) {
-        return res.status(400).json({ success: false, message: 'كلمة المرور الجديدة قصيرة جداً' });
-    }
-
+    
     try {
-        // 2. قراءة ملف .env
-        const envPath = path.join(__dirname, '.env');
-        let envContent = fs.readFileSync(envPath, 'utf8');
-
-        // 3. استبدال كلمة المرور القديمة بالجديدة (باستخدام Regex لضمان الدقة)
-        // يبحث عن سطر يبدأ بـ ADMIN_PASSWORD= ويستبدله بالكامل
-        const regex = /^ADMIN_PASSWORD=.*$/m;
+        // جلب كلمة المرور الحالية من الفايربيز (نفترض وجود عقدة باسم settings)
+        const settingsRef = db.ref('settings/admin');
+        const snapshot = await settingsRef.once('value');
+        const adminData = snapshot.val();
         
-        if (regex.test(envContent)) {
-            envContent = envContent.replace(regex, `ADMIN_PASSWORD=${newPassword}`);
-        } else {
-            // إذا لم يجد المتغير (نادر الحدوث)، يقوم بإضافته
-            envContent += `\nADMIN_PASSWORD=${newPassword}`;
+        // إذا لم تكن موجودة بعد، نستخدم القيمة الافتراضية من env لأول مرة فقط
+        const currentPassword = (adminData && adminData.password) ? adminData.password : process.env.ADMIN_PASSWORD;
+
+        if (oldPassword !== currentPassword) {
+            return res.status(401).json({ success: false, message: 'كلمة المرور الحالية غير صحيحة' });
         }
 
-        // 4. كتابة الملف وتحديث الذاكرة
-        fs.writeFileSync(envPath, envContent);
-        process.env.ADMIN_PASSWORD = newPassword; // تحديث فوري بدون إعادة تشغيل
+        // تحديث كلمة المرور في الفايربيز بدلاً من ملف env
+        await settingsRef.update({ password: newPassword });
+        
+        // تحديث متغير الذاكرة المؤقتة إذا لزم الأمر
+        process.env.ADMIN_PASSWORD = newPassword;
 
-        res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح' });
-
+        res.json({ success: true });
     } catch (error) {
-        console.error('Error updating .env:', error);
-        res.status(500).json({ success: false, message: 'فشل في تحديث ملف النظام' });
+        console.error("Error changing password:", error);
+        res.status(500).json({ success: false, message: 'خطأ في تحديث البيانات' });
+    }
+});
+
+// يجب أيضاً تعديل مسار تسجيل الدخول (Login) ليتحقق من الفايربيز أولاً
+app.post('/api/login', async (req, res) => {
+    const { password } = req.body;
+    try {
+        const snapshot = await db.ref('settings/admin').once('value');
+        const adminData = snapshot.val();
+        const correctPassword = (adminData && adminData.password) ? adminData.password : process.env.ADMIN_PASSWORD;
+
+        if (password === correctPassword) {
+            res.json({ success: true });
+        } else {
+            res.status(401).json({ success: false, message: 'كلمة مرور خاطئة' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false });
     }
 });
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
 
 
