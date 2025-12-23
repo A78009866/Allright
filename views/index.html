@@ -102,7 +102,11 @@ html,body{
     display: flex; align-items: center; gap: 6px; font-size: 13px;
 }
 .nav-buttons .btn-scan svg { width: 18px; height: 18px; fill: currentColor; }
-
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* يضمن وجود مسافة ثابتة بين الأزرار */
+}
 /* --- SEARCH BAR --- */
 .search-section { padding: 10px 15px 5px 15px; position: sticky; top: 5px; z-index: 900; }
 .search-container { position: relative; max-width: 1200px; margin: 0 auto; }
@@ -1095,4 +1099,5 @@ html,body{
 </script>
 </body>
 </html>
+
 
