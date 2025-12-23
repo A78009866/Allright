@@ -6,7 +6,7 @@ const admin = require('firebase-admin');
 const QRCode = require('qrcode');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid'); 
-
+const fs = require('fs'); // تأكد من وجود هذا السطر في أعلى الملف مع الـ requires
 require('dotenv').config(); 
 
 const app = express();
@@ -385,6 +385,62 @@ app.get('/api/dashboard-stats', async (req, res) => {
         res.status(500).json({ message: 'Error calculating stats' });
     }
 });
+// --- Login API ---
+app.post('/api/login', (req, res) => {
+    const { password } = req.body;
+    const correctPassword = process.env.ADMIN_PASSWORD;
 
+    if (!correctPassword) {
+        return res.status(500).json({ success: false, message: 'Server Config Error' });
+    }
+
+    if (password === correctPassword) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'كلمة المرور غير صحيحة' });
+    }
+});
+// --- Change Password API ---
+app.post('/api/change-password', (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const currentPassword = process.env.ADMIN_PASSWORD;
+
+    // 1. التحقق من كلمة المرور القديمة
+    if (oldPassword !== currentPassword) {
+        return res.status(401).json({ success: false, message: 'كلمة المرور الحالية غير صحيحة' });
+    }
+
+    if (!newPassword || newPassword.length < 4) {
+        return res.status(400).json({ success: false, message: 'كلمة المرور الجديدة قصيرة جداً' });
+    }
+
+    try {
+        // 2. قراءة ملف .env
+        const envPath = path.join(__dirname, '.env');
+        let envContent = fs.readFileSync(envPath, 'utf8');
+
+        // 3. استبدال كلمة المرور القديمة بالجديدة (باستخدام Regex لضمان الدقة)
+        // يبحث عن سطر يبدأ بـ ADMIN_PASSWORD= ويستبدله بالكامل
+        const regex = /^ADMIN_PASSWORD=.*$/m;
+        
+        if (regex.test(envContent)) {
+            envContent = envContent.replace(regex, `ADMIN_PASSWORD=${newPassword}`);
+        } else {
+            // إذا لم يجد المتغير (نادر الحدوث)، يقوم بإضافته
+            envContent += `\nADMIN_PASSWORD=${newPassword}`;
+        }
+
+        // 4. كتابة الملف وتحديث الذاكرة
+        fs.writeFileSync(envPath, envContent);
+        process.env.ADMIN_PASSWORD = newPassword; // تحديث فوري بدون إعادة تشغيل
+
+        res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح' });
+
+    } catch (error) {
+        console.error('Error updating .env:', error);
+        res.status(500).json({ success: false, message: 'فشل في تحديث ملف النظام' });
+    }
+});
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
 
