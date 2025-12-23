@@ -302,7 +302,100 @@ html,body{
 #reader { width: 90%; max-width: 400px; border: 3px solid var(--accent-color); border-radius: var(--radius); overflow: hidden; }
 #custom-alert-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10000; justify-content:center; align-items:center; }
 #custom-alert-box { background:rgba(21, 21, 23, 0.95); padding:25px; border-radius:var(--radius); width:350px; border:1px solid var(--border-color); text-align:center; }
+/* تنسيق الخلفية الزجاجية السوداء */
+    .login-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.9); /* أسود داكن جداً */
+        backdrop-filter: blur(20px); /* تأثير ضبابي قوي */
+        z-index: 10000; /* فوق كل شيء */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease;
+    }
 
+    /* تنسيق البطاقة الزجاجية */
+    .login-card {
+        background: rgba(30, 30, 35, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 40px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .login-logo {
+        width: 80px; height: 80px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        border: 2px solid rgba(59, 130, 246, 0.3);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+    }
+
+    .login-header h2 {
+        margin: 0;
+        color: #fff;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .login-header p {
+        margin: 5px 0 25px 0;
+        color: #a1a1aa;
+        font-size: 14px;
+    }
+
+    .login-input {
+        width: 100%;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #fff;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 16px;
+        margin-bottom: 15px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .login-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        justify-content: center;
+    }
+
+    .login-error {
+        color: #ff6347;
+        font-size: 13px;
+        min-height: 20px;
+        margin-bottom: 10px;
+        display: none;
+    }
+    
+    /* Animation for shaking on error */
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(5px); }
+        50% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+        100% { transform: translateX(0); }
+    }
+    .shake { animation: shake 0.3s ease-in-out; }
 </style>
 </head>
 <body>
@@ -321,6 +414,12 @@ html,body{
         <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM17 13h-2v2h2v-2zm0 4h-2v2h2v-2zm-4-4v2h-2v-2h2z"/></svg>
         مسح QR
       </button>
+      <button onclick="openChangePassModal()" class="icon-btn" style="margin-left: 10px;">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+</button>
     </div>
   </header>
 
@@ -447,7 +546,41 @@ html,body{
         </div>
     </div>
 </div>
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="https://res.cloudinary.com/duixjs8az/image/upload/v1765132270/post_media/1765132269901-1765132158292.jpg" alt="Logo" class="login-logo">
+            <h2>أكاديمية المعالي</h2>
+            <p>يرجى تسجيل الدخول للمتابعة</p>
+        </div>
+        
+        <div class="login-body">
+            <input type="password" id="adminPasswordInput" class="login-input" placeholder="أدخل كلمة المرور..." onkeypress="handleEnter(event)">
+            <p id="loginErrorMsg" class="login-error"></p>
+            <button onclick="attemptLogin()" class="btn-style btn-primary login-btn">
+                دخول
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+            </button>
+        </div>
+    </div>
+</div>
+<div id="changePassModal" class="login-overlay" style="display: none; z-index: 10001;">
+    <div class="login-card" style="position: relative;">
+        <button onclick="closeChangePassModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; cursor: pointer;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
 
+        <h3 style="color:white; margin-top:0;">تغيير كلمة المرور</h3>
+        
+        <input type="password" id="oldPass" class="login-input" placeholder="كلمة المرور الحالية">
+        <input type="password" id="newPass" class="login-input" placeholder="كلمة المرور الجديدة">
+        
+        <button onclick="submitChangePass()" class="btn-style btn-primary login-btn">
+            حفظ التغييرات
+        </button>
+        <p id="changePassMsg" style="margin-top: 10px; font-size: 14px;"></p>
+    </div>
+</div>
 <script>
   // --- DOM Elements ---
   const studentCardsContainer = document.getElementById('studentCardsContainer');
@@ -830,7 +963,135 @@ html,body{
       } catch (e) {}
   }
   init();
+// 1. التحقق عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", () => {
+        const isLoggedIn = localStorage.getItem("academy_auth_token");
+        if (isLoggedIn === "valid") {
+            // المستخدم مسجل مسبقاً، قم بإخفاء النافذة فوراً
+            document.getElementById("loginOverlay").style.display = "none";
+        } else {
+            // المستخدم غير مسجل، اظهر النافذة وامنع التمرير
+            document.body.style.overflow = "hidden";
+        }
+    });
 
+    // 2. دالة تسجيل الدخول
+    async function attemptLogin() {
+        const password = document.getElementById("adminPasswordInput").value;
+        const errorMsg = document.getElementById("loginErrorMsg");
+        const card = document.querySelector(".login-card");
+        const btn = document.querySelector(".login-btn");
+        const originalBtnText = btn.innerHTML;
+
+        if (!password) return;
+
+        // حالة التحميل
+        btn.innerHTML = "جارٍ التحقق...";
+        btn.style.opacity = "0.7";
+        errorMsg.style.display = "none";
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // نجاح: احفظ التوكن واخف النافذة
+                localStorage.setItem("academy_auth_token", "valid");
+                
+                // تأثير خروج جميل للنافذة
+                const overlay = document.getElementById("loginOverlay");
+                overlay.style.opacity = "0";
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    document.body.style.overflow = "auto"; // إعادة تفعيل التمرير
+                }, 500);
+
+            } else {
+                // فشل: أظهر رسالة خطأ وهز البطاقة
+                throw new Error(data.message || 'كلمة المرور خاطئة');
+            }
+
+        } catch (error) {
+            errorMsg.textContent = "كلمة المرور غير صحيحة!";
+            errorMsg.style.display = "block";
+            card.classList.add("shake");
+            document.getElementById("adminPasswordInput").value = "";
+            document.getElementById("adminPasswordInput").focus();
+            
+            setTimeout(() => card.classList.remove("shake"), 300);
+        } finally {
+            btn.innerHTML = originalBtnText;
+            btn.style.opacity = "1";
+        }
+    }
+
+    // السماح بالضغط على Enter
+    function handleEnter(e) {
+        if (e.key === 'Enter') attemptLogin();
+    }
+// فتح النافذة
+    function openChangePassModal() {
+        document.getElementById('changePassModal').style.display = 'flex';
+        document.getElementById('changePassMsg').textContent = '';
+        document.getElementById('oldPass').value = '';
+        document.getElementById('newPass').value = '';
+    }
+
+    // إغلاق النافذة
+    function closeChangePassModal() {
+        document.getElementById('changePassModal').style.display = 'none';
+    }
+
+    // تنفيذ التغيير
+    async function submitChangePass() {
+        const oldPass = document.getElementById('oldPass').value;
+        const newPass = document.getElementById('newPass').value;
+        const msgEl = document.getElementById('changePassMsg');
+        const btn = document.querySelector('#changePassModal .login-btn');
+
+        if (!oldPass || !newPass) {
+            msgEl.style.color = '#ff6347';
+            msgEl.textContent = 'يرجى ملء جميع الحقول';
+            return;
+        }
+
+        btn.textContent = 'جارٍ الحفظ...';
+        
+        try {
+            const res = await fetch('/api/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                msgEl.style.color = '#43cf66';
+                msgEl.textContent = 'تم التغيير بنجاح!';
+                setTimeout(() => {
+                    closeChangePassModal();
+                    // اختياري: تسجيل الخروج ليجرب الكلمة الجديدة
+                    localStorage.removeItem("academy_auth_token");
+                    location.reload(); 
+                }, 1500);
+            } else {
+                msgEl.style.color = '#ff6347';
+                msgEl.textContent = data.message;
+            }
+        } catch (error) {
+            msgEl.style.color = '#ff6347';
+            msgEl.textContent = 'حدث خطأ في الاتصال';
+        } finally {
+            btn.textContent = 'حفظ التغييرات';
+        }
+    }
 </script>
 </body>
 </html>
+
